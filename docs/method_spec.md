@@ -1,0 +1,135 @@
+# ChronoPDE Method Specification
+
+Status: frozen Week 1 contract. Changes require a dated decision record before
+final experiments begin.
+
+## 1. Scientific question
+
+ChronoPDE tests two conditional hypotheses under matched trajectory, parameter,
+and optimization budgets:
+
+1. Continuous-time velocity learning is more robust than direct autoregressive
+   state prediction when trajectory observations are sparse or irregular.
+2. A discrete cosine spectral backbone aligned with homogeneous Neumann boundary
+   conditions reduces boundary-gradient and spectral errors relative to an FFT
+   backbone.
+
+The work is a controlled scientific-ML portfolio project, not a claim of a new
+state-of-the-art algorithm. A reproducible negative result is successful if the
+failure regime and error source are analysed.
+
+## 2. Governing problem
+
+The state is `x(t) = [u(t,x,y), v(t,x,y)]` and evolves according to
+
+```text
+du/dt = Du * Laplacian(u) + u - u^3 - k - v
+dv/dt = Dv * Laplacian(v) + u - v
+```
+
+Both fields satisfy zero normal derivative on all four boundaries. The spatial
+domain is `[-1,1] × [-1,1]`, discretised on a cell-centred `64×64` grid. The
+reference interval is `[0,50]`, with 101 stored states. Reference integration
+uses SciPy `solve_ivp` with DOP853, `rtol=1e-7`, and `atol=1e-9`.
+
+The discretisation follows the PDEBench 2D diffusion-reaction convention: a
+sparse cell-centred finite-volume Laplacian whose boundary diagonals encode zero
+normal flux. The implementation will be independently written and checked
+against PDEBench on small deterministic examples.
+
+## 3. Data protocol
+
+| Split | Count | Parameters | Initial conditions |
+|---|---:|---|---|
+| Train | 320 | central ranges | smooth, modes 1–8 |
+| Validation | 60 | unseen central values | unseen seeds |
+| ID test | 100 | central ranges | unseen seeds |
+| Parameter OOD | 120 | disjoint lower/upper bands | train-like spectrum |
+| IC OOD | 120 | central ranges | modes 9–16, 1.5× amplitude |
+
+Exact coefficient ranges live in `configs/project.yaml`. A 24-trajectory pilot
+must cover centre and boundary values. If a solver fails or more than 10% of
+trajectories exceed absolute state magnitude 10, the offending OOD endpoint is
+moved 20% toward the training boundary and the pilot is repeated. Ranges freeze
+before any model tuning.
+
+Observation regimes retain 100%, 50%, or 25% of stored times. Both endpoints
+are always present. Interior masks are deterministic functions of trajectory ID,
+regime, and mask seed. Splitting occurs before interval construction. Normalizers
+are fitted only on the training split.
+
+The HDF5 state layout is `[N,T,2,H,W]`, float32. Each trajectory stores its time
+array, `[Du,Dv,k]`, IC seed, trajectory ID, split, masks, and simulator metadata.
+
+## 4. Learning targets and models
+
+The continuous-time path uses a CFO-style quintic polynomial between adjacent
+retained knots. Knot derivatives come from finite differences; the analytic
+path derivative is the supervised target. The primary model predicts
+`v_theta(x(t), t, p) ≈ dx/dt`. A smooth endpoint-vanishing perturbation begins at
+`gamma=1e-5`. Linear paths are diagnostic only.
+
+ChronoPDE uses a real orthonormal 2D DCT-II/DCT-III pair, four residual spectral
+blocks, width 32, 12×12 retained modes, pointwise residual paths, GELU, and FiLM
+conditioning on normalized `[t,Du,Dv,k]`. RK4 is the default inference solver;
+Euler and Heun are controlled cost/accuracy comparisons.
+
+Baselines are:
+
+- `unet_ar`: convolutional residual next-state predictor.
+- `fno_ar`: FFT spectral residual next-state predictor.
+- `fno_ct`: continuous-time FFT velocity model with the ChronoPDE training path.
+
+Autoregressive models receive `delta_t` and physical parameters. Trainable
+parameter counts in headline comparisons must be within 10%. Shared data,
+normalization, optimizer family, early-stopping budget, and evaluation
+trajectories are mandatory.
+
+## 5. Training and evaluation
+
+Continuous-time loss is channel-normalized velocity MSE plus spectral loss with
+weight 0.05. Default optimization is AdamW with learning rate `3e-4`, weight
+decay `1e-4`, five warm-up epochs, cosine decay, gradient clipping at 1.0, and
+float32 precision until numerical stability is established.
+
+Each model must overfit four trajectories before a full run. Development uses
+seed 0. Final three-seed work begins only after configurations freeze.
+
+Required per-trajectory metrics are relative L2, nRMSE, final-time error,
+error-versus-time, 0.9 correlation horizon, low/high DCT-band error,
+first-interior boundary gradient, divergence rate, OOD/ID error ratio, latency,
+peak memory, parameter count, and function evaluations. Confidence intervals
+use 10,000 paired bootstrap samples.
+
+Published figures must include median and failure cases, not only the best
+trajectory. All tables and plots are regenerated from archived raw metrics.
+
+## 6. Claim and failure policy
+
+OOD ranges and test seeds are not changed after inspection. Model selection uses
+validation data only. If DCT improves boundary behaviour but not global nRMSE,
+that narrower finding is reported. If continuous time loses at short horizons,
+the crossover horizon is reported. If the main hypothesis fails, the report
+becomes a regime map and error-attribution study; the metric or split is not
+changed to manufacture a win.
+
+## 7. Attribution boundary
+
+- CFO supplies the continuous-time flow-matching motivation and spline-path
+  precedent. ChronoPDE reimplements the method in PyTorch and adds the
+  parameter-conditioned DCT/FFT controlled comparison.
+- PDEBench supplies the reaction-diffusion equation and reference discretisation
+  convention. ChronoPDE independently implements the simulator and creates its
+  own frozen parameter and OOD protocol.
+- External source code copied verbatim, if ever required, must be isolated,
+  licensed, and identified. The default is independent implementation.
+
+Primary references:
+
+1. Hou, Huang, and Perdikaris. “CFO: Learning Continuous-Time PDE Dynamics via
+   Flow-Matched Neural Operators.” ICLR 2026.
+2. Takamoto et al. “PDEBench: An Extensive Benchmark for Scientific Machine
+   Learning.” NeurIPS Datasets and Benchmarks, 2022.
+3. Li et al. “Fourier Neural Operator for Parametric Partial Differential
+   Equations.” ICLR 2021.
+

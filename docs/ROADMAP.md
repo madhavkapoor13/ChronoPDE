@@ -1,0 +1,28 @@
+# ChronoPDE Roadmap
+
+## Week 1 — Foundation
+
+- [x] Freeze equations, shapes, splits, metrics, and claim policy.
+- [x] Create validated YAML configuration.
+- [x] Create deterministic experiment naming and environment capture.
+- [x] Create data/model/integrator interfaces.
+- [x] Create dry-run CLIs and CPU-only tests.
+- [x] Configure CI and repository hygiene.
+
+## Week 2 — Simulator and pilot
+
+- [ ] Implement cell-centred Neumann Laplacian.
+- [ ] Implement reaction-diffusion right-hand side and adaptive integration.
+- [ ] Implement DCT-filtered initial-condition generator.
+- [ ] Compare small deterministic runs with PDEBench.
+- [ ] Execute the frozen 24-trajectory stability pilot.
+- [ ] Publish pilot plots and freeze any justified range adjustment.
+
+## Week 3 — Dataset and numerical primitives
+
+- [ ] Generate deterministic split manifests and temporal masks.
+- [ ] Generate and validate the HDF5 dataset.
+- [ ] Implement DCT, splines, and fixed-step integrators with reference tests.
+
+Later weeks follow the twelve-week project plan, subject to the documented gates.
+

@@ -1,0 +1,42 @@
+project:
+  name: chronopde
+  artifact_root: artifacts/runs
+
+pde:
+  du: 0.001
+  dv: 0.005
+  k: 0.005
+  t_start: 0.0
+  t_end: 50.0
+  stored_times: 101
+  x_min: -1.0
+  x_max: 1.0
+  y_min: -1.0
+  y_max: 1.0
+  height: 64
+  width: 64
+  boundary: neumann
+  solver:
+    method: DOP853
+    rtol: 1.0e-7
+    atol: 1.0e-9
+
+data:
+  output_path: data/chronopde.h5
+  sample_path: data/sample.h5
+  train_trajectories: 320
+  validation_trajectories: 60
+  id_test_trajectories: 100
+  ood_parameter_trajectories: 120
+  ood_ic_trajectories: 120
+  train_ranges:
+    du: [0.0008, 0.0012]
+    dv: [0.0040, 0.0060]
+    k: [0.0040, 0.0060]
+  ood_ranges:
+    du: [[0.0006, 0.00075], [0.00125, 0.0014]]
+    dv: [[0.0030, 0.0038], [0.0062, 0.0070]]
+    k: [[0.0025, 0.0038], [0.0062, 0.0075]]
+  retention_fractions: [1.0, 0.5, 0.25]
+  base_seed: 1729
+

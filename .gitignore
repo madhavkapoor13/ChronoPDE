@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+
+# Generated scientific artifacts
+artifacts/
+checkpoints/
+data/
+*.h5
+*.hdf5
+*.ckpt
+*.pt
+*.pth
+*.mp4
+*.gif
+
+# Notebooks and editors
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets
+.env
+*.pem
+*.key
+
