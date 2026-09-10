@@ -8,6 +8,7 @@ import sys
 from collections.abc import Sequence
 from dataclasses import asdict
 from pathlib import Path
+from typing import Any
 
 from chronopde.config import RegimeName, SplitName, load_config
 from chronopde.experiment import build_dry_run_plan
@@ -94,28 +95,51 @@ def train_main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--device", choices=("auto", "cpu", "cuda", "mps"), default="auto")
     parser.add_argument("--data-path")
     parser.add_argument("--max-epochs", type=int)
+    parser.add_argument("--learning-rate", type=float)
+    parser.add_argument("--steps-per-interval", type=int)
     parser.add_argument("--smoke-overfit", action="store_true")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
     config = load_config(resolve_config_path(args.config))
     if not args.dry_run:
-        if args.model not in {"unet_ar", "fno_ar"}:
-            parser.error("Week 4 training supports only unet_ar and fno_ar")
-        from chronopde.training import train_autoregressive
+        report: Any
+        data_path = Path(args.data_path).expanduser().resolve() if args.data_path else None
+        if args.model == "fno_ct":
+            from chronopde.training import train_continuous_time
 
-        report = train_autoregressive(
-            config,
-            repository_root(),
-            args.model,
-            args.regime,
-            args.seed,
-            data_path=Path(args.data_path).expanduser().resolve() if args.data_path else None,
-            device_name=args.device,
-            smoke_overfit=args.smoke_overfit,
-            resume=args.resume,
-            max_epochs=args.max_epochs,
-        )
+            report = train_continuous_time(
+                config,
+                repository_root(),
+                args.regime,
+                args.seed,
+                data_path=data_path,
+                device_name=args.device,
+                smoke_overfit=args.smoke_overfit,
+                resume=args.resume,
+                max_epochs=args.max_epochs,
+                learning_rate_override=args.learning_rate,
+                steps_per_interval=args.steps_per_interval,
+            )
+        else:
+            if args.model not in {"unet_ar", "fno_ar"}:
+                parser.error("training supports unet_ar, fno_ar, and fno_ct")
+            if args.learning_rate is not None or args.steps_per_interval is not None:
+                parser.error("learning-rate and steps-per-interval overrides are for fno_ct")
+            from chronopde.training import train_autoregressive
+
+            report = train_autoregressive(
+                config,
+                repository_root(),
+                args.model,
+                args.regime,
+                args.seed,
+                data_path=data_path,
+                device_name=args.device,
+                smoke_overfit=args.smoke_overfit,
+                resume=args.resume,
+                max_epochs=args.max_epochs,
+            )
         print_payload(asdict(report))
         return 0 if report.passed else 2
     seed_everything(args.seed)
@@ -156,23 +180,44 @@ def evaluate_main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--regime", choices=("full", "irreg50", "irreg25"), default="full")
     parser.add_argument("--device", choices=("auto", "cpu", "cuda", "mps"), default="auto")
     parser.add_argument("--data-path")
+    parser.add_argument("--steps-per-interval", type=int)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
     config = load_config(resolve_config_path(args.config))
     if not args.dry_run:
-        if args.experiment != "id_rollout" or args.model not in {"unet_ar", "fno_ar"}:
-            parser.error("Week 4 evaluation supports AR models with id_rollout only")
-        from chronopde.evaluation.baselines import evaluate_autoregressive_baseline
+        report: Any
+        if args.experiment != "id_rollout":
+            parser.error("Week 5 evaluation supports id_rollout only")
+        data_path = Path(args.data_path).expanduser().resolve() if args.data_path else None
+        checkpoint = Path(args.checkpoint).expanduser().resolve()
+        if args.model == "fno_ct":
+            from chronopde.evaluation.continuous import evaluate_continuous_baseline
 
-        report = evaluate_autoregressive_baseline(
-            config,
-            repository_root(),
-            args.model,
-            Path(args.checkpoint).expanduser().resolve(),
-            regime=args.regime,
-            data_path=Path(args.data_path).expanduser().resolve() if args.data_path else None,
-            device_name=args.device,
-        )
+            report = evaluate_continuous_baseline(
+                config,
+                repository_root(),
+                checkpoint,
+                regime=args.regime,
+                data_path=data_path,
+                device_name=args.device,
+                steps_per_interval=args.steps_per_interval,
+            )
+        else:
+            if args.model not in {"unet_ar", "fno_ar"}:
+                parser.error("evaluation supports unet_ar, fno_ar, and fno_ct")
+            if args.steps_per_interval is not None:
+                parser.error("steps-per-interval applies only to fno_ct")
+            from chronopde.evaluation.baselines import evaluate_autoregressive_baseline
+
+            report = evaluate_autoregressive_baseline(
+                config,
+                repository_root(),
+                args.model,
+                checkpoint,
+                regime=args.regime,
+                data_path=data_path,
+                device_name=args.device,
+            )
         print_payload(asdict(report))
         return 0
     split_by_experiment: dict[str, SplitName] = {

@@ -97,7 +97,7 @@ path derivative is the supervised target. The primary model predicts
 `gamma=1e-5`. Linear paths are diagnostic only.
 
 ChronoPDE uses a real orthonormal 2D DCT-II/DCT-III pair, four residual spectral
-blocks, width 32, 12×12 retained modes, pointwise residual paths, GELU, and FiLM
+blocks, 12×12 retained modes, pointwise residual paths, GELU, and FiLM
 conditioning on normalized `[t,Du,Dv,k]`. RK4 is the default inference solver;
 Euler and Heun are controlled cost/accuracy comparisons.
 
@@ -120,6 +120,16 @@ blocks, and 12x12 retained modes. Complex parameters count as two real degrees
 of freedom, giving 1,929,890 U-Net parameters and 1,943,263 FNO parameters, a
 0.69% difference. Week 4 model selection uses validation rollout nRMSE; OOD
 splits remain unopened.
+
+The Week 5 `fno_ct` baseline uses width 29, four FFT blocks, and 12x12 modes.
+It lifts normalized states and applies independent FiLM scale/bias values in
+each block from a two-layer conditioner over normalized time and parameters.
+It predicts normalized-state velocity per physical-time unit. Its 1,973,657
+real trainable parameters are within 2.3% of both autoregressive baselines.
+Training exposes one deterministic quintic-path sample per retained interval
+and epoch; the full regime therefore contains 32,000 velocity examples per
+epoch. The common auxiliary loss compares the lowest 12x12 orthonormal DCT
+coefficients, independently of the model's spatial backbone.
 
 ## 5. Training and evaluation
 

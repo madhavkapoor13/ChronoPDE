@@ -11,6 +11,8 @@ from chronopde.contracts import (
     SimulationDiagnostics,
     SimulationResult,
     TrajectoryManifestEntry,
+    VelocityLossBreakdown,
+    VelocitySample,
 )
 from chronopde.data import (
     build_dataset_manifest,
@@ -20,7 +22,7 @@ from chronopde.data import (
     reaction_diffusion_rhs,
     simulate_trajectory,
 )
-from chronopde.models import FNOAutoregressive, UNetAutoregressive
+from chronopde.models import FFTContinuousVectorField, FNOAutoregressive, UNetAutoregressive
 from chronopde.numerics import (
     QuinticSpline,
     build_grid,
@@ -41,6 +43,7 @@ from chronopde.numerics import (
 
 __all__ = [
     "AutoregressivePair",
+    "FFTContinuousVectorField",
     "FNOAutoregressive",
     "GenerationDiagnostics",
     "GridSpec",
@@ -53,6 +56,8 @@ __all__ = [
     "SimulationResult",
     "TrajectoryManifestEntry",
     "UNetAutoregressive",
+    "VelocityLossBreakdown",
+    "VelocitySample",
     "build_dataset_manifest",
     "build_grid",
     "build_neumann_laplacian",

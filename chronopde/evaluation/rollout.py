@@ -2,14 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Literal, Protocol
 
 import torch
 from torch import Tensor
 
+from chronopde.contracts import IntegrationResult
+from chronopde.numerics import integrate_fixed_step
+
 
 class AutoregressiveModel(Protocol):
     def __call__(self, state: Tensor, delta_t: Tensor, parameters: Tensor) -> Tensor: ...
+
+
+class ContinuousModel(Protocol):
+    def __call__(self, state: Tensor, time: Tensor, parameters: Tensor) -> Tensor: ...
 
 
 def predict_next_state(
@@ -53,3 +60,34 @@ def persistence_rollout(initial_state: Tensor, time_count: int) -> Tensor:
     if time_count < 1:
         raise ValueError("time_count must be positive")
     return initial_state[:, None].expand(-1, time_count, *initial_state.shape[1:])
+
+
+def continuous_rollout(
+    model: ContinuousModel,
+    initial_state: Tensor,
+    query_times: Tensor,
+    parameters: Tensor,
+    *,
+    steps_per_interval: int = 2,
+    method: Literal["euler", "heun", "rk4"] = "rk4",
+) -> IntegrationResult:
+    if query_times.ndim == 2:
+        if not bool(torch.allclose(query_times, query_times[:1].expand_as(query_times))):
+            raise ValueError("continuous rollout requires a shared query-time grid")
+        query_times = query_times[0]
+    if query_times.ndim != 1:
+        raise ValueError("query_times must have shape [T] or a shared [B,T]")
+
+    def vector_field(state: Tensor, time: Tensor, condition: Tensor | None) -> Tensor:
+        if condition is None:
+            raise ValueError("continuous rollout requires parameters")
+        return model(state, time, condition)
+
+    return integrate_fixed_step(
+        vector_field,
+        initial_state,
+        query_times,
+        steps_per_interval,
+        method,
+        parameters,
+    )

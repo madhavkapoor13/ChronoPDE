@@ -57,6 +57,8 @@ def test_train_help_exposes_week4_options() -> None:
     assert "--smoke-overfit" in result.stdout
     assert "--resume" in result.stdout
     assert "--data-path" in result.stdout
+    assert "--learning-rate" in result.stdout
+    assert "--steps-per-interval" in result.stdout
 
 
 def test_evaluate_dry_run() -> None:

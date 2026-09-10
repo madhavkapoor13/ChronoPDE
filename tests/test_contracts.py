@@ -45,6 +45,12 @@ def test_week4_public_models_are_exported() -> None:
     assert callable(chronopde.FNOAutoregressive)
 
 
+def test_week5_public_api_is_exported() -> None:
+    assert callable(chronopde.FFTContinuousVectorField)
+    assert chronopde.VelocitySample is not None
+    assert chronopde.VelocityLossBreakdown is not None
+
+
 def test_endpoint_retention_is_required() -> None:
     sample = valid_sample()
     bad = TrajectorySample(

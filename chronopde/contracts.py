@@ -108,6 +108,23 @@ class RolloutSample:
 
 
 @dataclass(frozen=True)
+class VelocitySample:
+    state: Tensor
+    target_velocity: Tensor
+    time: Tensor
+    parameters: Tensor
+    trajectory_id: str
+    interval_index: int
+
+
+@dataclass(frozen=True)
+class VelocityLossBreakdown:
+    total: Tensor
+    physical_mse: Tensor
+    spectral_relative_error: Tensor
+
+
+@dataclass(frozen=True)
 class TrajectorySample:
     """One trajectory using channels-first state layout ``[T, 2, H, W]``."""
 

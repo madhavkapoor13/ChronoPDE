@@ -167,6 +167,7 @@ class ModelConfig(StrictModel):
     perturbation_gamma: float = Field(default=1e-5, ge=0)
     unet_channels: tuple[int, int, int, int] = (32, 64, 128, 256)
     fno_width: int = Field(default=29, ge=4)
+    film_hidden_width: int = Field(default=128, ge=4)
 
 
 class TrainingConfig(StrictModel):
@@ -190,6 +191,7 @@ class TrainingConfig(StrictModel):
     smoke_loss_reduction: float = Field(default=100.0, gt=1)
     smoke_one_step_nrmse: float = Field(default=0.01, gt=0)
     smoke_rollout_nrmse: float = Field(default=0.05, gt=0)
+    continuous_validation_interval: int = Field(default=5, ge=1)
 
 
 class EvaluationConfig(StrictModel):

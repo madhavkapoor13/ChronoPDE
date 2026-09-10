@@ -7,12 +7,14 @@ from chronopde.evaluation.metrics import (
 )
 from chronopde.evaluation.rollout import (
     autoregressive_rollout,
+    continuous_rollout,
     persistence_rollout,
     predict_next_state,
 )
 
 __all__ = [
     "autoregressive_rollout",
+    "continuous_rollout",
     "nrmse",
     "persistence_rollout",
     "predict_next_state",

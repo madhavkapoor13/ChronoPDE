@@ -33,4 +33,13 @@
 - [ ] Pass both four-trajectory GPU overfit gates.
 - [ ] Complete seed-0 full training and publish frozen ID curves.
 
+## Week 5 — Continuous-time FFT baseline
+
+- [x] Implement deterministic local quintic velocity sampling.
+- [x] Implement the FiLM-conditioned continuous-time FFT vector field.
+- [x] Implement the shared velocity/spectral objective and RK4 training path.
+- [x] Implement frozen ID evaluation and the Colab workflow.
+- [ ] Pass the four-trajectory GPU overfit gate.
+- [ ] Beat persistence on validation and publish the frozen ID comparison.
+
 Later weeks follow the twelve-week project plan, subject to the documented gates.
