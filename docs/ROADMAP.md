@@ -24,4 +24,13 @@
 - [x] Generate and validate the HDF5 dataset.
 - [x] Implement DCT, splines, and fixed-step integrators with reference tests.
 
+## Week 4 — Autoregressive baselines
+
+- [x] Implement lazy HDF5 pair/rollout datasets and shared normalization.
+- [x] Implement parameter-matched residual U-Net and FFT-FNO baselines.
+- [x] Implement training, checkpoint resume, rollout, and ID evaluation infrastructure.
+- [x] Add the reproducible Colab GPU workflow.
+- [ ] Pass both four-trajectory GPU overfit gates.
+- [ ] Complete seed-0 full training and publish frozen ID curves.
+
 Later weeks follow the twelve-week project plan, subject to the documented gates.

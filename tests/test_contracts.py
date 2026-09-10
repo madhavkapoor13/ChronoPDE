@@ -40,6 +40,11 @@ def test_week3_public_api_is_exported() -> None:
         assert callable(getattr(chronopde, name))
 
 
+def test_week4_public_models_are_exported() -> None:
+    assert callable(chronopde.UNetAutoregressive)
+    assert callable(chronopde.FNOAutoregressive)
+
+
 def test_endpoint_retention_is_required() -> None:
     sample = valid_sample()
     bad = TrajectorySample(

@@ -2,10 +2,12 @@
 
 from chronopde.config import ProjectConfig, load_config
 from chronopde.contracts import (
+    AutoregressivePair,
     GenerationDiagnostics,
     GridSpec,
     IntegrationResult,
     PhysicalParameters,
+    RolloutSample,
     SimulationDiagnostics,
     SimulationResult,
     TrajectoryManifestEntry,
@@ -18,6 +20,7 @@ from chronopde.data import (
     reaction_diffusion_rhs,
     simulate_trajectory,
 )
+from chronopde.models import FNOAutoregressive, UNetAutoregressive
 from chronopde.numerics import (
     QuinticSpline,
     build_grid,
@@ -37,15 +40,19 @@ from chronopde.numerics import (
 )
 
 __all__ = [
+    "AutoregressivePair",
+    "FNOAutoregressive",
     "GenerationDiagnostics",
     "GridSpec",
     "IntegrationResult",
     "PhysicalParameters",
     "ProjectConfig",
     "QuinticSpline",
+    "RolloutSample",
     "SimulationDiagnostics",
     "SimulationResult",
     "TrajectoryManifestEntry",
+    "UNetAutoregressive",
     "build_dataset_manifest",
     "build_grid",
     "build_neumann_laplacian",

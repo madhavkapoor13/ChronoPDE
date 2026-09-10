@@ -7,6 +7,7 @@ from typing import Literal, Protocol, TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
+from torch import Tensor
 
 FloatArray: TypeAlias = NDArray[np.float32]
 Float64Array: TypeAlias = NDArray[np.float64]
@@ -85,6 +86,25 @@ class GenerationDiagnostics:
     nfev: int
     max_abs_state: float
     message: str
+
+
+@dataclass(frozen=True)
+class AutoregressivePair:
+    current_state: Tensor
+    residual_target: Tensor
+    delta_t: Tensor
+    parameters: Tensor
+    trajectory_id: str
+    start_index: int
+    end_index: int
+
+
+@dataclass(frozen=True)
+class RolloutSample:
+    states: Tensor
+    times: Tensor
+    parameters: Tensor
+    trajectory_id: str
 
 
 @dataclass(frozen=True)

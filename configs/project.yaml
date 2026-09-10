@@ -67,6 +67,8 @@ model:
   activation: gelu
   spline: quintic
   perturbation_gamma: 1.0e-5
+  unet_channels: [32, 64, 128, 256]
+  fno_width: 29
 
 training:
   batch_size: 8
@@ -79,6 +81,16 @@ training:
   spectral_loss_weight: 0.05
   precision: float32
   seed: 0
+  num_workers: 2
+  minimum_epochs: 25
+  minimum_learning_rate: 1.0e-6
+  smoke_batch_size: 16
+  smoke_learning_rate: 1.0e-3
+  smoke_max_steps: 10000
+  smoke_evaluation_interval: 100
+  smoke_loss_reduction: 100.0
+  smoke_one_step_nrmse: 0.01
+  smoke_rollout_nrmse: 0.05
 
 evaluation:
   solver: rk4

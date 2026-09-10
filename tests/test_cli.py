@@ -51,6 +51,14 @@ def test_train_dry_run() -> None:
     assert payload["experiment_id"] == "chronopde-irreg25-train-s0"
 
 
+def test_train_help_exposes_week4_options() -> None:
+    result = run_script("scripts/train.py", "--help")
+    assert result.returncode == 0
+    assert "--smoke-overfit" in result.stdout
+    assert "--resume" in result.stdout
+    assert "--data-path" in result.stdout
+
+
 def test_evaluate_dry_run() -> None:
     result = run_script(
         "scripts/evaluate.py",

@@ -165,6 +165,8 @@ class ModelConfig(StrictModel):
     activation: Literal["gelu"] = "gelu"
     spline: Literal["quintic", "linear"] = "quintic"
     perturbation_gamma: float = Field(default=1e-5, ge=0)
+    unet_channels: tuple[int, int, int, int] = (32, 64, 128, 256)
+    fno_width: int = Field(default=29, ge=4)
 
 
 class TrainingConfig(StrictModel):
@@ -178,6 +180,16 @@ class TrainingConfig(StrictModel):
     spectral_loss_weight: float = Field(default=0.05, ge=0)
     precision: Literal["float32", "amp"] = "float32"
     seed: int = Field(default=0, ge=0)
+    num_workers: int = Field(default=2, ge=0)
+    minimum_epochs: int = Field(default=25, ge=1)
+    minimum_learning_rate: float = Field(default=1e-6, gt=0)
+    smoke_batch_size: int = Field(default=16, ge=1)
+    smoke_learning_rate: float = Field(default=1e-3, gt=0)
+    smoke_max_steps: int = Field(default=10_000, ge=1)
+    smoke_evaluation_interval: int = Field(default=100, ge=1)
+    smoke_loss_reduction: float = Field(default=100.0, gt=1)
+    smoke_one_step_nrmse: float = Field(default=0.01, gt=0)
+    smoke_rollout_nrmse: float = Field(default=0.05, gt=0)
 
 
 class EvaluationConfig(StrictModel):

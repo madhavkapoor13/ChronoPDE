@@ -112,6 +112,15 @@ parameter counts in headline comparisons must be within 10%. Shared data,
 normalization, optimizer family, early-stopping budget, and evaluation
 trajectories are mandatory.
 
+The Week 4 baselines predict normalized residuals rather than absolute next
+states. Both receive identical broadcast maps for normalized `delta_t`, `Du`,
+`Dv`, and `k`, plus cell-centred coordinates. The U-Net uses reflection-padded
+convolutions with channel widths 32/64/128/256. The FFT-FNO uses width 29, four
+blocks, and 12x12 retained modes. Complex parameters count as two real degrees
+of freedom, giving 1,929,890 U-Net parameters and 1,943,263 FNO parameters, a
+0.69% difference. Week 4 model selection uses validation rollout nRMSE; OOD
+splits remain unopened.
+
 ## 5. Training and evaluation
 
 Continuous-time loss is channel-normalized velocity MSE plus spectral loss with

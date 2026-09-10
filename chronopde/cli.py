@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections.abc import Sequence
 from dataclasses import asdict
 from pathlib import Path
@@ -14,6 +15,14 @@ from chronopde.reproducibility import environment_metadata, seed_everything
 
 
 def repository_root() -> Path:
+    candidates = [Path.cwd()]
+    if sys.argv and sys.argv[0]:
+        script = Path(sys.argv[0]).expanduser().resolve()
+        candidates.append(script.parent.parent)
+    candidates.append(Path(__file__).resolve().parents[1])
+    for candidate in candidates:
+        if (candidate / "pyproject.toml").is_file() and (candidate / "configs").is_dir():
+            return candidate
     return Path(__file__).resolve().parents[1]
 
 
@@ -82,11 +91,33 @@ def train_main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--regime", choices=("full", "irreg50", "irreg25"), default="full")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda", "mps"), default="auto")
+    parser.add_argument("--data-path")
+    parser.add_argument("--max-epochs", type=int)
+    parser.add_argument("--smoke-overfit", action="store_true")
+    parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
-    if not args.dry_run:
-        parser.error("training is scheduled for a later phase; use --dry-run in Week 1")
     config = load_config(resolve_config_path(args.config))
+    if not args.dry_run:
+        if args.model not in {"unet_ar", "fno_ar"}:
+            parser.error("Week 4 training supports only unet_ar and fno_ar")
+        from chronopde.training import train_autoregressive
+
+        report = train_autoregressive(
+            config,
+            repository_root(),
+            args.model,
+            args.regime,
+            args.seed,
+            data_path=Path(args.data_path).expanduser().resolve() if args.data_path else None,
+            device_name=args.device,
+            smoke_overfit=args.smoke_overfit,
+            resume=args.resume,
+            max_epochs=args.max_epochs,
+        )
+        print_payload(asdict(report))
+        return 0 if report.passed else 2
     seed_everything(args.seed)
     plan = build_dry_run_plan(
         config,
@@ -119,11 +150,31 @@ def evaluate_main(argv: Sequence[str] | None = None) -> int:
         required=True,
     )
     parser.add_argument("--checkpoint", required=True)
+    parser.add_argument(
+        "--model", choices=("chronopde", "fno_ct", "fno_ar", "unet_ar"), default="chronopde"
+    )
+    parser.add_argument("--regime", choices=("full", "irreg50", "irreg25"), default="full")
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda", "mps"), default="auto")
+    parser.add_argument("--data-path")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
-    if not args.dry_run:
-        parser.error("evaluation requires a future checkpoint; use --dry-run in Week 1")
     config = load_config(resolve_config_path(args.config))
+    if not args.dry_run:
+        if args.experiment != "id_rollout" or args.model not in {"unet_ar", "fno_ar"}:
+            parser.error("Week 4 evaluation supports AR models with id_rollout only")
+        from chronopde.evaluation.baselines import evaluate_autoregressive_baseline
+
+        report = evaluate_autoregressive_baseline(
+            config,
+            repository_root(),
+            args.model,
+            Path(args.checkpoint).expanduser().resolve(),
+            regime=args.regime,
+            data_path=Path(args.data_path).expanduser().resolve() if args.data_path else None,
+            device_name=args.device,
+        )
+        print_payload(asdict(report))
+        return 0
     split_by_experiment: dict[str, SplitName] = {
         "id_rollout": "id",
         "sparse_50": "id",
@@ -142,8 +193,8 @@ def evaluate_main(argv: Sequence[str] | None = None) -> int:
     plan = build_dry_run_plan(
         config,
         command=f"evaluate:{args.experiment}",
-        model="chronopde",
-        regime=regime_by_experiment.get(args.experiment, "full"),
+        model=args.model,
+        regime=regime_by_experiment.get(args.experiment, args.regime),
         split=split_by_experiment[args.experiment],
         seed=0,
     )

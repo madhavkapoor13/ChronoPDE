@@ -6,10 +6,11 @@ dynamics. The intended model learns a parameter-conditioned velocity field from
 irregularly sampled trajectories and integrates it at arbitrary query times.
 
 The current repository state includes the completed **Week 3 dataset and
-numerical primitives**: a validated 720-trajectory HDF5 dataset pipeline,
-deterministic split manifests and temporal masks, differentiable DCT transforms,
-CFO-style quintic paths, and fixed-step Euler, Heun, and RK4 integration. Neural
-models remain scheduled for later phases.
+numerical primitives** plus the **Week 4 autoregressive-baseline implementation**:
+a validated 720-trajectory HDF5 pipeline, differentiable numerical primitives,
+lazy training datasets, parameter-matched residual U-Net and FFT-FNO models,
+resumable training, and rollout evaluation. The Week 4 Colab GPU experiments
+remain a measured release gate and are not represented as completed locally.
 
 ## Research question
 
@@ -76,6 +77,36 @@ masks. Channel and parameter normalizers are fitted from the training split only
 The reusable numerical APIs are available from `chronopde.numerics`: orthonormal
 `dct2`/`idct2`, irregular quintic spline construction and evaluation, conditional
 path sampling, and differentiable fixed-step integration.
+
+## Week 4 autoregressive baselines
+
+ChronoPDE includes parameter-matched residual U-Net and FFT-FNO baselines. Both
+consume normalized states, the time increment, physical parameters, and spatial
+coordinates, then predict a normalized state residual.
+
+Run the mandatory four-trajectory checks on a CUDA machine before full training:
+
+```bash
+python scripts/train.py --config configs/project.yaml --model unet_ar --regime full --seed 0 --smoke-overfit --device cuda
+python scripts/train.py --config configs/project.yaml --model fno_ar --regime full --seed 0 --smoke-overfit --device cuda
+```
+
+Run or resume full seed-0 training:
+
+```bash
+python scripts/train.py --config configs/project.yaml --model unet_ar --regime full --seed 0 --device cuda --resume
+python scripts/train.py --config configs/project.yaml --model fno_ar --regime full --seed 0 --device cuda --resume
+```
+
+Use `--data-path` when the HDF5 file is stored outside the repository, as in the
+provided `notebooks/week4_baselines_colab.ipynb`. Checkpoints and logs are saved
+under the ignored `artifacts/runs/` directory.
+
+After training, generate the frozen ID report with:
+
+```bash
+python scripts/evaluate.py --config configs/project.yaml --model unet_ar --experiment id_rollout --checkpoint artifacts/runs/unet_ar-full-train-s0/best.pt
+```
 
 The demo becomes active after a trained checkpoint exists:
 
