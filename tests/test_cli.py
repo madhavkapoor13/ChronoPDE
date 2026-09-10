@@ -3,6 +3,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
+from chronopde.cli import generate_main
+from chronopde.data.pilot import PilotReport
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -63,4 +68,25 @@ def test_evaluate_dry_run() -> None:
 def test_non_dry_run_is_guarded() -> None:
     result = run_script("scripts/generate_data.py")
     assert result.returncode != 0
-    assert "scheduled for Week 2" in result.stderr
+    assert "scheduled for Week 3" in result.stderr
+
+
+def test_generate_help_exposes_pilot_mode() -> None:
+    result = run_script("scripts/generate_data.py", "--help")
+    assert result.returncode == 0
+    assert "--pilot" in result.stdout
+
+
+def test_failed_pilot_returns_nonzero(monkeypatch: pytest.MonkeyPatch) -> None:
+    report = PilotReport(
+        passed=False,
+        successful=21,
+        failed=3,
+        total=24,
+        allowed_failures=2,
+        config_hash="test",
+        output_directory="raw",
+        published_directory="published",
+    )
+    monkeypatch.setattr("chronopde.data.pilot.run_pilot", lambda *_args, **_kwargs: report)
+    assert generate_main(["--config", "configs/project.yaml", "--pilot"]) == 2

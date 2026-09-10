@@ -76,6 +76,36 @@ class OODParameterRanges(StrictModel):
     k: tuple[tuple[float, float], tuple[float, float]]
 
 
+class InitialConditionConfig(StrictModel):
+    train_modes: tuple[int, int] = (1, 8)
+    train_standard_deviation: float = Field(default=0.5, gt=0)
+    ood_modes: tuple[int, int] = (9, 16)
+    ood_amplitude_multiplier: float = Field(default=1.5, gt=1)
+
+    @model_validator(mode="after")
+    def validate_modes(self) -> InitialConditionConfig:
+        train_low, train_high = self.train_modes
+        ood_low, ood_high = self.ood_modes
+        if train_low < 1 or train_high < train_low:
+            raise ValueError("train_modes must be positive and increasing")
+        if ood_low <= train_high or ood_high < ood_low:
+            raise ValueError("ood_modes must be increasing and disjoint above train_modes")
+        return self
+
+    @property
+    def ood_standard_deviation(self) -> float:
+        return self.train_standard_deviation * self.ood_amplitude_multiplier
+
+
+class PilotConfig(StrictModel):
+    trajectories: int = Field(default=24, ge=1)
+    divergence_threshold: float = Field(default=10.0, gt=0)
+    maximum_failure_fraction: float = Field(default=0.10, ge=0, lt=1)
+    maximum_adjustment_rounds: int = Field(default=2, ge=0)
+    workers: int = Field(default=4, ge=1)
+    output_directory: Path = Path("artifacts/pilot/week2")
+
+
 class DataConfig(StrictModel):
     output_path: Path = Path("data/chronopde.h5")
     sample_path: Path = Path("data/sample.h5")
@@ -88,6 +118,8 @@ class DataConfig(StrictModel):
     ood_ranges: OODParameterRanges
     retention_fractions: tuple[float, ...] = (1.0, 0.5, 0.25)
     base_seed: int = Field(default=1729, ge=0)
+    initial_conditions: InitialConditionConfig = InitialConditionConfig()
+    pilot: PilotConfig = PilotConfig()
 
     @model_validator(mode="after")
     def validate_data_protocol(self) -> DataConfig:
@@ -101,6 +133,8 @@ class DataConfig(StrictModel):
                     raise ValueError(f"{name} OOD bands must be positive and increasing")
             if low_band[1] >= train_low or high_band[0] <= train_high:
                 raise ValueError(f"{name} OOD bands must not overlap the training range")
+        if self.pilot.trajectories != 24:
+            raise ValueError("the frozen Week 2 pilot must contain exactly 24 trajectories")
         return self
 
     @property
@@ -167,6 +201,9 @@ class ProjectConfig(StrictModel):
                 raise ValueError("spectral_modes_x cannot exceed grid width")
             if self.model.spectral_modes_y > self.pde.height:
                 raise ValueError("spectral_modes_y cannot exceed grid height")
+        highest_ic_mode = self.data.initial_conditions.ood_modes[1]
+        if highest_ic_mode >= min(self.pde.height, self.pde.width):
+            raise ValueError("initial-condition modes must fit inside the configured grid")
         return self
 
 
@@ -181,4 +218,3 @@ def load_config(path: str | Path) -> ProjectConfig:
     if not isinstance(raw, dict):
         raise ValueError("configuration root must be a mapping")
     return ProjectConfig.model_validate(raw)
-

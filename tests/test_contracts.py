@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+import chronopde
 from chronopde.contracts import TrajectorySample
 
 
@@ -17,6 +18,13 @@ def valid_sample() -> TrajectorySample:
 
 def test_valid_sample_contract() -> None:
     valid_sample().validate()
+
+
+def test_week2_public_api_is_exported() -> None:
+    assert callable(chronopde.build_neumann_laplacian)
+    assert callable(chronopde.generate_initial_condition)
+    assert callable(chronopde.simulate_trajectory)
+    assert chronopde.PhysicalParameters(0.001, 0.005, 0.005).du == 0.001
 
 
 def test_endpoint_retention_is_required() -> None:
@@ -45,4 +53,3 @@ def test_channel_order_is_enforced() -> None:
     )
     with pytest.raises(ValueError, match=r"\[T, 2, H, W\]"):
         bad.validate()
-

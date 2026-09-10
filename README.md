@@ -5,9 +5,11 @@ continuous-time neural operators on coupled two-dimensional reaction-diffusion
 dynamics. The intended model learns a parameter-conditioned velocity field from
 irregularly sampled trajectories and integrates it at arbitrary query times.
 
-The current repository state is the **Week 1 foundation**: scientific contracts,
-validated configuration, reproducibility utilities, CLI dry-runs, and tests. The
-simulator and models are deliberately scheduled for later phases.
+The current repository state includes the validated **Week 2 simulator and
+stability pilot**: scientific contracts, a cell-centred Neumann Laplacian,
+adaptive reference integration, deterministic DCT initial conditions, pilot
+reporting, CLI dry-runs, and tests. Neural models remain scheduled for later
+phases.
 
 ## Research question
 
@@ -43,6 +45,17 @@ python scripts/train.py --config configs/project.yaml --model chronopde --regime
 python scripts/evaluate.py --config configs/project.yaml --experiment id_rollout --checkpoint placeholder.pt --dry-run
 ```
 
+Run or resume the frozen 24-trajectory simulator pilot:
+
+```bash
+python scripts/generate_data.py --config configs/project.yaml --pilot
+```
+
+Raw pilot trajectories are written to `artifacts/pilot/week2/` and remain
+ignored by Git. The publishable summary, diagnostic table, and plots are written
+to `reports/pilot/week2/`. The completed pilot passed 24/24 trajectories without
+changing any parameter range.
+
 The demo becomes active after a trained checkpoint exists:
 
 ```bash
@@ -69,4 +82,3 @@ design is inspired by *CFO: Learning Continuous-Time PDE Dynamics via
 Flow-Matched Neural Operators*. The reaction-diffusion equations and reference
 simulation conventions are based on PDEBench. See `docs/method_spec.md` for the
 precise boundary between referenced ideas and original implementation.
-

@@ -9,7 +9,59 @@ import numpy as np
 from numpy.typing import NDArray
 
 FloatArray: TypeAlias = NDArray[np.float32]
+Float64Array: TypeAlias = NDArray[np.float64]
 BoolArray: TypeAlias = NDArray[np.bool_]
+
+
+@dataclass(frozen=True)
+class PhysicalParameters:
+    du: float
+    dv: float
+    k: float
+
+    def validate(self) -> None:
+        if not np.all(np.isfinite((self.du, self.dv, self.k))):
+            raise ValueError("physical parameters must be finite")
+        if self.du <= 0 or self.dv <= 0 or self.k <= 0:
+            raise ValueError("physical parameters must be positive")
+
+    def as_array(self) -> Float64Array:
+        return np.asarray((self.du, self.dv, self.k), dtype=np.float64)
+
+
+@dataclass(frozen=True)
+class GridSpec:
+    x: Float64Array
+    y: Float64Array
+    dx: float
+    dy: float
+    height: int
+    width: int
+
+    def validate(self) -> None:
+        if self.height < 2 or self.width < 2:
+            raise ValueError("grid dimensions must be at least 2")
+        if self.x.shape != (self.width,) or self.y.shape != (self.height,):
+            raise ValueError("coordinate shapes must match grid width and height")
+        if self.dx <= 0 or self.dy <= 0:
+            raise ValueError("grid spacing must be positive")
+
+
+@dataclass(frozen=True)
+class SimulationDiagnostics:
+    success: bool
+    message: str
+    nfev: int
+    runtime_seconds: float
+    max_abs_state: float
+
+
+@dataclass(frozen=True)
+class SimulationResult:
+    states: FloatArray
+    times: Float64Array
+    params: PhysicalParameters
+    diagnostics: SimulationDiagnostics
 
 
 @dataclass(frozen=True)
@@ -66,4 +118,3 @@ class FixedStepIntegrator(Protocol):
         steps: int,
         params: object,
     ) -> IntegrationResult: ...
-

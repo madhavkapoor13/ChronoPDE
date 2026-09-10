@@ -37,6 +37,11 @@ sparse cell-centred finite-volume Laplacian whose boundary diagonals encode zero
 normal flux. The implementation will be independently written and checked
 against PDEBench on small deterministic examples.
 
+The committed reference fixture uses PDEBench commit
+`4ff3e3a4aa1561721b5571fa3a048a0a463e0568`, an 8×8 grid, five stored times on
+`[0,1]`, seed 0, and SciPy's default RK45 tolerances. ChronoPDE matches the
+fixture within `1e-6` relative L2 error.
+
 ## 3. Data protocol
 
 | Split | Count | Parameters | Initial conditions |
@@ -52,6 +57,15 @@ must cover centre and boundary values. If a solver fails or more than 10% of
 trajectories exceed absolute state magnitude 10, the offending OOD endpoint is
 moved 20% toward the training boundary and the pilot is repeated. Ranges freeze
 before any model tuning.
+
+### Week 2 pilot outcome
+
+The frozen pilot completed successfully on 10 September 2026. All 24
+trajectories integrated successfully, with a maximum observed state magnitude
+of 4.237602 against the divergence threshold of 10. Median runtime was 1.356
+seconds and median function evaluations were 4,463. The original training and
+OOD coefficient ranges therefore remain frozen without adjustment. Reproducible
+diagnostics and figures are stored in `reports/pilot/week2/`.
 
 Observation regimes retain 100%, 50%, or 25% of stored times. Both endpoints
 are always present. Interior masks are deterministic functions of trajectory ID,
@@ -132,4 +146,3 @@ Primary references:
    Learning.” NeurIPS Datasets and Benchmarks, 2022.
 3. Li et al. “Fourier Neural Operator for Parametric Partial Differential
    Equations.” ICLR 2021.
-

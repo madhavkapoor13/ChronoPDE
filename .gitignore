@@ -10,7 +10,7 @@ __pycache__/
 # Generated scientific artifacts
 artifacts/
 checkpoints/
-data/
+/data/
 *.h5
 *.hdf5
 *.ckpt
@@ -29,4 +29,3 @@ data/
 .env
 *.pem
 *.key
-

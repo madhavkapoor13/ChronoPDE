@@ -39,4 +39,15 @@ data:
     k: [[0.0025, 0.0038], [0.0062, 0.0075]]
   retention_fractions: [1.0, 0.5, 0.25]
   base_seed: 1729
-
+  initial_conditions:
+    train_modes: [1, 8]
+    train_standard_deviation: 0.5
+    ood_modes: [9, 16]
+    ood_amplitude_multiplier: 1.5
+  pilot:
+    trajectories: 24
+    divergence_threshold: 10.0
+    maximum_failure_fraction: 0.10
+    maximum_adjustment_rounds: 2
+    workers: 4
+    output_directory: artifacts/pilot/week2

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from collections.abc import Sequence
+from dataclasses import asdict
 from pathlib import Path
 
 from chronopde.config import RegimeName, SplitName, load_config
@@ -30,11 +31,20 @@ def print_payload(payload: dict[str, object]) -> None:
 def generate_main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate the ChronoPDE dataset.")
     parser.add_argument("--config", default="configs/data.yaml")
-    parser.add_argument("--dry-run", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--dry-run", action="store_true")
+    mode.add_argument("--pilot", action="store_true")
     args = parser.parse_args(argv)
-    if not args.dry_run:
-        parser.error("data generation is scheduled for Week 2; use --dry-run in Week 1")
     config = load_config(resolve_config_path(args.config))
+    if args.pilot:
+        from chronopde.data.pilot import run_pilot
+
+        seed_everything(config.data.base_seed)
+        report = run_pilot(config, repository_root())
+        print_payload(asdict(report))
+        return 0 if report.passed else 2
+    if not args.dry_run:
+        parser.error("full dataset generation is scheduled for Week 3; use --dry-run or --pilot")
     seed_everything(config.data.base_seed)
     plan = build_dry_run_plan(config, command="generate_data", seed=config.data.base_seed)
     payload = plan.to_dict()

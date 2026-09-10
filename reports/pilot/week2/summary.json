@@ -1,0 +1,15 @@
+{
+  "allowed_failures": 2,
+  "cached_trajectories": 24,
+  "config_hash": "373776db0950da691c3b9f4763057d6cfe6e37667269910584afa0f8c019ddbf",
+  "failed": 0,
+  "git_commit": "0bf99b51dc436b56c40ce26d136443b1d4d64ad0",
+  "maximum_state_magnitude": 4.237602233886719,
+  "median_nfev": 4463.0,
+  "median_runtime_seconds": 1.3563972499978263,
+  "passed": true,
+  "range_adjustment_required": false,
+  "range_adjustments": [],
+  "successful": 24,
+  "total": 24
+}
