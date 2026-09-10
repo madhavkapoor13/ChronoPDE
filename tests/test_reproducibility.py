@@ -18,4 +18,3 @@ def test_seed_everything_is_deterministic() -> None:
 def test_negative_seed_is_rejected() -> None:
     with pytest.raises(ValueError, match="non-negative"):
         seed_everything(-1)
-

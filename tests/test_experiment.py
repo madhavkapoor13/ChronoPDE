@@ -9,9 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_experiment_identifier() -> None:
-    assert experiment_id("chronopde", "irreg25", "oodparam", 2) == (
-        "chronopde-irreg25-oodparam-s2"
-    )
+    assert experiment_id("chronopde", "irreg25", "oodparam", 2) == ("chronopde-irreg25-oodparam-s2")
 
 
 def test_negative_seed_is_rejected() -> None:

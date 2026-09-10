@@ -1,0 +1,13 @@
+{
+  "cached": 720,
+  "config_hash": "a761704ff22b1f479f781c605137bf02803cda4ad9bd31e1d8a0edb7ba5689e8",
+  "failed": 0,
+  "git_commit": "617efd85e42aadded4877573d44c564e3da67cba",
+  "manifest_hash": "8906e1bce6a3c1879323623fb61e9bfa4368fca3dfb5eda04f1b4587542deef1",
+  "maximum_state_magnitude": 4.535844802856445,
+  "median_nfev": 4457.0,
+  "median_runtime_seconds": 1.3869392709893873,
+  "passed": true,
+  "successful": 720,
+  "total": 720
+}

@@ -25,7 +25,7 @@ def seed_everything(seed: int) -> dict[str, bool]:
     os.environ["PYTHONHASHSEED"] = str(seed)
     torch_seeded = False
     try:
-        import torch  # type: ignore[import-not-found]
+        import torch
 
         torch.manual_seed(seed)
         if torch.cuda.is_available():

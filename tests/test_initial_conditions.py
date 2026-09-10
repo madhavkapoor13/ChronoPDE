@@ -21,7 +21,10 @@ def test_initial_condition_statistics_and_spectral_support(
     config = load_config(ROOT / "configs/project.yaml")
     grid = build_grid(config.pde)
     state = generate_initial_condition(
-        grid, 1729, regime, config.data.initial_conditions  # type: ignore[arg-type]
+        grid,
+        1729,
+        regime,
+        config.data.initial_conditions,  # type: ignore[arg-type]
     )
     assert state.shape == (2, 64, 64)
     assert state.dtype == np.float32
@@ -56,5 +59,8 @@ def test_invalid_seed_and_regime_are_rejected() -> None:
         generate_initial_condition(grid, -1, "train", config.data.initial_conditions)
     with pytest.raises(ValueError, match="regime"):
         generate_initial_condition(
-            grid, 0, "unknown", config.data.initial_conditions  # type: ignore[arg-type]
+            grid,
+            0,
+            "unknown",
+            config.data.initial_conditions,  # type: ignore[arg-type]
         )

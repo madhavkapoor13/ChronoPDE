@@ -24,6 +24,10 @@ pde:
 data:
   output_path: data/chronopde.h5
   sample_path: data/sample.h5
+  manifest_path: reports/dataset/week3/manifest.csv
+  generation_directory: artifacts/dataset/week3
+  report_directory: reports/dataset/week3
+  workers: 4
   train_trajectories: 320
   validation_trajectories: 60
   id_test_trajectories: 100

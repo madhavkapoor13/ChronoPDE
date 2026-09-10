@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol, TypeAlias
+from typing import Literal, Protocol, TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
@@ -65,6 +65,29 @@ class SimulationResult:
 
 
 @dataclass(frozen=True)
+class TrajectoryManifestEntry:
+    """One immutable row in the full-dataset generation manifest."""
+
+    trajectory_id: str
+    split: Literal["train", "validation", "id", "oodparam", "oodic"]
+    index: int
+    params: PhysicalParameters
+    ic_seed: int
+    ic_regime: Literal["train", "ood"]
+    parameter_band: str
+
+
+@dataclass(frozen=True)
+class GenerationDiagnostics:
+    trajectory_id: str
+    success: bool
+    runtime_seconds: float
+    nfev: int
+    max_abs_state: float
+    message: str
+
+
+@dataclass(frozen=True)
 class TrajectorySample:
     """One trajectory using channels-first state layout ``[T, 2, H, W]``."""
 
@@ -104,8 +127,20 @@ class AutoregressiveStep(Protocol):
 @dataclass(frozen=True)
 class IntegrationResult:
     states: object
-    query_times: object
-    function_evaluations: int
+    times: object
+    nfev: int
+
+    @property
+    def query_times(self) -> object:
+        """Backward-compatible alias for the Week 1 contract name."""
+
+        return self.times
+
+    @property
+    def function_evaluations(self) -> int:
+        """Backward-compatible alias for the Week 1 contract name."""
+
+        return self.nfev
 
 
 class FixedStepIntegrator(Protocol):

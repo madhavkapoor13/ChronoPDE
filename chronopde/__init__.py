@@ -2,25 +2,70 @@
 
 from chronopde.config import ProjectConfig, load_config
 from chronopde.contracts import (
+    GenerationDiagnostics,
     GridSpec,
+    IntegrationResult,
     PhysicalParameters,
     SimulationDiagnostics,
     SimulationResult,
+    TrajectoryManifestEntry,
 )
-from chronopde.data import generate_initial_condition, reaction_diffusion_rhs, simulate_trajectory
-from chronopde.numerics import build_grid, build_neumann_laplacian
+from chronopde.data import (
+    build_dataset_manifest,
+    generate_initial_condition,
+    manifest_hash,
+    observation_mask,
+    reaction_diffusion_rhs,
+    simulate_trajectory,
+)
+from chronopde.numerics import (
+    QuinticSpline,
+    build_grid,
+    build_neumann_laplacian,
+    build_quintic_spline,
+    dct2,
+    dct_1d,
+    estimate_knot_derivatives,
+    euler_step,
+    evaluate_quintic_spline,
+    heun_step,
+    idct2,
+    idct_1d,
+    integrate_fixed_step,
+    rk4_step,
+    sample_conditional_path,
+)
 
 __all__ = [
+    "GenerationDiagnostics",
     "GridSpec",
+    "IntegrationResult",
     "PhysicalParameters",
     "ProjectConfig",
+    "QuinticSpline",
     "SimulationDiagnostics",
     "SimulationResult",
+    "TrajectoryManifestEntry",
+    "build_dataset_manifest",
     "build_grid",
     "build_neumann_laplacian",
+    "build_quintic_spline",
+    "dct2",
+    "dct_1d",
+    "estimate_knot_derivatives",
+    "euler_step",
+    "evaluate_quintic_spline",
     "generate_initial_condition",
+    "heun_step",
+    "idct2",
+    "idct_1d",
+    "integrate_fixed_step",
     "load_config",
+    "manifest_hash",
+    "observation_mask",
     "reaction_diffusion_rhs",
+    "rk4_step",
+    "sample_conditional_path",
     "simulate_trajectory",
 ]
 __version__ = "0.1.0"

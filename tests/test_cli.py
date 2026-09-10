@@ -65,16 +65,18 @@ def test_evaluate_dry_run() -> None:
     assert payload["experiment_id"] == "chronopde-full-oodparam-s0"
 
 
-def test_non_dry_run_is_guarded() -> None:
+def test_generation_requires_explicit_mode() -> None:
     result = run_script("scripts/generate_data.py")
     assert result.returncode != 0
-    assert "scheduled for Week 3" in result.stderr
+    assert "choose one of" in result.stderr
 
 
 def test_generate_help_exposes_pilot_mode() -> None:
     result = run_script("scripts/generate_data.py", "--help")
     assert result.returncode == 0
     assert "--pilot" in result.stdout
+    assert "--manifest-only" in result.stdout
+    assert "--full" in result.stdout
 
 
 def test_failed_pilot_returns_nonzero(monkeypatch: pytest.MonkeyPatch) -> None:

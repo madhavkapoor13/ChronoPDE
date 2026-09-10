@@ -46,4 +46,3 @@ def test_horizontal_rows_do_not_wrap() -> None:
     matrix = build_neumann_laplacian(grid)
     assert matrix[grid.width - 1, grid.width] == 0
     assert matrix[grid.width, grid.width - 1] == 0
-

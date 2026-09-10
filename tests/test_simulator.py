@@ -16,9 +16,7 @@ METADATA = ROOT / "tests/fixtures/pdebench_reference.json"
 
 def small_pde() -> PDEConfig:
     base = load_config(ROOT / "configs/project.yaml").pde
-    return base.model_copy(
-        update={"height": 8, "width": 8, "t_end": 1.0, "stored_times": 5}
-    )
+    return base.model_copy(update={"height": 8, "width": 8, "t_end": 1.0, "stored_times": 5})
 
 
 def test_uniform_state_rhs_matches_reaction_terms() -> None:

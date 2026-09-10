@@ -109,6 +109,10 @@ class PilotConfig(StrictModel):
 class DataConfig(StrictModel):
     output_path: Path = Path("data/chronopde.h5")
     sample_path: Path = Path("data/sample.h5")
+    manifest_path: Path = Path("reports/dataset/week3/manifest.csv")
+    generation_directory: Path = Path("artifacts/dataset/week3")
+    report_directory: Path = Path("reports/dataset/week3")
+    workers: int = Field(default=4, ge=1)
     train_trajectories: int = Field(default=320, ge=1)
     validation_trajectories: int = Field(default=60, ge=1)
     id_test_trajectories: int = Field(default=100, ge=1)

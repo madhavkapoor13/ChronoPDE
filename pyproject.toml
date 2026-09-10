@@ -51,5 +51,5 @@ packages = ["chronopde"]
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["scipy", "scipy.*"]
+module = ["h5py", "h5py.*", "scipy", "scipy.*"]
 ignore_missing_imports = true

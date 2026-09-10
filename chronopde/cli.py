@@ -34,17 +34,38 @@ def generate_main(argv: Sequence[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--pilot", action="store_true")
+    mode.add_argument("--manifest-only", action="store_true")
+    mode.add_argument("--full", action="store_true")
     args = parser.parse_args(argv)
     config = load_config(resolve_config_path(args.config))
     if args.pilot:
         from chronopde.data.pilot import run_pilot
 
         seed_everything(config.data.base_seed)
-        report = run_pilot(config, repository_root())
-        print_payload(asdict(report))
-        return 0 if report.passed else 2
+        pilot_report = run_pilot(config, repository_root())
+        print_payload(asdict(pilot_report))
+        return 0 if pilot_report.passed else 2
+    if args.manifest_only:
+        from chronopde.data.generation import prepare_manifest
+
+        entries, digest = prepare_manifest(config, repository_root())
+        print_payload(
+            {
+                "manifest_path": str(repository_root() / config.data.manifest_path),
+                "manifest_hash": digest,
+                "trajectory_count": len(entries),
+            }
+        )
+        return 0
+    if args.full:
+        from chronopde.data.generation import run_full_generation
+
+        seed_everything(config.data.base_seed)
+        generation_report = run_full_generation(config, repository_root())
+        print_payload(asdict(generation_report))
+        return 0 if generation_report.passed else 2
     if not args.dry_run:
-        parser.error("full dataset generation is scheduled for Week 3; use --dry-run or --pilot")
+        parser.error("choose one of --dry-run, --pilot, --manifest-only, or --full")
     seed_everything(config.data.base_seed)
     plan = build_dry_run_plan(config, command="generate_data", seed=config.data.base_seed)
     payload = plan.to_dict()

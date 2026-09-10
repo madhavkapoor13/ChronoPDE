@@ -5,11 +5,11 @@ continuous-time neural operators on coupled two-dimensional reaction-diffusion
 dynamics. The intended model learns a parameter-conditioned velocity field from
 irregularly sampled trajectories and integrates it at arbitrary query times.
 
-The current repository state includes the validated **Week 2 simulator and
-stability pilot**: scientific contracts, a cell-centred Neumann Laplacian,
-adaptive reference integration, deterministic DCT initial conditions, pilot
-reporting, CLI dry-runs, and tests. Neural models remain scheduled for later
-phases.
+The current repository state includes the completed **Week 3 dataset and
+numerical primitives**: a validated 720-trajectory HDF5 dataset pipeline,
+deterministic split manifests and temporal masks, differentiable DCT transforms,
+CFO-style quintic paths, and fixed-step Euler, Heun, and RK4 integration. Neural
+models remain scheduled for later phases.
 
 ## Research question
 
@@ -55,6 +55,27 @@ Raw pilot trajectories are written to `artifacts/pilot/week2/` and remain
 ignored by Git. The publishable summary, diagnostic table, and plots are written
 to `reports/pilot/week2/`. The completed pilot passed 24/24 trajectories without
 changing any parameter range.
+
+Freeze the full dataset manifest, then generate or resume all 720 trajectories:
+
+```bash
+python scripts/generate_data.py --config configs/project.yaml --manifest-only
+python scripts/generate_data.py --config configs/project.yaml --full
+```
+
+The manifest and its SHA-256 file are committed under
+`reports/dataset/week3/`. Raw per-trajectory checkpoints live under the ignored
+`artifacts/dataset/week3/` directory. The validated dataset is written atomically
+to the ignored `data/chronopde.h5`; rerunning `--full` validates and reuses all
+successful checkpoints.
+
+The HDF5 state layout is `[N,T,2,H,W]`. Each split contains parameters, seeds,
+trajectory IDs, diagnostics, and the `full`, `irregular_50`, and `irregular_25`
+masks. Channel and parameter normalizers are fitted from the training split only.
+
+The reusable numerical APIs are available from `chronopde.numerics`: orthonormal
+`dct2`/`idct2`, irregular quintic spline construction and evaluation, conditional
+path sampling, and differentiable fixed-step integration.
 
 The demo becomes active after a trained checkpoint exists:
 

@@ -27,6 +27,19 @@ def test_week2_public_api_is_exported() -> None:
     assert chronopde.PhysicalParameters(0.001, 0.005, 0.005).du == 0.001
 
 
+def test_week3_public_api_is_exported() -> None:
+    for name in (
+        "build_dataset_manifest",
+        "observation_mask",
+        "dct2",
+        "idct2",
+        "build_quintic_spline",
+        "sample_conditional_path",
+        "integrate_fixed_step",
+    ):
+        assert callable(getattr(chronopde, name))
+
+
 def test_endpoint_retention_is_required() -> None:
     sample = valid_sample()
     bad = TrajectorySample(

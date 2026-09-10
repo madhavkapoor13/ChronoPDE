@@ -23,9 +23,7 @@ def test_pilot_manifest_is_frozen_and_complete() -> None:
 def test_configuration_hash_is_stable_and_sensitive() -> None:
     config = load_config(ROOT / "configs/project.yaml")
     assert configuration_hash(config) == configuration_hash(config)
-    changed = config.model_copy(
-        update={"pde": config.pde.model_copy(update={"stored_times": 99})}
-    )
+    changed = config.model_copy(update={"pde": config.pde.model_copy(update={"stored_times": 99})})
     assert configuration_hash(config) != configuration_hash(changed)
 
 
@@ -36,22 +34,16 @@ def test_small_pilot_runs_and_resumes(tmp_path: Path) -> None:
     )
     small_pilot = config.data.pilot.model_copy(update={"workers": 2})
     small_data = config.data.model_copy(update={"pilot": small_pilot})
-    small_config = config.model_copy(
-        update={"pde": small_pde, "data": small_data, "model": None}
-    )
+    small_config = config.model_copy(update={"pde": small_pde, "data": small_data, "model": None})
     output = tmp_path / "raw"
     published = tmp_path / "published"
-    first = run_pilot(
-        small_config, ROOT, output_directory=output, published_directory=published
-    )
+    first = run_pilot(small_config, ROOT, output_directory=output, published_directory=published)
     assert first.passed
     assert first.successful == 24
     assert (output / "manifest.csv").is_file()
     assert (published / "state_panels.png").is_file()
 
-    second = run_pilot(
-        small_config, ROOT, output_directory=output, published_directory=published
-    )
+    second = run_pilot(small_config, ROOT, output_directory=output, published_directory=published)
     summary = json.loads((output / "summary.json").read_text(encoding="utf-8"))
     assert second.passed
     assert summary["cached_trajectories"] == 24

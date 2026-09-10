@@ -20,8 +20,8 @@
 
 ## Week 3 — Dataset and numerical primitives
 
-- [ ] Generate deterministic split manifests and temporal masks.
-- [ ] Generate and validate the HDF5 dataset.
-- [ ] Implement DCT, splines, and fixed-step integrators with reference tests.
+- [x] Generate deterministic split manifests and temporal masks.
+- [x] Generate and validate the HDF5 dataset.
+- [x] Implement DCT, splines, and fixed-step integrators with reference tests.
 
 Later weeks follow the twelve-week project plan, subject to the documented gates.

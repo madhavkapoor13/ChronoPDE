@@ -75,6 +75,19 @@ are fitted only on the training split.
 The HDF5 state layout is `[N,T,2,H,W]`, float32. Each trajectory stores its time
 array, `[Du,Dv,k]`, IC seed, trajectory ID, split, masks, and simulator metadata.
 
+### Week 3 dataset outcome
+
+The frozen 720-row manifest has SHA-256
+`8906e1bce6a3c1879323623fb61e9bfa4368fca3dfb5eda04f1b4587542deef1`.
+All 720 trajectories completed successfully on 10 September 2026 and were
+validated in the HDF5 container. The maximum state magnitude was 4.535845,
+median runtime was 1.387 seconds, and median function evaluations were 4,457.
+The dataset configuration SHA-256 is
+`a761704ff22b1f479f781c605137bf02803cda4ad9bd31e1d8a0edb7ba5689e8`.
+Normalizers use every stored training state, independent of observation mask.
+Raw trajectories and the HDF5 file remain ignored; manifests, diagnostics, and
+QA figures are versioned in `reports/dataset/week3/`.
+
 ## 4. Learning targets and models
 
 The continuous-time path uses a CFO-style quintic polynomial between adjacent

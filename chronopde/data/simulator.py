@@ -68,9 +68,9 @@ def simulate_trajectory(
     grid = build_grid(pde)
     laplacian = build_neumann_laplacian(grid)
     times = np.linspace(pde.t_start, pde.t_end, pde.stored_times, dtype=np.float64)
-    flat_initial = np.concatenate(
-        (initial[0].ravel(), initial[1].ravel())
-    ).astype(np.float64, copy=False)
+    flat_initial = np.concatenate((initial[0].ravel(), initial[1].ravel())).astype(
+        np.float64, copy=False
+    )
 
     started = time.perf_counter()
     solution = solve_ivp(
@@ -87,12 +87,8 @@ def simulate_trajectory(
 
     complete = solution.y.shape == (2 * pde.height * pde.width, pde.stored_times)
     if complete:
-        u = solution.y[: pde.height * pde.width].T.reshape(
-            pde.stored_times, pde.height, pde.width
-        )
-        v = solution.y[pde.height * pde.width :].T.reshape(
-            pde.stored_times, pde.height, pde.width
-        )
+        u = solution.y[: pde.height * pde.width].T.reshape(pde.stored_times, pde.height, pde.width)
+        v = solution.y[pde.height * pde.width :].T.reshape(pde.stored_times, pde.height, pde.width)
         states64 = np.stack((u, v), axis=1)
     else:
         states64 = np.empty((0, 2, pde.height, pde.width), dtype=np.float64)
@@ -108,9 +104,7 @@ def simulate_trajectory(
     if not finite:
         message_parts.append("trajectory contains non-finite values")
     if finite and not below_threshold:
-        message_parts.append(
-            f"trajectory exceeded divergence threshold {divergence_threshold:g}"
-        )
+        message_parts.append(f"trajectory exceeded divergence threshold {divergence_threshold:g}")
 
     diagnostics = SimulationDiagnostics(
         success=success,
