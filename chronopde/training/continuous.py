@@ -1,4 +1,4 @@
-"""Velocity-matching training for the continuous-time FFT baseline."""
+"""Velocity-matching training for continuous-time neural operators."""
 
 from __future__ import annotations
 
@@ -6,12 +6,12 @@ import json
 import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Literal, cast
 
 import numpy as np
 import torch
 import yaml
-from torch import Tensor
+from torch import Tensor, nn
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 
@@ -26,7 +26,11 @@ from chronopde.data.datasets import (
 from chronopde.evaluation.metrics import nrmse, rollout_nrmse
 from chronopde.evaluation.rollout import continuous_rollout, persistence_rollout
 from chronopde.experiment import experiment_id
-from chronopde.models import FFTContinuousVectorField, trainable_parameter_count
+from chronopde.models import (
+    DCTContinuousVectorField,
+    FFTContinuousVectorField,
+    trainable_parameter_count,
+)
 from chronopde.reproducibility import environment_metadata, seed_everything
 from chronopde.training.losses import velocity_loss
 from chronopde.training.trainer import (
@@ -56,17 +60,33 @@ class ContinuousTrainingReport:
     message: str
 
 
-def build_continuous_model(config: ProjectConfig) -> FFTContinuousVectorField:
+ContinuousModelName = Literal["chronopde", "fno_ct"]
+
+
+def build_continuous_model(
+    config: ProjectConfig, model_name: ContinuousModelName = "fno_ct"
+) -> nn.Module:
     if config.model is None:
         raise ValueError("model configuration is required")
-    return FFTContinuousVectorField(
-        width=config.model.fno_width,
-        modes_y=config.model.spectral_modes_y,
-        modes_x=config.model.spectral_modes_x,
-        blocks=config.model.blocks,
-        film_hidden_width=config.model.film_hidden_width,
-        time_range=(config.pde.t_start, config.pde.t_end),
-    )
+    if model_name == "fno_ct":
+        return FFTContinuousVectorField(
+            width=config.model.fno_width,
+            modes_y=config.model.spectral_modes_y,
+            modes_x=config.model.spectral_modes_x,
+            blocks=config.model.blocks,
+            film_hidden_width=config.model.film_hidden_width,
+            time_range=(config.pde.t_start, config.pde.t_end),
+        )
+    if model_name == "chronopde":
+        return DCTContinuousVectorField(
+            width=config.model.width,
+            modes_y=config.model.spectral_modes_y,
+            modes_x=config.model.spectral_modes_x,
+            blocks=config.model.blocks,
+            film_hidden_width=config.model.film_hidden_width,
+            time_range=(config.pde.t_start, config.pde.t_end),
+        )
+    raise ValueError(f"unsupported continuous-time model: {model_name}")
 
 
 def _stats_to(stats: NormalizationStats, device: torch.device) -> NormalizationStats:
@@ -87,7 +107,7 @@ def _denormalize(states: Tensor, stats: NormalizationStats) -> Tensor:
 
 @torch.no_grad()
 def evaluate_continuous_rollouts(
-    model: FFTContinuousVectorField,
+    model: nn.Module,
     dataset: HDF5RolloutDataset,
     device: torch.device,
     batch_size: int,
@@ -131,7 +151,7 @@ def evaluate_continuous_rollouts(
 
 @torch.no_grad()
 def evaluate_velocity(
-    model: FFTContinuousVectorField,
+    model: nn.Module,
     loader: DataLoader[Any],
     device: torch.device,
     spectral_weight: float,
@@ -165,6 +185,7 @@ def train_continuous_time(
     regime: RegimeName,
     seed: int,
     *,
+    model_name: ContinuousModelName = "fno_ct",
     data_path: Path | None = None,
     device_name: str = "auto",
     smoke_overfit: bool = False,
@@ -216,7 +237,7 @@ def train_continuous_time(
         shuffle=False,
         collate_fn=collate_velocity_samples,
     )
-    model = build_continuous_model(config).to(device)
+    model = build_continuous_model(config, model_name).to(device)
     learning_rate = learning_rate_override or (
         config.training.smoke_learning_rate if smoke_overfit else config.training.learning_rate
     )
@@ -236,7 +257,7 @@ def train_continuous_time(
     )
     if integration_steps < 1:
         raise ValueError("steps_per_interval must be positive")
-    run_id = experiment_id("fno_ct", regime, "train", seed)
+    run_id = experiment_id(model_name, regime, "train", seed)
     if smoke_overfit:
         run_id += "-smoke"
     artifact_directory = root / config.project.artifact_root / run_id
@@ -267,7 +288,13 @@ def train_continuous_time(
     persistence_metric = float("inf")
     patience_counter = 0
     if resume and (artifact_directory / "last.pt").is_file():
-        payload = load_checkpoint(artifact_directory / "last.pt", model, optimizer, scheduler)
+        payload = load_checkpoint(
+            artifact_directory / "last.pt",
+            model,
+            optimizer,
+            scheduler,
+            expected_model_name=model_name,
+        )
         start_epoch = int(payload["epoch"]) + 1
         optimizer_steps = int(payload["optimizer_steps"])
         best_metric = float(payload["best_metric"])
@@ -378,7 +405,7 @@ def train_continuous_time(
                 optimizer_steps=optimizer_steps,
                 best_metric=best_metric,
                 patience_counter=patience_counter,
-                model_name="fno_ct",
+                model_name=model_name,
             )
         elif should_rollout and not smoke_overfit:
             patience_counter += config.training.continuous_validation_interval
@@ -391,7 +418,7 @@ def train_continuous_time(
             optimizer_steps=optimizer_steps,
             best_metric=best_metric,
             patience_counter=patience_counter,
-            model_name="fno_ct",
+            model_name=model_name,
         )
         if smoke_overfit:
             loss_ok = (
@@ -441,7 +468,7 @@ def train_continuous_time(
     peak_memory = torch.cuda.max_memory_allocated(device) if device.type == "cuda" else 0
     report = ContinuousTrainingReport(
         passed=passed,
-        model="fno_ct",
+        model=model_name,
         experiment_id=run_id,
         epochs=int(history[-1]["epoch"]) + 1 if history else start_epoch,
         optimizer_steps=optimizer_steps,

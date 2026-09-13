@@ -1,0 +1,13 @@
+{
+  "divergence_fraction": 0.0,
+  "latency_seconds_per_trajectory": 0.3510083371199289,
+  "median_final_nrmse": 0.4218587428331375,
+  "median_relative_l2": 0.27401918172836304,
+  "model": "fno_ct",
+  "nfev_per_trajectory": 800,
+  "output_directory": "/kaggle/working/Chrono_pde/reports/baselines/week5/fno_ct",
+  "parameter_count": 1973657,
+  "peak_device_memory_bytes": 208325120,
+  "persistence_final_nrmse": 1.5210497975349426,
+  "trajectories": 100
+}

@@ -61,6 +61,37 @@ def test_train_help_exposes_week4_options() -> None:
     assert "--steps-per-interval" in result.stdout
 
 
+def test_chronopde_training_is_operational(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+    from chronopde.training.continuous import ContinuousTrainingReport
+
+    report = ContinuousTrainingReport(
+        passed=True,
+        model="chronopde",
+        experiment_id="chronopde-full-train-s0",
+        epochs=1,
+        optimizer_steps=1,
+        initial_loss=1.0,
+        final_loss=0.1,
+        velocity_nrmse=0.1,
+        best_validation_nrmse=0.1,
+        persistence_validation_nrmse=1.0,
+        parameter_count=1,
+        peak_device_memory_bytes=0,
+        artifact_directory="artifacts/runs/chronopde-full-train-s0",
+        message="ok",
+    )
+    def fake_train(*_args: object, **kwargs: object) -> ContinuousTrainingReport:
+        captured.update(kwargs)
+        return report
+
+    monkeypatch.setattr("chronopde.training.train_continuous_time", fake_train)
+    from chronopde.cli import train_main
+
+    assert train_main(["--model", "chronopde", "--max-epochs", "1"]) == 0
+    assert captured["model_name"] == "chronopde"
+
+
 def test_evaluate_dry_run() -> None:
     result = run_script(
         "scripts/evaluate.py",

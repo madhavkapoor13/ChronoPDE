@@ -1,4 +1,5 @@
 from chronopde.training.continuous import (
+    ContinuousModelName,
     ContinuousTrainingReport,
     build_continuous_model,
     evaluate_continuous_rollouts,
@@ -15,6 +16,7 @@ from chronopde.training.trainer import (
 )
 
 __all__ = [
+    "ContinuousModelName",
     "ContinuousTrainingReport",
     "TrainingReport",
     "build_autoregressive_model",

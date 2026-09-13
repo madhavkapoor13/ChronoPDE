@@ -59,7 +59,7 @@ data:
 model:
   name: chronopde
   state_channels: 2
-  width: 32
+  width: 57
   spectral_modes_x: 12
   spectral_modes_y: 12
   blocks: 4

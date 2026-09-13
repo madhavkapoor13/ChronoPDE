@@ -22,7 +22,12 @@ from chronopde.data import (
     reaction_diffusion_rhs,
     simulate_trajectory,
 )
-from chronopde.models import FFTContinuousVectorField, FNOAutoregressive, UNetAutoregressive
+from chronopde.models import (
+    DCTContinuousVectorField,
+    FFTContinuousVectorField,
+    FNOAutoregressive,
+    UNetAutoregressive,
+)
 from chronopde.numerics import (
     QuinticSpline,
     build_grid,
@@ -43,6 +48,7 @@ from chronopde.numerics import (
 
 __all__ = [
     "AutoregressivePair",
+    "DCTContinuousVectorField",
     "FFTContinuousVectorField",
     "FNOAutoregressive",
     "GenerationDiagnostics",

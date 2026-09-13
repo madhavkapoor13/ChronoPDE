@@ -39,6 +39,16 @@
 - [x] Implement the FiLM-conditioned continuous-time FFT vector field.
 - [x] Implement the shared velocity/spectral objective and RK4 training path.
 - [x] Implement frozen ID evaluation and the Colab workflow.
+- [x] Pass the four-trajectory GPU overfit gate.
+- [x] Beat persistence on validation and publish the frozen ID comparison.
+
+## Week 6 — Boundary-aware ChronoPDE
+
+- [x] Implement a real DCT spectral convolution aligned with Neumann boundaries.
+- [x] Add a parameter-matched FiLM-conditioned continuous-time DCT vector field.
+- [x] Make `chronopde` operational in training, resume, and frozen ID evaluation.
+- [x] Add checkpoint model-identity validation and CPU contract tests.
+- [x] Add an unattended, resumable Kaggle workflow.
 - [ ] Pass the four-trajectory GPU overfit gate.
 - [ ] Beat persistence on validation and publish the frozen ID comparison.
 

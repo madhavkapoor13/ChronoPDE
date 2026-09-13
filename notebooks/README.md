@@ -1,5 +1,7 @@
 # Notebooks
 
-The reproducible Colab notebook will be added after the simulator and a small
-validated dataset exist. Notebook outputs must be cleared before commit; reusable
-logic belongs in the `chronopde` package rather than in notebook-only cells.
+`week4_baselines_colab.ipynb` covers the original autoregressive workflows.
+`week6_chronopde_kaggle.ipynb` runs the boundary-aware model in Kaggle with a
+smoke gate, epoch-level checkpointing, a safe wall-time cutoff, resumable ZIP
+packaging, and conditional frozen ID evaluation. Notebook outputs are cleared;
+reusable logic belongs in the `chronopde` package rather than notebook-only cells.

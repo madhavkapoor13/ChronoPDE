@@ -1,4 +1,4 @@
-"""Frozen ID evaluation for the continuous-time FFT baseline."""
+"""Frozen ID evaluation for continuous-time neural operators."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from chronopde.data.datasets import HDF5RolloutDataset, NormalizationStats, coll
 from chronopde.evaluation.metrics import relative_l2_per_trajectory, rollout_nrmse
 from chronopde.evaluation.rollout import continuous_rollout, persistence_rollout
 from chronopde.models import trainable_parameter_count
-from chronopde.training.continuous import build_continuous_model
+from chronopde.training.continuous import ContinuousModelName, build_continuous_model
 from chronopde.training.trainer import load_checkpoint, resolve_device
 
 
@@ -72,6 +72,7 @@ def evaluate_continuous_baseline(
     root: Path,
     checkpoint: Path,
     *,
+    model_name: ContinuousModelName = "fno_ct",
     regime: RegimeName = "full",
     data_path: Path | None = None,
     device_name: str = "auto",
@@ -84,8 +85,8 @@ def evaluate_continuous_baseline(
         torch.cuda.reset_peak_memory_stats(device)
     dataset = HDF5RolloutDataset(data_path or root / config.data.output_path, "id", regime)
     loader = DataLoader(dataset, batch_size=8, shuffle=False, collate_fn=collate_rollouts)
-    model = build_continuous_model(config).to(device)
-    load_checkpoint(checkpoint, model)
+    model = build_continuous_model(config, model_name).to(device)
+    load_checkpoint(checkpoint, model, expected_model_name=model_name)
     model.eval()
     stats = _stats_to(dataset.normalization, device)
     integration_steps = (
@@ -141,7 +142,11 @@ def evaluate_continuous_baseline(
                         "diverged": not np.isfinite(maximum) or maximum > 10,
                     }
                 )
-    output = root / "reports/baselines/week5/fno_ct"
+    output = root / (
+        "reports/baselines/week5/fno_ct"
+        if model_name == "fno_ct"
+        else "reports/baselines/week6/chronopde"
+    )
     output.mkdir(parents=True, exist_ok=True)
     with (output / "metrics.csv").open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
@@ -150,7 +155,7 @@ def evaluate_continuous_baseline(
     error_array = np.stack(time_errors)
     _write_time_errors(output / "nrmse_by_time.csv", error_array)
     figure, axis = plt.subplots(figsize=(7, 4), constrained_layout=True)
-    axis.plot(np.median(error_array, axis=0), label="fno_ct")
+    axis.plot(np.median(error_array, axis=0), label=model_name)
     persistence_curve: list[np.ndarray] = []
     for sample_index in range(len(dataset)):
         sample = dataset[sample_index]
@@ -204,7 +209,7 @@ def evaluate_continuous_baseline(
     plt.close(figure)
     peak_memory = torch.cuda.max_memory_allocated(device) if device.type == "cuda" else 0
     report = ContinuousEvaluationReport(
-        model="fno_ct",
+        model=model_name,
         trajectories=len(rows),
         median_relative_l2=float(np.median([row["relative_l2"] for row in rows])),
         median_final_nrmse=float(np.median([row["final_nrmse"] for row in rows])),

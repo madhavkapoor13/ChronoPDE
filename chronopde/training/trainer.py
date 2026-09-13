@@ -241,8 +241,16 @@ def load_checkpoint(
     model: nn.Module,
     optimizer: AdamW | None = None,
     scheduler: LambdaLR | None = None,
+    *,
+    expected_model_name: str | None = None,
 ) -> dict[str, Any]:
     payload = torch.load(path, map_location="cpu", weights_only=False)
+    checkpoint_model_name = payload.get("model_name")
+    if expected_model_name is not None and checkpoint_model_name != expected_model_name:
+        raise ValueError(
+            "checkpoint model mismatch: "
+            f"expected {expected_model_name!r}, found {checkpoint_model_name!r}"
+        )
     model.load_state_dict(payload["model"])
     if optimizer is not None:
         optimizer.load_state_dict(payload["optimizer"])

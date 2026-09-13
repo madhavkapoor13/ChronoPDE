@@ -106,6 +106,7 @@ Baselines are:
 - `unet_ar`: convolutional residual next-state predictor.
 - `fno_ar`: FFT spectral residual next-state predictor.
 - `fno_ct`: continuous-time FFT velocity model with the ChronoPDE training path.
+- `chronopde`: continuous-time DCT velocity model aligned with Neumann boundaries.
 
 Autoregressive models receive `delta_t` and physical parameters. Trainable
 parameter counts in headline comparisons must be within 10%. Shared data,
@@ -130,6 +131,13 @@ Training exposes one deterministic quintic-path sample per retained interval
 and epoch; the full regime therefore contains 32,000 velocity examples per
 epoch. The common auxiliary loss compares the lowest 12x12 orthonormal DCT
 coefficients, independently of the model's spatial backbone.
+
+The Week 6 `chronopde` model changes only the spatial spectral basis. Each of
+its four blocks applies an orthonormal DCT-II, learns a real channel-mixing
+tensor over the lowest 12x12 cosine modes, zero-fills omitted modes, and applies
+the inverse DCT-III. Width 57 yields 1,951,125 real trainable parameters. The
+training samples, loss, FiLM conditioner, integration method, and validation
+gate remain identical to the Week 5 continuous-time control.
 
 ## 5. Training and evaluation
 

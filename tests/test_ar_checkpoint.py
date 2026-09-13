@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pytest
 import torch
 
 from chronopde.training.trainer import load_checkpoint, save_checkpoint
@@ -30,3 +31,23 @@ def test_checkpoint_restores_training_state(tmp_path: Path) -> None:
     assert payload["optimizer_steps"] == 20
     for name, value in model.state_dict().items():
         torch.testing.assert_close(value, original[name])
+
+
+def test_checkpoint_rejects_wrong_model_identity(tmp_path: Path) -> None:
+    model = torch.nn.Linear(2, 2)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lambda _: 1.0)
+    path = tmp_path / "last.pt"
+    save_checkpoint(
+        path,
+        model,
+        optimizer,
+        scheduler,
+        epoch=0,
+        optimizer_steps=1,
+        best_metric=1.0,
+        patience_counter=0,
+        model_name="fno_ct",
+    )
+    with pytest.raises(ValueError, match="checkpoint model mismatch"):
+        load_checkpoint(path, model, expected_model_name="chronopde")

@@ -131,6 +131,36 @@ Use `--learning-rate 1e-4` only for the predefined validation recovery run and
 `--steps-per-interval 4` only for the integration-resolution diagnostic. The
 Colab notebook verifies the exact dataset hash before launching any GPU job.
 
+The completed seed-0 baseline ran for 150 epochs and achieved median ID final
+nRMSE 0.4219 with no divergent trajectories. Its archived results are the
+locked comparison point for Week 6.
+
+## Week 6 boundary-aware ChronoPDE
+
+`chronopde` replaces periodic FFT modes with a real orthonormal DCT basis that
+matches the simulator's Neumann boundary condition. It retains the same
+continuous-time velocity target, FiLM conditioning, RK4 rollout, optimizer,
+and 12x12 spectral budget as `fno_ct`. Width 57 gives 1,951,125 trainable
+parameters, within 10% of all three controlled baselines.
+
+Run the mandatory four-trajectory gate first:
+
+```bash
+python scripts/train.py --config configs/project.yaml --model chronopde --regime full --seed 0 --smoke-overfit --device cuda
+```
+
+Only after that summary reports `passed: true`, launch the full run and frozen
+ID evaluation:
+
+```bash
+python scripts/train.py --config configs/project.yaml --model chronopde --regime full --seed 0 --device cuda --resume
+python scripts/evaluate.py --config configs/project.yaml --model chronopde --experiment id_rollout --checkpoint artifacts/runs/chronopde-full-train-s0/best.pt --device cuda
+```
+
+For unattended Kaggle execution, use
+`notebooks/week6_chronopde_kaggle.ipynb`. It checkpoints after every epoch,
+stops before Kaggle's wall-time limit, and packages resumable state.
+
 The demo becomes active after a trained checkpoint exists:
 
 ```bash

@@ -105,7 +105,7 @@ def train_main(argv: Sequence[str] | None = None) -> int:
     if not args.dry_run:
         report: Any
         data_path = Path(args.data_path).expanduser().resolve() if args.data_path else None
-        if args.model == "fno_ct":
+        if args.model in {"chronopde", "fno_ct"}:
             from chronopde.training import train_continuous_time
 
             report = train_continuous_time(
@@ -113,6 +113,7 @@ def train_main(argv: Sequence[str] | None = None) -> int:
                 repository_root(),
                 args.regime,
                 args.seed,
+                model_name=args.model,
                 data_path=data_path,
                 device_name=args.device,
                 smoke_overfit=args.smoke_overfit,
@@ -123,9 +124,11 @@ def train_main(argv: Sequence[str] | None = None) -> int:
             )
         else:
             if args.model not in {"unet_ar", "fno_ar"}:
-                parser.error("training supports unet_ar, fno_ar, and fno_ct")
+                parser.error("training supports chronopde, fno_ct, fno_ar, and unet_ar")
             if args.learning_rate is not None or args.steps_per_interval is not None:
-                parser.error("learning-rate and steps-per-interval overrides are for fno_ct")
+                parser.error(
+                    "learning-rate and steps-per-interval overrides are for continuous models"
+                )
             from chronopde.training import train_autoregressive
 
             report = train_autoregressive(
@@ -187,16 +190,17 @@ def evaluate_main(argv: Sequence[str] | None = None) -> int:
     if not args.dry_run:
         report: Any
         if args.experiment != "id_rollout":
-            parser.error("Week 5 evaluation supports id_rollout only")
+            parser.error("current executable evaluation supports id_rollout only")
         data_path = Path(args.data_path).expanduser().resolve() if args.data_path else None
         checkpoint = Path(args.checkpoint).expanduser().resolve()
-        if args.model == "fno_ct":
+        if args.model in {"chronopde", "fno_ct"}:
             from chronopde.evaluation.continuous import evaluate_continuous_baseline
 
             report = evaluate_continuous_baseline(
                 config,
                 repository_root(),
                 checkpoint,
+                model_name=args.model,
                 regime=args.regime,
                 data_path=data_path,
                 device_name=args.device,
@@ -204,9 +208,9 @@ def evaluate_main(argv: Sequence[str] | None = None) -> int:
             )
         else:
             if args.model not in {"unet_ar", "fno_ar"}:
-                parser.error("evaluation supports unet_ar, fno_ar, and fno_ct")
+                parser.error("evaluation supports chronopde, fno_ct, fno_ar, and unet_ar")
             if args.steps_per_interval is not None:
-                parser.error("steps-per-interval applies only to fno_ct")
+                parser.error("steps-per-interval applies only to continuous models")
             from chronopde.evaluation.baselines import evaluate_autoregressive_baseline
 
             report = evaluate_autoregressive_baseline(
