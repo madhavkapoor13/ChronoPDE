@@ -173,11 +173,24 @@ ablation. Both backbones must pass the same protocol. The gate is evaluated at
 the best eligible logged step so a late optimizer spike cannot hide a valid
 memorization result.
 
-The completed mechanics sweep found the same `0.013-0.017` velocity-nRMSE floor
-for both backbones across all three shared protocols. The loss-reduction
-condition passed by wide margins, and DCT was not materially worse than CT-FFT.
-Accordingly, the project is paused at the metric/target contract rather than
-changing the DCT architecture or advancing to four-trajectory and OOD runs.
+The completed mechanics sweep found best logged velocity nRMSE values of
+`0.013-0.017` for both backbones across the three shared protocols. That is a
+shared failure under the tested budgets, not proof of an optimization floor or
+an invalid metric. The loss-reduction condition passed by wide margins, and DCT
+was not materially worse than CT-FFT. Audit the exact checkpoints and metric
+aggregation on CPU before changing the architecture or advancing:
+
+```bash
+python scripts/audit_velocity.py \
+  --config configs/project.yaml \
+  --data-path data/chronopde.h5 \
+  --mechanics-root artifacts/diagnostics/week6/mechanics
+```
+
+The original gate remains authoritative. A pooled score below `0.01` is reported
+as metric sensitivity, not converted into a pass. The historical
+`physical_only` protocol name means normalized spatial MSE with zero spectral
+weight; it is not a physical-unit loss.
 
 Only after `suite_summary.json` selects `proceed_week7` may the exploratory
 checkpoint be treated as satisfying the Week 6 gate. If a DCT architecture

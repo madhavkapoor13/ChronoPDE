@@ -266,6 +266,51 @@ def diagnose_mechanics_main(argv: Sequence[str] | None = None) -> int:
     return 0
 
 
+def audit_velocity_main(argv: Sequence[str] | None = None) -> int:
+    """Replay Week 6 mechanics checkpoints without training."""
+
+    parser = argparse.ArgumentParser(description="Audit Week 6 velocity metrics and checkpoints.")
+    parser.add_argument("--config", default="configs/project.yaml")
+    parser.add_argument("--data-path")
+    parser.add_argument("--mechanics-root", required=True)
+    parser.add_argument(
+        "--output-directory", default="artifacts/diagnostics/week6/velocity_audit"
+    )
+    parser.add_argument("--device", choices=("cpu",), default="cpu")
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args(argv)
+    config = load_config(resolve_config_path(args.config))
+    root = repository_root()
+    data_path = (
+        Path(args.data_path).expanduser().resolve()
+        if args.data_path
+        else (root / config.data.output_path).resolve()
+    )
+    mechanics_root = Path(args.mechanics_root).expanduser().resolve()
+    output = Path(args.output_directory).expanduser()
+    if not output.is_absolute():
+        output = (root / output).resolve()
+    payload: dict[str, object] = {
+        "command": "audit_week6_velocity_checkpoints",
+        "data_path": str(data_path),
+        "mechanics_root": str(mechanics_root),
+        "output_directory": str(output),
+        "device": "cpu",
+        "training": False,
+        "original_gate_changed": False,
+        "trajectory_ids": [f"train-{index:04d}" for index in range(4)],
+        "exact_batch_indices": list(range(16)),
+    }
+    if args.dry_run:
+        print_payload(payload)
+        return 0
+    from chronopde.diagnostics import run_velocity_checkpoint_audit
+
+    report = run_velocity_checkpoint_audit(config, data_path, mechanics_root, output)
+    print_payload(asdict(report))
+    return 0
+
+
 def evaluate_main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Evaluate a ChronoPDE checkpoint.")
     parser.add_argument("--config", default="configs/project.yaml")

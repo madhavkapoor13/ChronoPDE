@@ -16,3 +16,8 @@ write production checkpoints and it never evaluates OOD data.
 `week6_mechanics_diagnostics_kaggle.ipynb` is the short follow-up when the first
 suite routes to `debug_model_loss_optimizer`. It tests only the fixed 16-example
 batch and packages a best-step-aware optimizer/loss diagnosis.
+
+`week6_velocity_audit_kaggle.ipynb` is the CPU-only follow-up for completed
+mechanics checkpoints. It replays `best.pt` and `last.pt`, compares median and
+pooled metrics without changing the gate, records exact sample/checkpoint
+provenance, and always packages its report. No GPU or training is used.

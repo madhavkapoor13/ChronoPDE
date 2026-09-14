@@ -124,7 +124,7 @@ def run_single_batch_mechanics_suite(
     route = (
         f"proceed_fixed_four_with_{selected}"
         if selected is not None
-        else "repair_metric_denominator_or_velocity_target"
+        else "audit_checkpoint_and_metric_contract"
     )
     report = MechanicsSuiteReport(
         passed=passed,

@@ -469,6 +469,8 @@ def train_fixed_diagnostic(
     rows: list[dict[str, float]] = [initial_row]
     best_loss = initial["loss"]
     best_step = 0
+    best_eligible_velocity = float("inf")
+    best_eligible_velocity_step: int | None = None
     last_gradient_norm = float("nan")
     metrics_path = output / "metrics.jsonl"
     metrics_path.unlink(missing_ok=True)
@@ -491,6 +493,7 @@ def train_fixed_diagnostic(
         except StopIteration:
             iterator = iter(training_loader)
             batch = next(iterator)
+        model.train()
         optimizer.zero_grad(set_to_none=True)
         state = cast(Tensor, batch["state"]).to(device)
         target = cast(Tensor, batch["target_velocity"]).to(device)
@@ -554,6 +557,24 @@ def train_fixed_diagnostic(
                     epoch=0,
                     optimizer_steps=step,
                     best_metric=best_loss,
+                    patience_counter=0,
+                    model_name=model_name,
+                )
+            reduction_at_step = initial["loss"] / max(metrics["loss"], 1e-30)
+            if (
+                reduction_at_step >= 1_000
+                and metrics["velocity_nrmse"] < best_eligible_velocity
+            ):
+                best_eligible_velocity = metrics["velocity_nrmse"]
+                best_eligible_velocity_step = step
+                save_checkpoint(
+                    output / "best_velocity.pt",
+                    model,
+                    optimizer,
+                    scheduler,
+                    epoch=0,
+                    optimizer_steps=step,
+                    best_metric=best_eligible_velocity,
                     patience_counter=0,
                     model_name=model_name,
                 )
@@ -621,6 +642,17 @@ def train_fixed_diagnostic(
     )
     _write_json(output / "environment.json", environment_metadata(root, 0))
     _write_json(output / "best_step.json", {"optimizer_steps": best_step})
+    _write_json(
+        output / "checkpoint_selection.json",
+        {
+            "best.pt": {"criterion": "minimum_total_loss", "optimizer_steps": best_step},
+            "best_velocity.pt": {
+                "criterion": "minimum_velocity_nrmse_after_1000x_loss_reduction",
+                "optimizer_steps": best_eligible_velocity_step,
+            },
+            "last.pt": {"criterion": "final_optimizer_step", "optimizer_steps": max_steps},
+        },
+    )
     report = TrainingDiagnosticReport(
         passed=passed,
         model=model_name,

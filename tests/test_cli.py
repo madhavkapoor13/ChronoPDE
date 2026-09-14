@@ -92,6 +92,22 @@ def test_mechanics_diagnostic_dry_run() -> None:
     ]
 
 
+def test_velocity_audit_dry_run() -> None:
+    result = run_script(
+        "scripts/audit_velocity.py",
+        "--mechanics-root",
+        "placeholder",
+        "--dry-run",
+    )
+    assert result.returncode == 0, result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["command"] == "audit_week6_velocity_checkpoints"
+    assert payload["device"] == "cpu"
+    assert payload["training"] is False
+    assert payload["original_gate_changed"] is False
+    assert payload["exact_batch_indices"] == list(range(16))
+
+
 def test_chronopde_training_is_operational(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, object] = {}
     from chronopde.training.continuous import ContinuousTrainingReport
