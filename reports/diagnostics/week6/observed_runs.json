@@ -70,6 +70,15 @@
       "retained_dct_energy_16_modes": 0.93141266622101
     }
   },
-  "decision": "Pause four-trajectory and OOD work pending the shared mechanics sweep.",
+  "mechanics_diagnostic": {
+    "archive_filename": "chronopde_week6_mechanics_diagnostics.zip",
+    "archive_sha256": "77dbb76d3b80c9b99dd117eac3b4cde0ef4dab5643afa60f90f0e956a4e0d86d",
+    "best_shared_protocol": "lr3e-4_physical_only",
+    "chronopde_best_velocity_nrmse": 0.012964465655386448,
+    "fno_ct_best_velocity_nrmse": 0.013581838458776474,
+    "passed": false,
+    "route": "repair_metric_denominator_or_velocity_target"
+  },
+  "decision": "Pause architecture, four-trajectory, Week 7, and OOD work pending correction of the velocity metric/target contract.",
   "recorded_on": "2026-09-14"
 }

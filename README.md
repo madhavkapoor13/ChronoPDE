@@ -173,6 +173,12 @@ ablation. Both backbones must pass the same protocol. The gate is evaluated at
 the best eligible logged step so a late optimizer spike cannot hide a valid
 memorization result.
 
+The completed mechanics sweep found the same `0.013-0.017` velocity-nRMSE floor
+for both backbones across all three shared protocols. The loss-reduction
+condition passed by wide margins, and DCT was not materially worse than CT-FFT.
+Accordingly, the project is paused at the metric/target contract rather than
+changing the DCT architecture or advancing to four-trajectory and OOD runs.
+
 Only after `suite_summary.json` selects `proceed_week7` may the exploratory
 checkpoint be treated as satisfying the Week 6 gate. If a DCT architecture
 variant is selected, it requires a fresh seed-0 full run and frozen ID

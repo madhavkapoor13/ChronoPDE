@@ -23,3 +23,10 @@ but both backbones missed the `0.01` single-batch velocity nRMSE threshold even
 after exceeding the required 1,000x loss reduction. The selected route is a
 small shared optimizer/loss sweep; the four-trajectory comparison remains
 blocked until both models pass one identical protocol.
+
+The mechanics sweep tested all three declared shared protocols. None met the
+absolute `0.01` velocity nRMSE cutoff, despite loss reductions of 8,562x to
+57,589x. DCT and CT-FFT remained closely matched: DCT was 0.6% worse under the
+`3e-4` spectral objective and 4.5% better under physical MSE alone. This is a
+shared gate failure, not evidence for a DCT-specific repair. The frozen outcome
+is recorded in `matched_control_summary.json`.

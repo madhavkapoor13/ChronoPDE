@@ -54,8 +54,10 @@
   exploratory run.
 - [x] Implement the CPU target audit, true fixed-batch memorization controls,
   matched fixed-trajectory comparison, and conditional DCT variants.
-- [ ] Run the isolated diagnostic suite and follow its predeclared route.
+- [x] Run the isolated diagnostic suite and follow its predeclared route.
 - [ ] Keep Week 7 and OOD evaluation paused until the corrected gate passes.
+- [x] Run the shared optimizer/loss mechanics sweep and record the matched-control result.
+- [ ] Repair or formally redefine the velocity metric denominator and target contract.
 - [ ] Beat persistence on validation and publish the frozen ID comparison.
 
 Later weeks follow the twelve-week project plan, subject to the documented gates.
