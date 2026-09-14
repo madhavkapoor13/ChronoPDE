@@ -125,6 +125,20 @@ def test_balanced_batch_diagnostic_dry_run() -> None:
     assert payload["median_velocity_nrmse_threshold"] == 0.01
 
 
+def test_loss_alignment_diagnostic_dry_run() -> None:
+    result = run_script("scripts/diagnose_loss_alignment.py", "--device", "cpu", "--dry-run")
+    assert result.returncode == 0, result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["command"] == "diagnose_week6_loss_alignment"
+    assert payload["objective"] == "full_field_relative"
+    assert payload["relative_loss_epsilon"] == 1e-8
+    assert payload["production_loss_changed"] is False
+    assert payload["interval_indices_per_trajectory"] == [0, 33, 66, 99]
+    assert payload["max_steps"] == 5_000
+    assert payload["minimum_loss_reduction"] == 1_000
+    assert payload["median_velocity_nrmse_threshold"] == 0.01
+
+
 def test_chronopde_training_is_operational(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, object] = {}
     from chronopde.training.continuous import ContinuousTrainingReport

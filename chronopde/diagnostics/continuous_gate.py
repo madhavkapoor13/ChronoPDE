@@ -39,7 +39,7 @@ from chronopde.models import (
 )
 from chronopde.numerics import build_grid, build_neumann_laplacian, dct2
 from chronopde.reproducibility import environment_metadata, seed_everything
-from chronopde.training.losses import velocity_loss
+from chronopde.training.losses import full_field_relative_velocity_loss, velocity_loss
 from chronopde.training.trainer import resolve_device, save_checkpoint
 
 DiagnosticModelName = Literal[
@@ -48,6 +48,7 @@ DiagnosticModelName = Literal[
     "chronopde_residual",
     "chronopde_modes16",
 ]
+DiagnosticObjective = Literal["mse_spectral", "full_field_relative"]
 SMOKE_IDS = tuple(f"train-{index:04d}" for index in range(4))
 
 
@@ -157,6 +158,7 @@ def _velocity_metrics(
     modes_y: int,
     modes_x: int,
     state_std: Tensor,
+    objective: DiagnosticObjective = "mse_spectral",
 ) -> dict[str, float]:
     totals: list[float] = []
     physical: list[float] = []
@@ -178,7 +180,12 @@ def _velocity_metrics(
                 modes_y=modes_y,
                 modes_x=modes_x,
             )
-            totals.append(float(breakdown.total.item()))
+            optimization_loss = (
+                breakdown.total
+                if objective == "mse_spectral"
+                else full_field_relative_velocity_loss(prediction, target)
+            )
+            totals.append(float(optimization_loss.item()))
             scale = state_std.to(device)[None, :, None, None]
             physical.append(float(torch.mean(((prediction - target) * scale).square()).item()))
             spectral.append(float(breakdown.spectral_relative_error.item()))
@@ -193,6 +200,45 @@ def _velocity_metrics(
         "velocity_nrmse_u": float(torch.median(channels[:, 0]).item()),
         "velocity_nrmse_v": float(torch.median(channels[:, 1]).item()),
     }
+
+
+def _per_sample_velocity_metrics(
+    model: nn.Module,
+    batch: dict[str, Any],
+    device: torch.device,
+    state_std: Tensor,
+) -> list[dict[str, float | int | str]]:
+    state = cast(Tensor, batch["state"]).to(device)
+    target = cast(Tensor, batch["target_velocity"]).to(device)
+    time = cast(Tensor, batch["time"]).to(device)
+    parameters = cast(Tensor, batch["parameters"]).to(device)
+    model.eval()
+    with torch.no_grad():
+        prediction = model(state, time, parameters)
+    error = prediction - target
+    normalized_rmse = torch.mean(error.square(), dim=(1, 2, 3)).sqrt()
+    normalized_nrmse = nrmse(prediction, target, (1, 2, 3))
+    channel_nrmse = nrmse(prediction, target, (2, 3))
+    scale = state_std.to(device)[None, :, None, None]
+    physical_rmse = torch.mean((error * scale).square(), dim=(1, 2, 3)).sqrt()
+    target_energy = torch.sum(target.square(), dim=(1, 2, 3))
+    trajectory_ids = cast(list[str], batch["trajectory_id"])
+    intervals = cast(Tensor, batch["interval_index"])
+    return [
+        {
+            "sample_index": index,
+            "trajectory_id": trajectory_ids[index],
+            "interval_index": int(intervals[index]),
+            "time": float(time[index]),
+            "target_energy": float(target_energy[index]),
+            "normalized_rmse": float(normalized_rmse[index]),
+            "physical_rmse": float(physical_rmse[index]),
+            "velocity_nrmse": float(normalized_nrmse[index]),
+            "velocity_nrmse_u": float(channel_nrmse[index, 0]),
+            "velocity_nrmse_v": float(channel_nrmse[index, 1]),
+        }
+        for index in range(len(target))
+    ]
 
 
 def _boundary_normal_mse(states: Tensor, config: ProjectConfig) -> float:
@@ -406,6 +452,7 @@ def train_fixed_diagnostic(
     spectral_weight: float | None = None,
     artifact_label: str | None = None,
     sample_indices: tuple[int, ...] | None = None,
+    objective: DiagnosticObjective = "mse_spectral",
 ) -> TrainingDiagnosticReport:
     if config.training is None or config.model is None or config.evaluation is None:
         raise ValueError("model, training, and evaluation configuration sections are required")
@@ -417,6 +464,8 @@ def train_fixed_diagnostic(
     )
     if effective_spectral_weight < 0:
         raise ValueError("diagnostic spectral weight must be non-negative")
+    if objective not in {"mse_spectral", "full_field_relative"}:
+        raise ValueError(f"unsupported diagnostic objective: {objective}")
     run_name = artifact_label or f"{model_name}-{kind}-s0"
     output = root / "artifacts/diagnostics/week6" / run_name
     output.mkdir(parents=True, exist_ok=True)
@@ -467,6 +516,7 @@ def train_fixed_diagnostic(
         modes,
         modes,
         dataset.normalization.state_std,
+        objective,
     )
     initial_row = {
         "optimizer_steps": 0.0,
@@ -484,8 +534,21 @@ def train_fixed_diagnostic(
     best_eligible_velocity_step: int | None = None
     last_gradient_norm = float("nan")
     metrics_path = output / "metrics.jsonl"
+    per_sample_path = output / "per_sample_metrics.jsonl"
     metrics_path.unlink(missing_ok=True)
+    per_sample_path.unlink(missing_ok=True)
     metrics_path.write_text(json.dumps(initial_row, sort_keys=True) + "\n", encoding="utf-8")
+    if kind == "single_batch":
+        initial_samples = _per_sample_velocity_metrics(
+            model, batch_list[0], device, dataset.normalization.state_std
+        )
+        per_sample_path.write_text(
+            "".join(
+                json.dumps({"optimizer_steps": 0, **row}, sort_keys=True) + "\n"
+                for row in initial_samples
+            ),
+            encoding="utf-8",
+        )
     save_checkpoint(
         output / "best.pt",
         model,
@@ -518,9 +581,14 @@ def train_fixed_diagnostic(
             modes_y=modes,
             modes_x=modes,
         )
-        if not bool(torch.isfinite(breakdown.total)):
+        optimization_loss = (
+            breakdown.total
+            if objective == "mse_spectral"
+            else full_field_relative_velocity_loss(prediction, target)
+        )
+        if not bool(torch.isfinite(optimization_loss)):
             raise FloatingPointError("diagnostic loss became non-finite")
-        breakdown.total.backward()  # type: ignore[no-untyped-call]
+        optimization_loss.backward()  # type: ignore[no-untyped-call]
         gradient_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         last_gradient_norm = float(gradient_norm.item())
         optimizer.step()
@@ -533,6 +601,7 @@ def train_fixed_diagnostic(
                 modes,
                 modes,
                 dataset.normalization.state_std,
+                objective,
             )
             rollout = {
                 "rollout_nrmse": float("nan"),
@@ -556,6 +625,18 @@ def train_fixed_diagnostic(
             rows.append(row)
             with metrics_path.open("a", encoding="utf-8") as stream:
                 stream.write(json.dumps(row, sort_keys=True) + "\n")
+            if kind == "single_batch":
+                sample_metrics = _per_sample_velocity_metrics(
+                    model, batch_list[0], device, dataset.normalization.state_std
+                )
+                with per_sample_path.open("a", encoding="utf-8") as stream:
+                    for sample_row in sample_metrics:
+                        stream.write(
+                            json.dumps(
+                                {"optimizer_steps": step, **sample_row}, sort_keys=True
+                            )
+                            + "\n"
+                        )
             print(json.dumps({"diagnostic": f"{model_name}-{kind}", **row}, sort_keys=True))
             if metrics["loss"] < best_loss:
                 best_loss = metrics["loss"]
@@ -597,6 +678,7 @@ def train_fixed_diagnostic(
         modes,
         modes,
         dataset.normalization.state_std,
+        objective,
     )
     rollout = (
         _rollout_metrics(model, rollout_dataset, config, device)
@@ -644,6 +726,8 @@ def train_fixed_diagnostic(
             "evaluation_interval": evaluation_interval,
             "fixed_samples": True,
             "learning_rate": learning_rate,
+            "objective": objective,
+            "relative_loss_epsilon": 1e-8 if objective == "full_field_relative" else None,
             "max_steps": max_steps,
             "perturbation_gamma": 0.0,
             "spectral_weight": effective_spectral_weight,

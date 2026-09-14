@@ -208,6 +208,20 @@ Both backbones use the identical fixed batch, 5,000-step budget, constant
 learning rate `3e-4`, spectral weight `0.05`, and the unchanged median-nRMSE
 gate. Only a two-model pass routes to the fixed four-trajectory comparison.
 
+The balanced run failed for both backbones despite large reductions in its
+global objective. Run the diagnostic-only loss-alignment test next:
+
+```bash
+python scripts/diagnose_loss_alignment.py \
+  --config configs/project.yaml \
+  --data-path data/chronopde.h5 \
+  --device cuda
+```
+
+This test minimizes mean per-sample full-field relative squared error on the
+same balanced batch. It does not change production training or the `0.01`
+median velocity-nRMSE gate.
+
 Only after `suite_summary.json` selects `proceed_week7` may the exploratory
 checkpoint be treated as satisfying the Week 6 gate. If a DCT architecture
 variant is selected, it requires a fresh seed-0 full run and frozen ID

@@ -26,3 +26,8 @@ provenance, and always packages its report. No GPU or training is used.
 fixed intervals from each of the four training trajectories for both DCT and
 CT-FFT. It packages checkpoints and partial results on failure and does not
 launch the four-trajectory or OOD phases automatically.
+
+`week6_loss_alignment_kaggle.ipynb` is the follow-up after the balanced global
+objective fails. It trains both backbones on the same 16 samples with the fixed
+full-field relative objective, preserves the original gate, and always packages
+the resulting checkpoints and metrics without launching later phases.

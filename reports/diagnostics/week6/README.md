@@ -30,3 +30,9 @@ absolute `0.01` velocity nRMSE cutoff, despite loss reductions of 8,562x to
 `3e-4` spectral objective and 4.5% better under physical MSE alone. This is a
 shared gate failure, not evidence for a DCT-specific repair. The frozen outcome
 is recorded in `matched_control_summary.json`.
+
+The representative balanced-batch follow-up is recorded in
+`balanced_batch_summary.json`. Both backbones again failed the unchanged gate,
+with CT-FFT reaching `0.1205` and ChronoPDE reaching `0.2480`. The next isolated
+test minimizes mean per-sample full-field relative squared velocity error. Production
+loss defaults remain unchanged, and Week 7 and OOD work remain paused.

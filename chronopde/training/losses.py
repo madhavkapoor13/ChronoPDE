@@ -9,6 +9,24 @@ from chronopde.contracts import VelocityLossBreakdown
 from chronopde.numerics import dct2
 
 
+def full_field_relative_velocity_loss(
+    prediction: Tensor,
+    target: Tensor,
+    *,
+    epsilon: float = 1e-8,
+) -> Tensor:
+    """Mean per-sample squared full-field relative velocity error."""
+    if prediction.shape != target.shape or prediction.ndim != 4:
+        raise ValueError("velocity tensors must have the same [B,C,H,W] shape")
+    if epsilon <= 0:
+        raise ValueError("epsilon must be positive")
+    if not bool(torch.isfinite(prediction).all()) or not bool(torch.isfinite(target).all()):
+        raise ValueError("velocity tensors must be finite")
+    numerator = torch.sum(torch.square(prediction - target), dim=(1, 2, 3))
+    denominator = torch.sum(torch.square(target), dim=(1, 2, 3)).clamp_min(epsilon)
+    return torch.mean(numerator / denominator)
+
+
 def velocity_loss(
     prediction: Tensor,
     target: Tensor,

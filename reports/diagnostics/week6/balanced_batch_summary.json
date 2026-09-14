@@ -1,0 +1,42 @@
+{
+  "absolute_gate": {
+    "loss_reduction_minimum": 1000.0,
+    "passed": false,
+    "velocity_nrmse_maximum": 0.01
+  },
+  "archive": {
+    "filename": "chronopde_week6_balanced_batch.zip",
+    "sha256": "fe8a7a813937e800bf14133e140fa0a73bd8e48ef7d44d281be5eb55fc142322",
+    "size_bytes": 141797352
+  },
+  "balanced_samples": {
+    "interval_indices_per_trajectory": [0, 33, 66, 99],
+    "trajectory_ids": ["train-0000", "train-0001", "train-0002", "train-0003"]
+  },
+  "controls": {
+    "chronopde": {
+      "best_step": 5000,
+      "best_velocity_nrmse": 0.24801190197467804,
+      "loss_reduction_at_best_velocity": 17453.735220522907,
+      "passed": false
+    },
+    "fno_ct": {
+      "best_step": 4700,
+      "best_velocity_nrmse": 0.12049449235200882,
+      "loss_reduction_at_best_velocity": 799821.5400086191,
+      "passed": false
+    }
+  },
+  "decision": {
+    "architecture_changes_allowed": false,
+    "four_trajectory_comparison_allowed": false,
+    "next_action": "Test the unchanged gate with a diagnostic-only full-field per-sample relative velocity objective.",
+    "ood_evaluation_allowed": false,
+    "production_loss_changed": false,
+    "route": "run_loss_alignment_diagnostic",
+    "week7_allowed": false
+  },
+  "implementation_commit": "30381c36472d2fc98afdde977084745f5edd3504",
+  "interpretation": "Both backbones failed on a representative balanced batch despite large reductions in the global MSE plus truncated-spectral objective. This supports a controlled loss-to-metric alignment test without weakening the gate.",
+  "recorded_on": "2026-09-14"
+}

@@ -5,7 +5,7 @@ from chronopde.training.continuous import (
     evaluate_continuous_rollouts,
     train_continuous_time,
 )
-from chronopde.training.losses import velocity_loss
+from chronopde.training.losses import full_field_relative_velocity_loss, velocity_loss
 from chronopde.training.trainer import (
     TrainingReport,
     build_autoregressive_model,
@@ -22,6 +22,7 @@ __all__ = [
     "build_autoregressive_model",
     "build_continuous_model",
     "evaluate_continuous_rollouts",
+    "full_field_relative_velocity_loss",
     "load_checkpoint",
     "resolve_device",
     "save_checkpoint",
