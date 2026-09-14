@@ -45,7 +45,8 @@ class CheckpointAudit:
 
 @dataclass(frozen=True)
 class VelocityAuditReport:
-    passed: bool
+    audit_completed: bool
+    original_gate_passed: bool
     route: str
     checkpoint_count: int
     exact_batch_size: int
@@ -363,8 +364,15 @@ def run_velocity_checkpoint_audit(
             item.pooled_nrmse <= 0.01 < item.median_nrmse for item in audits
         )
         report = VelocityAuditReport(
-            passed=replay_passed,
-            route="audit_complete_no_gate_change" if replay_passed else "replay_mismatch",
+            audit_completed=replay_passed,
+            original_gate_passed=False,
+            route=(
+                "review_metric_sensitivity_without_gate_change"
+                if replay_passed and sensitivity
+                else "audit_complete_no_gate_change"
+                if replay_passed
+                else "replay_mismatch"
+            ),
             checkpoint_count=len(audits),
             exact_batch_size=16,
             exact_batch_trajectory_ids=sorted({sample.trajectory_id for sample in exact}),
