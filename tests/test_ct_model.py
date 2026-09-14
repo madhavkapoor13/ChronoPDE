@@ -1,6 +1,9 @@
+from pathlib import Path
+
 import pytest
 import torch
 
+from chronopde.config import load_config
 from chronopde.models import (
     CosineSpectralConv2d,
     DCTContinuousVectorField,
@@ -10,6 +13,7 @@ from chronopde.models import (
     UNetAutoregressive,
     trainable_parameter_count,
 )
+from chronopde.training.continuous import _completed_budget_status, build_continuous_model
 
 
 def test_cosine_spectral_convolution_shape_modes_and_gradients() -> None:
@@ -74,6 +78,25 @@ def test_chronopde_parameter_count_matches_controlled_baselines() -> None:
     )
     assert chronopde_count == 1_951_125
     assert all(abs(chronopde_count - count) / count < 0.10 for count in comparisons)
+
+
+def test_continuous_builder_selects_distinct_model_families() -> None:
+    config = load_config(Path(__file__).resolve().parents[1] / "configs/project.yaml")
+    assert isinstance(build_continuous_model(config, "chronopde"), DCTContinuousVectorField)
+    assert isinstance(build_continuous_model(config, "fno_ct"), FFTContinuousVectorField)
+
+
+def test_smoke_budget_completion_cannot_bypass_strict_gate() -> None:
+    passed, message = _completed_budget_status(
+        smoke_overfit=True,
+        best_metric=0.1,
+        persistence_metric=1.0,
+        history=[{"epoch": 149.0}],
+        minimum_epochs=25,
+        last_stable=True,
+    )
+    assert passed is False
+    assert "not reached" in message
 
 
 def test_film_shapes_and_input_validation() -> None:

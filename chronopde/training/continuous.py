@@ -63,6 +63,28 @@ class ContinuousTrainingReport:
 ContinuousModelName = Literal["chronopde", "fno_ct"]
 
 
+def _completed_budget_status(
+    *,
+    smoke_overfit: bool,
+    best_metric: float,
+    persistence_metric: float,
+    history: list[dict[str, float]],
+    minimum_epochs: int,
+    last_stable: bool,
+) -> tuple[bool, str]:
+    if smoke_overfit:
+        return False, "four-trajectory gate not reached within optimizer-step budget"
+    passed = (
+        math.isfinite(best_metric)
+        and best_metric < persistence_metric
+        and bool(history)
+        and int(history[-1]["epoch"]) + 1 >= minimum_epochs
+        and last_stable
+    )
+    message = "configured epoch budget completed" if passed else "continuous-time gate not reached"
+    return passed, message
+
+
 def build_continuous_model(
     config: ProjectConfig, model_name: ContinuousModelName = "fno_ct"
 ) -> nn.Module:
@@ -243,7 +265,13 @@ def train_continuous_time(
     )
     weight_decay = 0.0 if smoke_overfit else config.training.weight_decay
     optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    epochs = max_epochs or config.training.max_epochs
+    batches_per_epoch = math.ceil(len(velocity_dataset) / batch_size)
+    if max_epochs is not None:
+        epochs = max_epochs
+    elif smoke_overfit:
+        epochs = math.ceil(config.training.smoke_max_steps / max(batches_per_epoch, 1))
+    else:
+        epochs = config.training.max_epochs
     scheduler = _scheduler(
         optimizer,
         0 if smoke_overfit else config.training.warmup_epochs,
@@ -434,6 +462,7 @@ def train_continuous_time(
                 message = "four-trajectory continuous-time overfit gate passed"
                 break
             if optimizer_steps >= config.training.smoke_max_steps:
+                message = "four-trajectory gate not reached within optimizer-step budget"
                 break
         elif (
             patience_counter >= config.training.patience
@@ -447,14 +476,14 @@ def train_continuous_time(
             )
             break
     else:
-        passed = (
-            math.isfinite(best_metric)
-            and best_metric < persistence_metric
-            and bool(history)
-            and int(history[-1]["epoch"]) + 1 >= config.training.minimum_epochs
-            and last_stable
+        passed, message = _completed_budget_status(
+            smoke_overfit=smoke_overfit,
+            best_metric=best_metric,
+            persistence_metric=persistence_metric,
+            history=history,
+            minimum_epochs=config.training.minimum_epochs,
+            last_stable=last_stable,
         )
-        message = "configured epoch budget completed" if passed else "Week 5 gate not reached"
 
     final_loss, final_velocity_nrmse = evaluate_velocity(
         model,
