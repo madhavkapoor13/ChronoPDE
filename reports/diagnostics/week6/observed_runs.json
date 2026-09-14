@@ -44,6 +44,32 @@
       }
     }
   ],
-  "decision": "Pause Week 7 and OOD work pending the fixed-sample diagnostic suite.",
+  "fixed_sample_gate_diagnostic": {
+    "archive_filename": "results (4).zip",
+    "archive_sha256": "e114d2d2bf2a65c8adb7e833c73b407cc0c02ed2003f67fc6c0ea1b827fb7051",
+    "elapsed_seconds": 378.1,
+    "route": "debug_model_loss_optimizer",
+    "single_batch": {
+      "chronopde": {
+        "best_logged_velocity_nrmse": 0.018900256603956223,
+        "best_velocity_step": 1500,
+        "final_loss_reduction": 10740.160584350293,
+        "passed": false
+      },
+      "fno_ct": {
+        "best_logged_velocity_nrmse": 0.017795030027627945,
+        "best_velocity_step": 1750,
+        "final_loss_reduction": 3831.1899084472175,
+        "passed": false
+      }
+    },
+    "target_audit": {
+      "median_spline_pde_nrmse": 0.0015095187118276954,
+      "passed": true,
+      "retained_dct_energy_12_modes": 0.7918431660037842,
+      "retained_dct_energy_16_modes": 0.93141266622101
+    }
+  },
+  "decision": "Pause four-trajectory and OOD work pending the shared mechanics sweep.",
   "recorded_on": "2026-09-14"
 }

@@ -12,3 +12,7 @@ reusable logic belongs in the `chronopde` package rather than notebook-only cell
 the CPU target audit and the controlled fixed-sample DCT/CT-FFT diagnostics,
 then always creates `chronopde_week6_gate_diagnostics.zip`. It does not read or
 write production checkpoints and it never evaluates OOD data.
+
+`week6_mechanics_diagnostics_kaggle.ipynb` is the short follow-up when the first
+suite routes to `debug_model_loss_optimizer`. It tests only the fixed 16-example
+batch and packages a best-step-aware optimizer/loss diagnosis.

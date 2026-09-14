@@ -215,6 +215,57 @@ def diagnose_main(argv: Sequence[str] | None = None) -> int:
     return 0
 
 
+def diagnose_mechanics_main(argv: Sequence[str] | None = None) -> int:
+    """Run the follow-up fixed-batch optimizer and loss diagnostics."""
+
+    parser = argparse.ArgumentParser(description="Diagnose fixed-batch training mechanics.")
+    parser.add_argument("--config", default="configs/project.yaml")
+    parser.add_argument("--data-path")
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda", "mps"), default="auto")
+    parser.add_argument("--max-steps", type=int, default=5_000)
+    parser.add_argument("--evaluation-interval", type=int, default=100)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args(argv)
+    config = load_config(resolve_config_path(args.config))
+    root = repository_root()
+    data_path = (
+        Path(args.data_path).expanduser().resolve()
+        if args.data_path
+        else (root / config.data.output_path).resolve()
+    )
+    payload: dict[str, object] = {
+        "command": "diagnose_continuous_mechanics",
+        "data_path": str(data_path),
+        "device": args.device,
+        "seed": 0,
+        "trajectory_ids": [f"train-{index:04d}" for index in range(4)],
+        "fixed_batch_size": 16,
+        "max_steps": args.max_steps,
+        "evaluation_interval": args.evaluation_interval,
+        "protocols": [
+            {"name": "lr3e-4_spectral", "learning_rate": 3e-4, "spectral_weight": 0.05},
+            {"name": "lr1e-4_spectral", "learning_rate": 1e-4, "spectral_weight": 0.05},
+            {"name": "lr3e-4_physical_only", "learning_rate": 3e-4, "spectral_weight": 0.0},
+        ],
+        "output_directory": str(root / "artifacts/diagnostics/week6/mechanics"),
+    }
+    if args.dry_run:
+        print_payload(payload)
+        return 0
+    from chronopde.diagnostics import run_single_batch_mechanics_suite
+
+    report = run_single_batch_mechanics_suite(
+        config,
+        root,
+        data_path,
+        device_name=args.device,
+        max_steps=args.max_steps,
+        evaluation_interval=args.evaluation_interval,
+    )
+    print_payload(asdict(report))
+    return 0
+
+
 def evaluate_main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Evaluate a ChronoPDE checkpoint.")
     parser.add_argument("--config", default="configs/project.yaml")

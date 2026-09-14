@@ -78,6 +78,20 @@ def test_continuous_diagnostic_dry_run() -> None:
     assert payload["four_trajectory_steps"] == 10_000
 
 
+def test_mechanics_diagnostic_dry_run() -> None:
+    result = run_script("scripts/diagnose_mechanics.py", "--device", "cpu", "--dry-run")
+    assert result.returncode == 0, result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["command"] == "diagnose_continuous_mechanics"
+    assert payload["fixed_batch_size"] == 16
+    assert payload["max_steps"] == 5_000
+    assert [protocol["learning_rate"] for protocol in payload["protocols"]] == [
+        3e-4,
+        1e-4,
+        3e-4,
+    ]
+
+
 def test_chronopde_training_is_operational(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, object] = {}
     from chronopde.training.continuous import ContinuousTrainingReport

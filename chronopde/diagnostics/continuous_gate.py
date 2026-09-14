@@ -402,11 +402,22 @@ def train_fixed_diagnostic(
     max_steps: int,
     evaluation_interval: int,
     rollout_interval: int,
+    learning_rate: float = 1e-3,
+    spectral_weight: float | None = None,
+    artifact_label: str | None = None,
 ) -> TrainingDiagnosticReport:
     if config.training is None or config.model is None or config.evaluation is None:
         raise ValueError("model, training, and evaluation configuration sections are required")
     seed_everything(0)
-    output = root / "artifacts/diagnostics/week6" / f"{model_name}-{kind}-s0"
+    if learning_rate <= 0:
+        raise ValueError("diagnostic learning rate must be positive")
+    effective_spectral_weight = (
+        config.training.spectral_loss_weight if spectral_weight is None else spectral_weight
+    )
+    if effective_spectral_weight < 0:
+        raise ValueError("diagnostic spectral weight must be non-negative")
+    run_name = artifact_label or f"{model_name}-{kind}-s0"
+    output = root / "artifacts/diagnostics/week6" / run_name
     output.mkdir(parents=True, exist_ok=True)
     dataset = HDF5VelocityDataset(
         data_path,
@@ -434,14 +445,14 @@ def train_fixed_diagnostic(
         training_loader = loader
     rollout_dataset = HDF5RolloutDataset(data_path, "train", "full", SMOKE_IDS)
     model = _model_for_diagnostic(config, model_name).to(device)
-    optimizer = AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+    optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=0.0)
     scheduler = LambdaLR(optimizer, lambda _: 1.0)
     modes = 16 if model_name == "chronopde_modes16" else 12
     initial = _velocity_metrics(
         model,
         batch_list,
         device,
-        config.training.spectral_loss_weight,
+        effective_spectral_weight,
         modes,
         modes,
         dataset.normalization.state_std,
@@ -489,7 +500,7 @@ def train_fixed_diagnostic(
         breakdown = velocity_loss(
             prediction,
             target,
-            spectral_weight=config.training.spectral_loss_weight,
+            spectral_weight=effective_spectral_weight,
             modes_y=modes,
             modes_x=modes,
         )
@@ -504,7 +515,7 @@ def train_fixed_diagnostic(
                 model,
                 batch_list,
                 device,
-                config.training.spectral_loss_weight,
+                effective_spectral_weight,
                 modes,
                 modes,
                 dataset.normalization.state_std,
@@ -550,7 +561,7 @@ def train_fixed_diagnostic(
         model,
         batch_list,
         device,
-        config.training.spectral_loss_weight,
+        effective_spectral_weight,
         modes,
         modes,
         dataset.normalization.state_std,
@@ -592,6 +603,21 @@ def train_fixed_diagnostic(
     _plot_training(rows, output / "diagnostic_curves.png")
     (output / "resolved_config.yaml").write_text(
         yaml.safe_dump(config.model_dump(mode="json"), sort_keys=True), encoding="utf-8"
+    )
+    _write_json(
+        output / "diagnostic_protocol.json",
+        {
+            "artifact_label": run_name,
+            "batch_size": 16,
+            "evaluation_interval": evaluation_interval,
+            "fixed_samples": True,
+            "learning_rate": learning_rate,
+            "max_steps": max_steps,
+            "perturbation_gamma": 0.0,
+            "spectral_weight": effective_spectral_weight,
+            "trajectory_ids": list(SMOKE_IDS),
+            "weight_decay": 0.0,
+        },
     )
     _write_json(output / "environment.json", environment_metadata(root, 0))
     _write_json(output / "best_step.json", {"optimizer_steps": best_step})

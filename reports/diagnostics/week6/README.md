@@ -17,3 +17,9 @@ Run `scripts/diagnose_continuous.py` to write the new isolated evidence under
 `artifacts/diagnostics/week6/`. The generated suite chooses one of the declared
 routes: repair targets, debug mechanics, repair the metric, proceed to Week 7,
 or retrain a selected DCT variant.
+
+The first controlled suite completed in 378 seconds. Its target audit passed,
+but both backbones missed the `0.01` single-batch velocity nRMSE threshold even
+after exceeding the required 1,000x loss reduction. The selected route is a
+small shared optimizer/loss sweep; the four-trajectory comparison remains
+blocked until both models pass one identical protocol.

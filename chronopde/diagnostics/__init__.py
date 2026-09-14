@@ -4,5 +4,11 @@ from chronopde.diagnostics.continuous_gate import (
     ContinuousGateSuiteReport,
     run_continuous_gate_suite,
 )
+from chronopde.diagnostics.mechanics import MechanicsSuiteReport, run_single_batch_mechanics_suite
 
-__all__ = ["ContinuousGateSuiteReport", "run_continuous_gate_suite"]
+__all__ = [
+    "ContinuousGateSuiteReport",
+    "MechanicsSuiteReport",
+    "run_continuous_gate_suite",
+    "run_single_batch_mechanics_suite",
+]

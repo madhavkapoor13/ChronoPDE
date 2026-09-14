@@ -160,6 +160,19 @@ the CT-FFT control passes and the DCT candidate fails. Scientific failures
 return normally so their JSON, CSV, plots, configuration, and checkpoints can
 still be archived.
 
+If that suite selects `debug_model_loss_optimizer`, run the shared fixed-batch
+mechanics sweep before any four-trajectory comparison:
+
+```bash
+python scripts/diagnose_mechanics.py --config configs/project.yaml --data-path data/chronopde.h5 --device cuda
+```
+
+This compares constant learning rates `3e-4` and `1e-4` under the original
+spectral objective, followed only if needed by an isolated physical-MSE loss
+ablation. Both backbones must pass the same protocol. The gate is evaluated at
+the best eligible logged step so a late optimizer spike cannot hide a valid
+memorization result.
+
 Only after `suite_summary.json` selects `proceed_week7` may the exploratory
 checkpoint be treated as satisfying the Week 6 gate. If a DCT architecture
 variant is selected, it requires a fresh seed-0 full run and frozen ID
