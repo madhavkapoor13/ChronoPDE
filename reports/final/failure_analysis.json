@@ -1,0 +1,162 @@
+{
+  "archive_hashes_declared": {
+    "balanced_batch": "fe8a7a813937e800bf14133e140fa0a73bd8e48ef7d44d281be5eb55fc142322",
+    "chronopde_exploratory": "fb1ed6edfbb165756849ca212e75d13d08928f17492220a52f3ee890096c65e5",
+    "ct_fft_full": "a0d42826fab76add0113860f09965ef723ea22aa41baf7423dfbc3559a82295d",
+    "initial_gate_and_target_audit": "e114d2d2bf2a65c8adb7e833c73b407cc0c02ed2003f67fc6c0ea1b827fb7051",
+    "loss_alignment": "8ece1bf8587995f0b6a87be609d2f192ad0aa4e9f9d86c3b97c101946e680db8",
+    "mechanics_sweep": "6016fd4eef552b9405066d65b2a254a18abb9cd0220bf48d2330cebb23fb3631",
+    "resampled_smoke": "aecd1bf67621e94dc4368d35b53a4828f592cffae54c217e0b3d78a42d30e236"
+  },
+  "archive_hashes_verified": {
+    "balanced_batch": "fe8a7a813937e800bf14133e140fa0a73bd8e48ef7d44d281be5eb55fc142322",
+    "chronopde_exploratory": "fb1ed6edfbb165756849ca212e75d13d08928f17492220a52f3ee890096c65e5",
+    "ct_fft_full": "a0d42826fab76add0113860f09965ef723ea22aa41baf7423dfbc3559a82295d",
+    "initial_gate_and_target_audit": "e114d2d2bf2a65c8adb7e833c73b407cc0c02ed2003f67fc6c0ea1b827fb7051",
+    "loss_alignment": "8ece1bf8587995f0b6a87be609d2f192ad0aa4e9f9d86c3b97c101946e680db8",
+    "mechanics_sweep": "6016fd4eef552b9405066d65b2a254a18abb9cd0220bf48d2330cebb23fb3631",
+    "resampled_smoke": "aecd1bf67621e94dc4368d35b53a4828f592cffae54c217e0b3d78a42d30e236"
+  },
+  "bootstrap": {
+    "confidence_interval_95": [
+      -0.006683984332630643,
+      -0.0035372189748159146
+    ],
+    "paired_mean_difference_dct_minus_fft": -0.005034161236835644,
+    "resamples": 10000,
+    "seed": 1729
+  },
+  "claim_status": "valid_negative_result",
+  "dct_wins": 16,
+  "decision": "stop_and_document_model_or_conditioning_limitation",
+  "exploratory_id": {
+    "chronopde": {
+      "divergence_fraction": 0.0,
+      "latency_seconds_per_trajectory": 2.2104788417100645,
+      "median_final_nrmse": 0.4667509198188782,
+      "median_relative_l2": 0.2607685625553131,
+      "model": "chronopde",
+      "nfev_per_trajectory": 800,
+      "output_directory": "/kaggle/working/Chrono_pde/reports/baselines/week6/chronopde",
+      "parameter_count": 1951125,
+      "peak_device_memory_bytes": 258557440,
+      "persistence_final_nrmse": 1.5210497975349426,
+      "trajectories": 100
+    },
+    "fno_ar": {
+      "divergence_fraction": 0.0,
+      "latency_seconds_per_trajectory": 0.054872340839998514,
+      "median_final_nrmse": 0.07886433973908424,
+      "median_relative_l2": 0.05480339750647545,
+      "model": "fno_ar",
+      "nfev_per_trajectory": 100,
+      "output_directory": "/content/Chrono_pde/reports/baselines/week4/fno_ar",
+      "parameter_count": 1943263,
+      "peak_device_memory_bytes": 207965696,
+      "persistence_final_nrmse": 1.5210497975349426,
+      "trajectories": 100
+    },
+    "fno_ct": {
+      "divergence_fraction": 0.0,
+      "latency_seconds_per_trajectory": 0.3510083371199289,
+      "median_final_nrmse": 0.4218587428331375,
+      "median_relative_l2": 0.27401918172836304,
+      "model": "fno_ct",
+      "nfev_per_trajectory": 800,
+      "output_directory": "/kaggle/working/Chrono_pde/reports/baselines/week5/fno_ct",
+      "parameter_count": 1973657,
+      "peak_device_memory_bytes": 208325120,
+      "persistence_final_nrmse": 1.5210497975349426,
+      "trajectories": 100
+    },
+    "status": "context_only_not_confirmatory",
+    "unet_ar": {
+      "divergence_fraction": 0.0,
+      "latency_seconds_per_trajectory": 0.05797118333000981,
+      "median_final_nrmse": 0.0418703537434334,
+      "median_relative_l2": 0.032706260681152344,
+      "model": "unet_ar",
+      "nfev_per_trajectory": 100,
+      "output_directory": "/content/Chrono_pde/reports/baselines/week4/unet_ar",
+      "parameter_count": 1929890,
+      "peak_device_memory_bytes": 198583296,
+      "persistence_final_nrmse": 1.5210497975349426,
+      "trajectories": 100
+    }
+  },
+  "gate": {
+    "loss_reduction_threshold": 1000.0,
+    "median_definition": "torch.median lower-middle value for an even sample count",
+    "passed": false,
+    "sample_count": 16,
+    "velocity_nrmse_threshold": 0.01
+  },
+  "imported_evidence_sha256": {
+    "balanced_suite": "825b1337347107c867c8e55bf9956cb3fc78a8e198b3e50d98b4ce29a924b843",
+    "chronopde_id": "c83fb305b027894ff7600db01e08e10cb5d7485454a9d2a5c23042a97c544382",
+    "chronopde_training": "685c54e7ff618a1cc90ca8acf902d6c7351b074ba32deb92f3b395df0066a999",
+    "ct_fft_id": "c7de21c9f1090ca63bf054153fbde0801f68c89571afe0bae03c471305f7738a",
+    "ct_fft_training": "7d85b60a3aa3af04b3abf2ef03ce87ed46e95b19f268ef06dafa3aa8fc50c45d",
+    "initial_gate_suite": "467c2580cae62727e10227c9e2a87389a1987567959771e710fa241318404835",
+    "loss_alignment_chronopde_checkpoint_selection": "922a191599b14e238d6a1eb39d3e7991e308aa104585979b3be75034b5484e87",
+    "loss_alignment_chronopde_metrics": "9b61681fea7807691980bec4be41edc134214c93ff5ce1e60234c4817c53c8ac",
+    "loss_alignment_chronopde_samples": "d9e829011a7821ae05d2f0a2ff0a8d556d0e61cd3e98c4b2405d248f9ea6f536",
+    "loss_alignment_fno_ct_checkpoint_selection": "a0da6e95b8ab3c89f1ad85bfd3a6deeed915f626a6e585af0cddfd3916a417db",
+    "loss_alignment_fno_ct_metrics": "4fc4af5159f655bfc7d3a7ec23b78d225803984f543cabb9a53e5d74c759c9f6",
+    "loss_alignment_fno_ct_samples": "fbfc34c38cb11fd36177b5a7bf46cc8331ae9b954d4f6e414f0bb2672c2bebf6",
+    "loss_alignment_protocol": "60c7746a955d0dbc33624839b6ca8c29ea6f80094bf3bc23bcae851cce25a107",
+    "loss_alignment_suite": "412cbdbdd26483f2d521cb8a5ee231404bd24382d900e985169c61076e755f76",
+    "mechanics_suite": "cf26601369467d4067b0b9793454664c6377028f5c479ce36bfae9e01afac99e",
+    "resampled_smoke": "6c35596574bf1a611fb4ce48de6b34980897d3c860ffe01d58b5618165adc1de",
+    "target_audit": "19121ae6fb6d4d5b3f6700cb949c7a17601c4dd5ec4401006a51293283f63ead",
+    "week4_fno_ar_id": "2a7393d1a0659feaf0be17e101e37be6d6e77b1346dd97401bc4d254b1d4e9a4",
+    "week4_fno_ar_training": "04d25bc2ba6b9a7a253ceae06bae7613764b0e09696d28bfaf24557b0fd6df94",
+    "week4_unet_ar_id": "9a8b84922d1ca507e7f886378cc975e8e152c0a570c3310f899308c014794284",
+    "week4_unet_ar_training": "6c3e2924f6b246aebe06c008190f627f7a1629cccb4d2ca55dc40dd21b4629fc"
+  },
+  "models": {
+    "chronopde": {
+      "best_eligible_step": 5000,
+      "conventional_sample_median_nrmse": 0.015137499198317528,
+      "historical_gate_median_nrmse": 0.014205897226929665,
+      "loss_reduction": 7980.265656466323,
+      "model": "chronopde",
+      "parameter_count": 1951125,
+      "passed": false,
+      "sample_max_nrmse": 0.03192788362503052,
+      "sample_mean_nrmse": 0.01698349925572984,
+      "sample_min_nrmse": 0.00616713659837842,
+      "velocity_nrmse_u": 0.018369531258940697,
+      "velocity_nrmse_v": 0.008643812499940395
+    },
+    "fno_ct": {
+      "best_eligible_step": 4100,
+      "conventional_sample_median_nrmse": 0.019495482556521893,
+      "historical_gate_median_nrmse": 0.018945075571537018,
+      "loss_reduction": 188683.75756073103,
+      "model": "fno_ct",
+      "parameter_count": 1973657,
+      "passed": false,
+      "sample_max_nrmse": 0.037705693393945694,
+      "sample_mean_nrmse": 0.022017660492565483,
+      "sample_min_nrmse": 0.011582043021917343,
+      "velocity_nrmse_u": 0.02938089892268181,
+      "velocity_nrmse_v": 0.0144982123747468
+    }
+  },
+  "objective_alignment_improvement": {
+    "chronopde": {
+      "factor": 17.458376476533267,
+      "fraction": 0.9427209052717959
+    },
+    "fno_ct": {
+      "factor": 6.360201198301849,
+      "fraction": 0.8427722694893682
+    }
+  },
+  "target_audit": {
+    "median_spline_pde_nrmse": 0.0015095187118276954,
+    "passed": true,
+    "samples": 400
+  }
+}

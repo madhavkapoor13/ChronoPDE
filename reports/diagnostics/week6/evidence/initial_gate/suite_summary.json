@@ -1,0 +1,67 @@
+{
+  "four_trajectory": {},
+  "output_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6",
+  "passed": false,
+  "route": "debug_model_loss_optimizer",
+  "single_batch": {
+    "chronopde": {
+      "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/chronopde-single_batch-s0",
+      "boundary_normal_mse": NaN,
+      "final_loss": 4.197404268779792e-05,
+      "final_rollout_nrmse": NaN,
+      "initial_loss": 0.45080795884132385,
+      "kind": "single_batch",
+      "loss_reduction": 10740.160584350293,
+      "model": "chronopde",
+      "optimizer_steps": 2000,
+      "parameter_count": 1951125,
+      "passed": false,
+      "physical_velocity_mse": 2.630643166412483e-06,
+      "rollout_nrmse": NaN,
+      "spectral_relative_error": 0.00024464644957333803,
+      "stable": true,
+      "velocity_nrmse": 0.019053973257541656,
+      "velocity_nrmse_u": 0.02264581248164177,
+      "velocity_nrmse_v": 0.01858832687139511
+    },
+    "fno_ct": {
+      "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/fno_ct-single_batch-s0",
+      "boundary_normal_mse": NaN,
+      "final_loss": 0.00014042211114428937,
+      "final_rollout_nrmse": NaN,
+      "initial_loss": 0.537983775138855,
+      "kind": "single_batch",
+      "loss_reduction": 3831.1899084472175,
+      "model": "fno_ct",
+      "optimizer_steps": 2000,
+      "parameter_count": 1973657,
+      "passed": false,
+      "physical_velocity_mse": 8.094870281638578e-06,
+      "rollout_nrmse": NaN,
+      "spectral_relative_error": 0.000621222541667521,
+      "stable": true,
+      "velocity_nrmse": 0.028404252603650093,
+      "velocity_nrmse_u": 0.02748418226838112,
+      "velocity_nrmse_v": 0.02872282639145851
+    }
+  },
+  "target_audit": {
+    "maximum_time_roundtrip_error": 1.9073486328125e-06,
+    "median_spline_pde_nrmse": 0.0015095187118276954,
+    "output_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/target_audit",
+    "passed": true,
+    "retained_energy": {
+      "12": 0.7918431660037842,
+      "16": 0.93141266622101,
+      "20": 0.9739635812389544,
+      "32": 0.9984024852915715,
+      "8": 0.41685427657301355
+    },
+    "samples": 400,
+    "target_rms_u": 0.0077284579165279865,
+    "target_rms_v": 0.0040918923914432526,
+    "time_max": 49.671295166015625,
+    "time_min": 0.11211130023002625
+  },
+  "variants": {}
+}

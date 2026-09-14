@@ -1,15 +1,21 @@
 # ChronoPDE
 
-ChronoPDE is a from-scratch PyTorch project for studying boundary-aware,
-continuous-time neural operators on coupled two-dimensional reaction-diffusion
-dynamics. The intended model learns a parameter-conditioned velocity field from
-irregularly sampled trajectories and integrates it at arbitrary query times.
+**A controlled study of boundary-aware continuous-time neural operators.**
 
-The current repository state includes the completed Week 3 dataset/numerical
-primitives and the CPU-validated Week 4-5 learning stack: autoregressive U-Net
-and FFT-FNO baselines plus a FiLM-conditioned continuous-time FFT operator.
-GPU training results remain measured release gates and are not represented as
-completed locally.
+ChronoPDE is a from-scratch PyTorch research project on coupled two-dimensional
+reaction-diffusion dynamics. It implements a deterministic 720-trajectory PDE
+dataset, autoregressive U-Net and FFT-FNO baselines, parameter-conditioned
+continuous-time FFT and DCT operators, quintic spline velocity targets, and RK4
+rollout.
+
+The main Week 6 hypothesis was not confirmed. Under a fixed, parameter-matched
+5,000-step diagnostic, an objective aligned to per-sample relative error reduced
+ChronoPDE's velocity nRMSE from `0.2480` to `0.0142`, and DCT was better than FFT
+on all 16 matched samples. Both nevertheless missed the predeclared `0.01` gate,
+so production retraining and OOD experiments were stopped. The failure, evidence
+chain, and claim boundary are preserved instead of weakening the criterion.
+
+![Loss-alignment result](reports/final/objective_alignment.png)
 
 ## Research question
 
@@ -20,8 +26,8 @@ Under matched data, parameter count, and optimization budgets:
 2. Does a cosine spectral backbone aligned with homogeneous Neumann boundaries
    improve boundary-gradient or spectral errors relative to an FFT backbone?
 
-The project does not assume that ChronoPDE will win every metric. Negative and
-conditional results will be retained and analysed.
+The final release answers these questions with a valid negative result. It does
+not claim confirmed sparse-time or OOD performance.
 
 ## Quick start
 
@@ -43,6 +49,34 @@ Run the non-mutating Week 1 interface checks:
 python scripts/generate_data.py --config configs/data.yaml --dry-run
 python scripts/train.py --config configs/project.yaml --model chronopde --regime irreg25 --seed 0 --dry-run
 python scripts/evaluate.py --config configs/project.yaml --experiment id_rollout --checkpoint placeholder.pt --dry-run
+```
+
+Regenerate the frozen Week 6 analysis without a dataset, checkpoint, GPU, or
+Internet connection:
+
+```bash
+python scripts/analyze_week6_failure.py \
+  --evidence-manifest reports/diagnostics/week6/evidence_manifest.json
+```
+
+To additionally verify the original local archives, pass
+`--archive-root /path/to/archive/directory`.
+
+Launch the offline evidence explorer—no dataset, checkpoint, GPU, or Internet
+connection is required:
+
+```bash
+python -m pip install -e ".[demo]"
+streamlit run demo/app.py
+```
+
+The rendered technical report is committed at
+`output/pdf/chronopde_negative_result_report.pdf`. To rebuild it after changing
+the frozen analysis, install the report extra and run:
+
+```bash
+python -m pip install -e ".[report]"
+python scripts/build_negative_result_report.py
 ```
 
 Run or resume the frozen 24-trajectory simulator pilot:
@@ -222,10 +256,13 @@ This test minimizes mean per-sample full-field relative squared error on the
 same balanced batch. It does not change production training or the `0.01`
 median velocity-nRMSE gate.
 
-Only after `suite_summary.json` selects `proceed_week7` may the exploratory
-checkpoint be treated as satisfying the Week 6 gate. If a DCT architecture
-variant is selected, it requires a fresh seed-0 full run and frozen ID
-evaluation. Do not launch OOD evaluation before one of those routes completes.
+The completed alignment suite selected
+`stop_and_document_model_or_conditioning_limitation`. DCT reached `0.01421` and
+CT-FFT `0.01895`; both exceeded the required 1,000x loss reduction but missed
+the unchanged `0.01` velocity-nRMSE threshold. The target audit passed, so this
+is documented as a model/conditioning limitation rather than dataset corruption.
+Week 7, architecture variants, production retraining, and OOD evaluation are
+closed for this release.
 
 Production training remains available without changed defaults:
 
@@ -239,7 +276,7 @@ For unattended Kaggle execution, use
 even when a diagnostic fails. The earlier training notebooks remain available
 for provenance but should not be rerun during this diagnostic phase.
 
-The demo becomes active after a trained checkpoint exists:
+The offline results explorer requires no checkpoint or dataset:
 
 ```bash
 python -m pip install -e ".[demo]"

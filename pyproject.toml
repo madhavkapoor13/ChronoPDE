@@ -29,6 +29,7 @@ dev = [
   "types-PyYAML>=6.0,<7",
 ]
 demo = ["streamlit>=1.36,<2"]
+report = ["reportlab>=4,<5"]
 
 [tool.setuptools.packages.find]
 include = ["chronopde*"]

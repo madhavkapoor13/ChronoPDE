@@ -1,0 +1,15 @@
+{
+  "drive_folder": "https://drive.google.com/drive/folders/1lIlzt0bx8bECT6U9xffEfrufaZWxxTUF",
+  "fno_ar": {
+    "id_summary_file_id": "1BsVyStBU5vX02P9-nXcgqO2g8MsbGosW",
+    "run_folder_id": "1g7TTBUKraTax8muxIcgVqBTDXmw7Ow9Z",
+    "training_summary_file_id": "1QAI3XKrb2r8LoYlQtEBiNOJoWZeM5feG"
+  },
+  "inventory_date": "2026-09-15",
+  "status": "verified_in_google_drive",
+  "unet_ar": {
+    "id_summary_file_id": "1JNHGdN_xoEQv8W063vwOmL-rmkzCMQIk",
+    "run_folder_id": "1Ezj1x66-Av4ttsxDoAIbnbB44nasFqNI",
+    "training_summary_file_id": "1whC_LG6TJKcyWlyJFRJH6rsHjZOeBnPP"
+  }
+}

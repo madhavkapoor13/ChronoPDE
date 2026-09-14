@@ -1,0 +1,70 @@
+{
+  "analysis_inputs": {
+    "balanced_suite": "reports/diagnostics/week6/evidence/balanced/suite_summary.json",
+    "chronopde_id": "reports/diagnostics/week6/evidence/chronopde_exploratory/id_summary.json",
+    "chronopde_training": "reports/diagnostics/week6/evidence/chronopde_exploratory/training_summary.json",
+    "ct_fft_id": "reports/diagnostics/week6/evidence/ct_fft_full/id_summary.json",
+    "ct_fft_training": "reports/diagnostics/week6/evidence/ct_fft_full/training_summary.json",
+    "initial_gate_suite": "reports/diagnostics/week6/evidence/initial_gate/suite_summary.json",
+    "loss_alignment_chronopde_checkpoint_selection": "reports/diagnostics/week6/evidence/loss_alignment/chronopde/checkpoint_selection.json",
+    "loss_alignment_chronopde_metrics": "reports/diagnostics/week6/evidence/loss_alignment/chronopde/metrics.csv",
+    "loss_alignment_chronopde_samples": "reports/diagnostics/week6/evidence/loss_alignment/chronopde/per_sample_metrics.jsonl",
+    "loss_alignment_fno_ct_checkpoint_selection": "reports/diagnostics/week6/evidence/loss_alignment/fno_ct/checkpoint_selection.json",
+    "loss_alignment_fno_ct_metrics": "reports/diagnostics/week6/evidence/loss_alignment/fno_ct/metrics.csv",
+    "loss_alignment_fno_ct_samples": "reports/diagnostics/week6/evidence/loss_alignment/fno_ct/per_sample_metrics.jsonl",
+    "loss_alignment_protocol": "reports/diagnostics/week6/evidence/loss_alignment/protocol.json",
+    "loss_alignment_suite": "reports/diagnostics/week6/evidence/loss_alignment/suite_summary.json",
+    "mechanics_suite": "reports/diagnostics/week6/evidence/mechanics/suite_summary.json",
+    "resampled_smoke": "reports/diagnostics/week6/evidence/resampled_smoke/summary.json",
+    "target_audit": "reports/diagnostics/week6/evidence/initial_gate/target_audit_summary.json",
+    "week4_fno_ar_id": "reports/diagnostics/week6/evidence/week4_ar/fno_ar_id_summary.json",
+    "week4_fno_ar_training": "reports/diagnostics/week6/evidence/week4_ar/fno_ar_training_summary.json",
+    "week4_unet_ar_id": "reports/diagnostics/week6/evidence/week4_ar/unet_ar_id_summary.json",
+    "week4_unet_ar_training": "reports/diagnostics/week6/evidence/week4_ar/unet_ar_training_summary.json"
+  },
+  "archives": [
+    {
+      "filename": "results.zip",
+      "git_commit": "7d15658c9229e989a85feb4807c37e65daa71485",
+      "id": "ct_fft_full",
+      "sha256": "a0d42826fab76add0113860f09965ef723ea22aa41baf7423dfbc3559a82295d"
+    },
+    {
+      "filename": "results (1).zip",
+      "git_commit": "47fb45711391b34f5d06e6e5dc3808f18ef60665",
+      "id": "chronopde_exploratory",
+      "sha256": "fb1ed6edfbb165756849ca212e75d13d08928f17492220a52f3ee890096c65e5"
+    },
+    {
+      "filename": "results (2).zip",
+      "git_commit": "094d0e4ce0063da22dab511b54cc6a7c576a4169",
+      "id": "resampled_smoke",
+      "sha256": "aecd1bf67621e94dc4368d35b53a4828f592cffae54c217e0b3d78a42d30e236"
+    },
+    {
+      "filename": "results (4).zip",
+      "git_commit": "80bafb5f09a2d924535f1530ed104bda8d62a714",
+      "id": "initial_gate_and_target_audit",
+      "sha256": "e114d2d2bf2a65c8adb7e833c73b407cc0c02ed2003f67fc6c0ea1b827fb7051"
+    },
+    {
+      "filename": "results (5).zip",
+      "git_commit": "68a511867ed4f02bbbefe7743ff42799d0fd8a66",
+      "id": "mechanics_sweep",
+      "sha256": "6016fd4eef552b9405066d65b2a254a18abb9cd0220bf48d2330cebb23fb3631"
+    },
+    {
+      "filename": "chronopde_week6_balanced_batch.zip",
+      "git_commit": "30381c36472d2fc98afdde977084745f5edd3504",
+      "id": "balanced_batch",
+      "sha256": "fe8a7a813937e800bf14133e140fa0a73bd8e48ef7d44d281be5eb55fc142322"
+    },
+    {
+      "filename": "results (7).zip",
+      "git_commit": "107bbef5560caa1862ac04012320ace76216331a",
+      "id": "loss_alignment",
+      "sha256": "8ece1bf8587995f0b6a87be609d2f192ad0aa4e9f9d86c3b97c101946e680db8"
+    }
+  ],
+  "schema_version": 1
+}

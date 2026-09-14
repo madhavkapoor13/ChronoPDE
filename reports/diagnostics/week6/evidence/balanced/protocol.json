@@ -1,0 +1,108 @@
+{
+  "batch_size": 16,
+  "evaluation_interval": 100,
+  "fixed_samples": true,
+  "interval_indices_per_trajectory": [
+    0,
+    33,
+    66,
+    99
+  ],
+  "learning_rate": 0.0003,
+  "max_steps": 5000,
+  "median_velocity_nrmse_threshold": 0.01,
+  "minimum_loss_reduction": 1000,
+  "perturbation_gamma": 0.0,
+  "sample_identities": [
+    {
+      "interval_index": 0,
+      "trajectory_id": "train-0000"
+    },
+    {
+      "interval_index": 33,
+      "trajectory_id": "train-0000"
+    },
+    {
+      "interval_index": 66,
+      "trajectory_id": "train-0000"
+    },
+    {
+      "interval_index": 99,
+      "trajectory_id": "train-0000"
+    },
+    {
+      "interval_index": 0,
+      "trajectory_id": "train-0001"
+    },
+    {
+      "interval_index": 33,
+      "trajectory_id": "train-0001"
+    },
+    {
+      "interval_index": 66,
+      "trajectory_id": "train-0001"
+    },
+    {
+      "interval_index": 99,
+      "trajectory_id": "train-0001"
+    },
+    {
+      "interval_index": 0,
+      "trajectory_id": "train-0002"
+    },
+    {
+      "interval_index": 33,
+      "trajectory_id": "train-0002"
+    },
+    {
+      "interval_index": 66,
+      "trajectory_id": "train-0002"
+    },
+    {
+      "interval_index": 99,
+      "trajectory_id": "train-0002"
+    },
+    {
+      "interval_index": 0,
+      "trajectory_id": "train-0003"
+    },
+    {
+      "interval_index": 33,
+      "trajectory_id": "train-0003"
+    },
+    {
+      "interval_index": 66,
+      "trajectory_id": "train-0003"
+    },
+    {
+      "interval_index": 99,
+      "trajectory_id": "train-0003"
+    }
+  ],
+  "sample_indices": [
+    0,
+    33,
+    66,
+    99,
+    100,
+    133,
+    166,
+    199,
+    200,
+    233,
+    266,
+    299,
+    300,
+    333,
+    366,
+    399
+  ],
+  "spectral_weight": 0.05,
+  "trajectory_ids": [
+    "train-0000",
+    "train-0001",
+    "train-0002",
+    "train-0003"
+  ],
+  "weight_decay": 0.0
+}

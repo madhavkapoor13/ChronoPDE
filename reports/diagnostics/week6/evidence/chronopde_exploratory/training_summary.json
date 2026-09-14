@@ -1,0 +1,16 @@
+{
+  "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/runs/chronopde-full-train-s0",
+  "best_validation_nrmse": 0.22545664012432098,
+  "epochs": 85,
+  "experiment_id": "chronopde-full-train-s0",
+  "final_loss": 0.0005512657906898918,
+  "initial_loss": 0.33569530460238456,
+  "message": "early stopping completed",
+  "model": "chronopde",
+  "optimizer_steps": 340000,
+  "parameter_count": 1951125,
+  "passed": true,
+  "peak_device_memory_bytes": 380637184,
+  "persistence_validation_nrmse": 1.5092337131500244,
+  "velocity_nrmse": 0.20488056540489197
+}

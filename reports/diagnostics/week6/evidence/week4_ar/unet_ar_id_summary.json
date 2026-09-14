@@ -1,0 +1,13 @@
+{
+  "divergence_fraction": 0.0,
+  "latency_seconds_per_trajectory": 0.05797118333000981,
+  "median_final_nrmse": 0.041870353743433395,
+  "median_relative_l2": 0.032706260681152344,
+  "model": "unet_ar",
+  "nfev_per_trajectory": 100,
+  "output_directory": "/content/Chrono_pde/reports/baselines/week4/unet_ar",
+  "parameter_count": 1929890,
+  "peak_device_memory_bytes": 198583296,
+  "persistence_final_nrmse": 1.5210497975349426,
+  "trajectories": 100
+}

@@ -1,0 +1,14 @@
+{
+  "best.pt": {
+    "criterion": "minimum_total_loss",
+    "optimizer_steps": 4100
+  },
+  "best_velocity.pt": {
+    "criterion": "minimum_velocity_nrmse_after_1000x_loss_reduction",
+    "optimizer_steps": 4100
+  },
+  "last.pt": {
+    "criterion": "final_optimizer_step",
+    "optimizer_steps": 5000
+  }
+}

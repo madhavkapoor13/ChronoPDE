@@ -1,0 +1,16 @@
+{
+  "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/runs/chronopde-full-train-s0-smoke",
+  "best_validation_nrmse": 0.09883388876914978,
+  "epochs": 400,
+  "experiment_id": "chronopde-full-train-s0-smoke",
+  "final_loss": 8.623780908237677e-05,
+  "initial_loss": 0.2302533933520317,
+  "message": "four-trajectory gate not reached within optimizer-step budget",
+  "model": "chronopde",
+  "optimizer_steps": 10000,
+  "parameter_count": 1951125,
+  "passed": false,
+  "peak_device_memory_bytes": 718149632,
+  "persistence_validation_nrmse": 1.5577493906021118,
+  "velocity_nrmse": 0.2782849073410034
+}

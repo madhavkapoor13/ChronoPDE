@@ -1,0 +1,148 @@
+{
+  "paired_samples": [
+    {
+      "chronopde_nrmse": 0.006453728303313255,
+      "difference_dct_minus_fft": -0.010356873273849487,
+      "fno_ct_nrmse": 0.016810601577162743,
+      "interval_index": 0,
+      "target_energy": 35869.0546875,
+      "time": 0.32471805810928345,
+      "trajectory_id": "train-0000"
+    },
+    {
+      "chronopde_nrmse": 0.01059631910175085,
+      "difference_dct_minus_fft": -0.0018840385600924492,
+      "fno_ct_nrmse": 0.0124803576618433,
+      "interval_index": 33,
+      "target_energy": 6.5190324783325195,
+      "time": 16.66364097595215,
+      "trajectory_id": "train-0000"
+    },
+    {
+      "chronopde_nrmse": 0.02102869749069214,
+      "difference_dct_minus_fft": -0.0047089941799640656,
+      "fno_ct_nrmse": 0.025737691670656204,
+      "interval_index": 66,
+      "target_energy": 0.6286513805389404,
+      "time": 33.3902702331543,
+      "trajectory_id": "train-0000"
+    },
+    {
+      "chronopde_nrmse": 0.024231383576989174,
+      "difference_dct_minus_fft": -0.005088828504085541,
+      "fno_ct_nrmse": 0.029320212081074715,
+      "interval_index": 99,
+      "target_energy": 0.5396677255630493,
+      "time": 49.546146392822266,
+      "trajectory_id": "train-0000"
+    },
+    {
+      "chronopde_nrmse": 0.00616713659837842,
+      "difference_dct_minus_fft": -0.006743526551872492,
+      "fno_ct_nrmse": 0.012910663150250912,
+      "interval_index": 0,
+      "target_energy": 24662.60546875,
+      "time": 0.39432182908058167,
+      "trajectory_id": "train-0001"
+    },
+    {
+      "chronopde_nrmse": 0.011955523863434792,
+      "difference_dct_minus_fft": -0.0013239886611700058,
+      "fno_ct_nrmse": 0.013279512524604797,
+      "interval_index": 33,
+      "target_energy": 6.539709091186523,
+      "time": 16.827564239501953,
+      "trajectory_id": "train-0001"
+    },
+    {
+      "chronopde_nrmse": 0.01606910116970539,
+      "difference_dct_minus_fft": -0.002875974401831627,
+      "fno_ct_nrmse": 0.018945075571537018,
+      "interval_index": 66,
+      "target_energy": 2.606740951538086,
+      "time": 33.334991455078125,
+      "trajectory_id": "train-0001"
+    },
+    {
+      "chronopde_nrmse": 0.03172341734170914,
+      "difference_dct_minus_fft": -0.004061944782733917,
+      "fno_ct_nrmse": 0.035785362124443054,
+      "interval_index": 99,
+      "target_energy": 0.5242698192596436,
+      "time": 49.529090881347656,
+      "trajectory_id": "train-0001"
+    },
+    {
+      "chronopde_nrmse": 0.007952426560223103,
+      "difference_dct_minus_fft": -0.008210019208490849,
+      "fno_ct_nrmse": 0.01616244576871395,
+      "interval_index": 0,
+      "target_energy": 43091.6328125,
+      "time": 0.11211130023002625,
+      "trajectory_id": "train-0002"
+    },
+    {
+      "chronopde_nrmse": 0.010456620715558529,
+      "difference_dct_minus_fft": -0.0011254223063588142,
+      "fno_ct_nrmse": 0.011582043021917343,
+      "interval_index": 33,
+      "target_energy": 10.402345657348633,
+      "time": 16.695676803588867,
+      "trajectory_id": "train-0002"
+    },
+    {
+      "chronopde_nrmse": 0.01879556104540825,
+      "difference_dct_minus_fft": -0.0039017274975776672,
+      "fno_ct_nrmse": 0.022697288542985916,
+      "interval_index": 66,
+      "target_energy": 1.087567687034607,
+      "time": 33.43558883666992,
+      "trajectory_id": "train-0002"
+    },
+    {
+      "chronopde_nrmse": 0.0307422187179327,
+      "difference_dct_minus_fft": -0.004670204594731331,
+      "fno_ct_nrmse": 0.03541242331266403,
+      "interval_index": 99,
+      "target_energy": 0.3988194465637207,
+      "time": 49.553157806396484,
+      "trajectory_id": "train-0002"
+    },
+    {
+      "chronopde_nrmse": 0.006744949147105217,
+      "difference_dct_minus_fft": -0.01330094039440155,
+      "fno_ct_nrmse": 0.020045889541506767,
+      "interval_index": 0,
+      "target_energy": 45389.83984375,
+      "time": 0.2390560507774353,
+      "trajectory_id": "train-0003"
+    },
+    {
+      "chronopde_nrmse": 0.014205897226929665,
+      "difference_dct_minus_fft": -0.001406332477927208,
+      "fno_ct_nrmse": 0.015612229704856873,
+      "interval_index": 33,
+      "target_energy": 3.655487537384033,
+      "time": 16.526153564453125,
+      "trajectory_id": "train-0003"
+    },
+    {
+      "chronopde_nrmse": 0.02268512360751629,
+      "difference_dct_minus_fft": -0.005109954625368118,
+      "fno_ct_nrmse": 0.027795078232884407,
+      "interval_index": 66,
+      "target_energy": 0.9585245847702026,
+      "time": 33.29354476928711,
+      "trajectory_id": "train-0003"
+    },
+    {
+      "chronopde_nrmse": 0.03192788362503052,
+      "difference_dct_minus_fft": -0.005777809768915176,
+      "fno_ct_nrmse": 0.037705693393945694,
+      "interval_index": 99,
+      "target_energy": 0.5103304386138916,
+      "time": 49.671295166015625,
+      "trajectory_id": "train-0003"
+    }
+  ]
+}

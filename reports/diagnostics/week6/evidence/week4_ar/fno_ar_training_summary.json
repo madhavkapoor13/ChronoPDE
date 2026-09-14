@@ -1,0 +1,14 @@
+{
+  "artifact_directory": "/content/Chrono_pde/artifacts/runs/fno_ar-full-train-s0",
+  "best_validation_nrmse": 0.04501841962337494,
+  "epochs": 150,
+  "experiment_id": "fno_ar-full-train-s0",
+  "final_loss": 2.0996994193609454e-06,
+  "initial_loss": 0.02886678311531432,
+  "message": "full-training gate not reached",
+  "model": "fno_ar",
+  "optimizer_steps": 600000,
+  "parameter_count": 1943263,
+  "passed": false,
+  "persistence_validation_nrmse": 1.5092337131500244
+}

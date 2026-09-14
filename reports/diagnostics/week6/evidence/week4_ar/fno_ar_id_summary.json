@@ -1,0 +1,13 @@
+{
+  "divergence_fraction": 0.0,
+  "latency_seconds_per_trajectory": 0.054872340839998514,
+  "median_final_nrmse": 0.07886433973908424,
+  "median_relative_l2": 0.05480339750647545,
+  "model": "fno_ar",
+  "nfev_per_trajectory": 100,
+  "output_directory": "/content/Chrono_pde/reports/baselines/week4/fno_ar",
+  "parameter_count": 1943263,
+  "peak_device_memory_bytes": 207965696,
+  "persistence_final_nrmse": 1.5210497975349426,
+  "trajectories": 100
+}

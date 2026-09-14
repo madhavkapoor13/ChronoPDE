@@ -1,0 +1,93 @@
+{
+  "interval_indices": [
+    0,
+    33,
+    66,
+    99
+  ],
+  "output_directory": "/kaggle/working/Chrono_pde_balanced_8aca7170/artifacts/diagnostics/week6/balanced_batch",
+  "passed": false,
+  "route": "stop_and_redesign_continuous_time_gate",
+  "runs": {
+    "chronopde": {
+      "best_step": 5000,
+      "best_velocity_nrmse": 0.24801190197467804,
+      "loss_reduction_at_best_velocity": 17453.735220522907,
+      "model": "chronopde",
+      "passed": false,
+      "protocol": "balanced_lr3e-4_spectral",
+      "training": {
+        "artifact_directory": "/kaggle/working/Chrono_pde_balanced_8aca7170/artifacts/diagnostics/week6/balanced_batch/lr3e-4_spectral-chronopde-s0",
+        "boundary_normal_mse": NaN,
+        "final_loss": 7.506193651352078e-05,
+        "final_rollout_nrmse": NaN,
+        "initial_loss": 1.310111165046692,
+        "kind": "single_batch",
+        "loss_reduction": 17453.735220522907,
+        "model": "chronopde",
+        "optimizer_steps": 5000,
+        "parameter_count": 1951125,
+        "passed": false,
+        "physical_velocity_mse": 2.342462266824441e-06,
+        "rollout_nrmse": NaN,
+        "spectral_relative_error": 0.0012077752035111189,
+        "stable": true,
+        "velocity_nrmse": 0.24801190197467804,
+        "velocity_nrmse_u": 0.2996772229671478,
+        "velocity_nrmse_v": 0.16891096532344818
+      }
+    },
+    "fno_ct": {
+      "best_step": 4700,
+      "best_velocity_nrmse": 0.12049449235200882,
+      "loss_reduction_at_best_velocity": 799821.5400086191,
+      "model": "fno_ct",
+      "passed": false,
+      "protocol": "balanced_lr3e-4_spectral",
+      "training": {
+        "artifact_directory": "/kaggle/working/Chrono_pde_balanced_8aca7170/artifacts/diagnostics/week6/balanced_batch/lr3e-4_spectral-fno_ct-s0",
+        "boundary_normal_mse": NaN,
+        "final_loss": 0.0005039738607592881,
+        "final_rollout_nrmse": NaN,
+        "initial_loss": 7.791679382324219,
+        "kind": "single_batch",
+        "loss_reduction": 15460.483150029366,
+        "model": "fno_ct",
+        "optimizer_steps": 5000,
+        "parameter_count": 1973657,
+        "passed": false,
+        "physical_velocity_mse": 9.887446594802896e-07,
+        "rollout_nrmse": NaN,
+        "spectral_relative_error": 0.009913463145494461,
+        "stable": true,
+        "velocity_nrmse": 0.1425285041332245,
+        "velocity_nrmse_u": 0.12267398089170456,
+        "velocity_nrmse_v": 0.1533806174993515
+      }
+    }
+  },
+  "sample_indices": [
+    0,
+    33,
+    66,
+    99,
+    100,
+    133,
+    166,
+    199,
+    200,
+    233,
+    266,
+    299,
+    300,
+    333,
+    366,
+    399
+  ],
+  "trajectory_ids": [
+    "train-0000",
+    "train-0001",
+    "train-0002",
+    "train-0003"
+  ]
+}

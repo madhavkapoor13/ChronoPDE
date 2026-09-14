@@ -1,0 +1,13 @@
+{
+  "divergence_fraction": 0.0,
+  "latency_seconds_per_trajectory": 2.2104788417100645,
+  "median_final_nrmse": 0.4667509198188782,
+  "median_relative_l2": 0.2607685625553131,
+  "model": "chronopde",
+  "nfev_per_trajectory": 800,
+  "output_directory": "/kaggle/working/Chrono_pde/reports/baselines/week6/chronopde",
+  "parameter_count": 1951125,
+  "peak_device_memory_bytes": 258557440,
+  "persistence_final_nrmse": 1.5210497975349426,
+  "trajectories": 100
+}

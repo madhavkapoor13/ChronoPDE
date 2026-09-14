@@ -1,0 +1,14 @@
+{
+  "artifact_directory": "/content/Chrono_pde/artifacts/runs/unet_ar-full-train-s0",
+  "best_validation_nrmse": 0.02766052633523941,
+  "epochs": 150,
+  "experiment_id": "unet_ar-full-train-s0",
+  "final_loss": 4.874394843836782e-07,
+  "initial_loss": 0.27912574936077,
+  "message": "full-training gate not reached",
+  "model": "unet_ar",
+  "optimizer_steps": 600000,
+  "parameter_count": 1929890,
+  "passed": false,
+  "persistence_validation_nrmse": 1.5092337131500244
+}

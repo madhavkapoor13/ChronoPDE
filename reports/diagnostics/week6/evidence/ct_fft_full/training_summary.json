@@ -1,0 +1,16 @@
+{
+  "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/runs/fno_ct-full-train-s0",
+  "best_validation_nrmse": 0.2647440731525421,
+  "epochs": 150,
+  "experiment_id": "fno_ct-full-train-s0",
+  "final_loss": 0.009584408703182513,
+  "initial_loss": 4.932868704885244,
+  "message": "configured epoch budget completed",
+  "model": "fno_ct",
+  "optimizer_steps": 600000,
+  "parameter_count": 1973657,
+  "passed": true,
+  "peak_device_memory_bytes": 241376256,
+  "persistence_validation_nrmse": 1.5092337131500244,
+  "velocity_nrmse": 0.5178415179252625
+}

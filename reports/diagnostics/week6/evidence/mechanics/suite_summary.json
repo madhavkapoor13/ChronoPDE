@@ -1,0 +1,182 @@
+{
+  "output_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/mechanics",
+  "passed": false,
+  "route": "repair_metric_denominator_or_velocity_target",
+  "runs": {
+    "lr1e-4_spectral": {
+      "chronopde": {
+        "best_step": 5000,
+        "best_velocity_nrmse": 0.017040032893419266,
+        "loss_reduction_at_best_velocity": 8562.148391416373,
+        "model": "chronopde",
+        "passed": false,
+        "protocol": "lr1e-4_spectral",
+        "training": {
+          "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/mechanics/lr1e-4_spectral-chronopde-s0",
+          "boundary_normal_mse": NaN,
+          "final_loss": 5.265126674203202e-05,
+          "final_rollout_nrmse": NaN,
+          "initial_loss": 0.45080795884132385,
+          "kind": "single_batch",
+          "loss_reduction": 8562.148391416373,
+          "model": "chronopde",
+          "optimizer_steps": 5000,
+          "parameter_count": 1951125,
+          "passed": false,
+          "physical_velocity_mse": 3.274455593782477e-06,
+          "rollout_nrmse": NaN,
+          "spectral_relative_error": 0.0003273905604146421,
+          "stable": true,
+          "velocity_nrmse": 0.017040032893419266,
+          "velocity_nrmse_u": 0.023953581228852272,
+          "velocity_nrmse_v": 0.01392508577555418
+        }
+      },
+      "fno_ct": {
+        "best_step": 4900,
+        "best_velocity_nrmse": 0.015798280015587807,
+        "loss_reduction_at_best_velocity": 10602.36172213841,
+        "model": "fno_ct",
+        "passed": false,
+        "protocol": "lr1e-4_spectral",
+        "training": {
+          "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/mechanics/lr1e-4_spectral-fno_ct-s0",
+          "boundary_normal_mse": NaN,
+          "final_loss": 5.237170262262225e-05,
+          "final_rollout_nrmse": NaN,
+          "initial_loss": 0.537983775138855,
+          "kind": "single_batch",
+          "loss_reduction": 10272.413310971293,
+          "model": "fno_ct",
+          "optimizer_steps": 5000,
+          "parameter_count": 1973657,
+          "passed": false,
+          "physical_velocity_mse": 2.8876193027826957e-06,
+          "rollout_nrmse": NaN,
+          "spectral_relative_error": 0.0003593474975787103,
+          "stable": true,
+          "velocity_nrmse": 0.01647731475532055,
+          "velocity_nrmse_u": 0.019460737705230713,
+          "velocity_nrmse_v": 0.016588445752859116
+        }
+      }
+    },
+    "lr3e-4_physical_only": {
+      "chronopde": {
+        "best_step": 4900,
+        "best_velocity_nrmse": 0.012964465655386448,
+        "loss_reduction_at_best_velocity": 57589.02021375979,
+        "model": "chronopde",
+        "passed": false,
+        "protocol": "lr3e-4_physical_only",
+        "training": {
+          "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/mechanics/lr3e-4_physical_only-chronopde-s0",
+          "boundary_normal_mse": NaN,
+          "final_loss": 1.7207483324455097e-05,
+          "final_rollout_nrmse": NaN,
+          "initial_loss": 0.40014371275901794,
+          "kind": "single_batch",
+          "loss_reduction": 23254.05204317925,
+          "model": "chronopde",
+          "optimizer_steps": 5000,
+          "parameter_count": 1951125,
+          "passed": false,
+          "physical_velocity_mse": 1.699221911621862e-06,
+          "rollout_nrmse": NaN,
+          "spectral_relative_error": 0.000534630729816854,
+          "stable": true,
+          "velocity_nrmse": 0.02420509234070778,
+          "velocity_nrmse_u": 0.020876852795481682,
+          "velocity_nrmse_v": 0.024610690772533417
+        }
+      },
+      "fno_ct": {
+        "best_step": 5000,
+        "best_velocity_nrmse": 0.013581838458776474,
+        "loss_reduction_at_best_velocity": 53476.270456011014,
+        "model": "fno_ct",
+        "passed": false,
+        "protocol": "lr3e-4_physical_only",
+        "training": {
+          "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/mechanics/lr3e-4_physical_only-fno_ct-s0",
+          "boundary_normal_mse": NaN,
+          "final_loss": 7.929285857244395e-06,
+          "final_rollout_nrmse": NaN,
+          "initial_loss": 0.4240286350250244,
+          "kind": "single_batch",
+          "loss_reduction": 53476.270456011014,
+          "model": "fno_ct",
+          "optimizer_steps": 5000,
+          "parameter_count": 1973657,
+          "passed": false,
+          "physical_velocity_mse": 7.395362899842439e-07,
+          "rollout_nrmse": NaN,
+          "spectral_relative_error": 0.00013185602438170463,
+          "stable": true,
+          "velocity_nrmse": 0.013581838458776474,
+          "velocity_nrmse_u": 0.014385067857801914,
+          "velocity_nrmse_v": 0.012670822441577911
+        }
+      }
+    },
+    "lr3e-4_spectral": {
+      "chronopde": {
+        "best_step": 4800,
+        "best_velocity_nrmse": 0.014416737481951714,
+        "loss_reduction_at_best_velocity": 36259.35108254591,
+        "model": "chronopde",
+        "passed": false,
+        "protocol": "lr3e-4_spectral",
+        "training": {
+          "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/mechanics/lr3e-4_spectral-chronopde-s0",
+          "boundary_normal_mse": NaN,
+          "final_loss": 2.2808042558608577e-05,
+          "final_rollout_nrmse": NaN,
+          "initial_loss": 0.45080795884132385,
+          "kind": "single_batch",
+          "loss_reduction": 19765.306807145214,
+          "model": "chronopde",
+          "optimizer_steps": 5000,
+          "parameter_count": 1951125,
+          "passed": false,
+          "physical_velocity_mse": 1.3949739923191373e-06,
+          "rollout_nrmse": NaN,
+          "spectral_relative_error": 0.00014364566595759243,
+          "stable": true,
+          "velocity_nrmse": 0.014600591734051704,
+          "velocity_nrmse_u": 0.01789276860654354,
+          "velocity_nrmse_v": 0.01391182653605938
+        }
+      },
+      "fno_ct": {
+        "best_step": 4900,
+        "best_velocity_nrmse": 0.014325536787509918,
+        "loss_reduction_at_best_velocity": 43731.24276415853,
+        "model": "fno_ct",
+        "passed": false,
+        "protocol": "lr3e-4_spectral",
+        "training": {
+          "artifact_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/mechanics/lr3e-4_spectral-fno_ct-s0",
+          "boundary_normal_mse": NaN,
+          "final_loss": 1.2053358659613878e-05,
+          "final_rollout_nrmse": NaN,
+          "initial_loss": 0.537983775138855,
+          "kind": "single_batch",
+          "loss_reduction": 44633.515879804494,
+          "model": "fno_ct",
+          "optimizer_steps": 5000,
+          "parameter_count": 1973657,
+          "passed": false,
+          "physical_velocity_mse": 7.909671921879635e-07,
+          "rollout_nrmse": NaN,
+          "spectral_relative_error": 8.660892490297556e-05,
+          "stable": true,
+          "velocity_nrmse": 0.014691601507365704,
+          "velocity_nrmse_u": 0.01550336368381977,
+          "velocity_nrmse_v": 0.013530410826206207
+        }
+      }
+    }
+  },
+  "selected_protocol": null
+}

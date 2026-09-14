@@ -1,0 +1,6 @@
+# Preserve byte-exact imported evidence and generated binary reports.
+reports/diagnostics/week6/evidence/loss_alignment/*/metrics.csv binary
+output/pdf/*.pdf binary
+
+# Keep regenerated tabular outputs portable and reviewable.
+reports/final/*.csv text eol=lf

@@ -1,0 +1,18 @@
+{
+  "maximum_time_roundtrip_error": 1.9073486328125e-06,
+  "median_spline_pde_nrmse": 0.0015095187118276954,
+  "output_directory": "/kaggle/working/Chrono_pde/artifacts/diagnostics/week6/target_audit",
+  "passed": true,
+  "retained_energy": {
+    "12": 0.7918431660037842,
+    "16": 0.93141266622101,
+    "20": 0.9739635812389544,
+    "32": 0.9984024852915715,
+    "8": 0.41685427657301355
+  },
+  "samples": 400,
+  "target_rms_u": 0.0077284579165279865,
+  "target_rms_v": 0.0040918923914432526,
+  "time_max": 49.671295166015625,
+  "time_min": 0.11211130023002625
+}

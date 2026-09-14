@@ -1,0 +1,82 @@
+{
+  "budget_complete": true,
+  "output_directory": "/kaggle/working/Chrono_pde_alignment_4dd5bd30/artifacts/diagnostics/week6/loss_alignment",
+  "passed": false,
+  "route": "stop_and_document_model_or_conditioning_limitation",
+  "runs": {
+    "chronopde": {
+      "best_step": 5000,
+      "best_velocity_nrmse": 0.014205897226929665,
+      "loss_reduction_at_best_velocity": 7980.265656466323,
+      "model": "chronopde",
+      "passed": false,
+      "protocol": "full_field_relative",
+      "training": {
+        "artifact_directory": "/kaggle/working/Chrono_pde_alignment_4dd5bd30/artifacts/diagnostics/week6/loss_alignment/full-relative-chronopde-s0",
+        "boundary_normal_mse": NaN,
+        "final_loss": 0.0003675689804367721,
+        "final_rollout_nrmse": NaN,
+        "initial_loss": 2.933298110961914,
+        "kind": "single_batch",
+        "loss_reduction": 7980.265656466323,
+        "model": "chronopde",
+        "optimizer_steps": 5000,
+        "parameter_count": 1951125,
+        "passed": false,
+        "physical_velocity_mse": 7.305093276954722e-06,
+        "rollout_nrmse": NaN,
+        "spectral_relative_error": 0.00036080984864383936,
+        "stable": true,
+        "velocity_nrmse": 0.014205897226929665,
+        "velocity_nrmse_u": 0.018369531258940697,
+        "velocity_nrmse_v": 0.008643812499940395
+      }
+    },
+    "fno_ct": {
+      "best_step": 4100,
+      "best_velocity_nrmse": 0.018945075571537018,
+      "loss_reduction_at_best_velocity": 188683.75756073103,
+      "model": "fno_ct",
+      "passed": false,
+      "protocol": "full_field_relative",
+      "training": {
+        "artifact_directory": "/kaggle/working/Chrono_pde_alignment_4dd5bd30/artifacts/diagnostics/week6/loss_alignment/full-relative-fno_ct-s0",
+        "boundary_normal_mse": NaN,
+        "final_loss": 0.0013782365713268518,
+        "final_rollout_nrmse": NaN,
+        "initial_loss": 105.5147705078125,
+        "kind": "single_batch",
+        "loss_reduction": 76557.80778348642,
+        "model": "fno_ct",
+        "optimizer_steps": 5000,
+        "parameter_count": 1973657,
+        "passed": false,
+        "physical_velocity_mse": 1.8573693523649126e-05,
+        "rollout_nrmse": NaN,
+        "spectral_relative_error": 0.00161731184925884,
+        "stable": true,
+        "velocity_nrmse": 0.024484943598508835,
+        "velocity_nrmse_u": 0.012106718495488167,
+        "velocity_nrmse_v": 0.03460486978292465
+      }
+    }
+  },
+  "sample_indices": [
+    0,
+    33,
+    66,
+    99,
+    100,
+    133,
+    166,
+    199,
+    200,
+    233,
+    266,
+    299,
+    300,
+    333,
+    366,
+    399
+  ]
+}
