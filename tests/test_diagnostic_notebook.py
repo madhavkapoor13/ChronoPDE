@@ -7,6 +7,7 @@ NOTEBOOK = ROOT / "notebooks/week6_gate_diagnostics_kaggle.ipynb"
 MECHANICS_NOTEBOOK = ROOT / "notebooks/week6_mechanics_diagnostics_kaggle.ipynb"
 AUDIT_NOTEBOOK = ROOT / "notebooks/week6_velocity_audit_kaggle.ipynb"
 BALANCED_NOTEBOOK = ROOT / "notebooks/week6_balanced_batch_kaggle.ipynb"
+ALIGNMENT_NOTEBOOK = ROOT / "notebooks/week6_loss_alignment_kaggle.ipynb"
 
 
 def test_diagnostic_notebook_is_clean_syntactic_and_packages_failures() -> None:
@@ -82,5 +83,27 @@ def test_balanced_batch_notebook_is_pinned_bounded_and_packages_failures() -> No
     assert "'100'" in combined
     assert "CUDA_VISIBLE_DEVICES" in combined
     assert "chronopde_week6_balanced_batch" in combined
+    assert "make_archive" in combined
+    assert "ood" not in combined.lower()
+
+
+def test_loss_alignment_notebook_is_pinned_bounded_and_packages_failures() -> None:
+    payload = json.loads(ALIGNMENT_NOTEBOOK.read_text(encoding="utf-8"))
+    code = []
+    for cell in payload["cells"]:
+        assert cell.get("outputs", []) == []
+        assert cell.get("execution_count") is None
+        if cell["cell_type"] == "code":
+            source = "".join(cell["source"])
+            ast.parse(source)
+            code.append(source)
+    combined = "\n".join(code)
+    assert "107bbef5560caa1862ac04012320ace76216331a" in combined
+    assert "scripts/diagnose_loss_alignment.py" in combined
+    assert "subprocess.run(command, cwd=REPOSITORY, check=False)" in combined
+    assert "'5000'" in combined
+    assert "'100'" in combined
+    assert "CUDA_VISIBLE_DEVICES" in combined
+    assert "chronopde_week6_loss_alignment" in combined
     assert "make_archive" in combined
     assert "ood" not in combined.lower()
