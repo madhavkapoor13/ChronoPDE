@@ -2,6 +2,10 @@
   "archives": [
     {
       "label": "exploratory pending gate diagnosis",
+      "drive_archive": {
+        "format": "four lossless numbered parts plus checksum manifest",
+        "url": "https://drive.google.com/drive/folders/1WH-fK-KudZXTsy_iutgVzzHLp2jUZb_T"
+      },
       "original_filename": "results (1).zip",
       "sha256": "fb1ed6edfbb165756849ca212e75d13d08928f17492220a52f3ee890096c65e5",
       "training": {
@@ -22,6 +26,10 @@
     },
     {
       "label": "failed resampled smoke diagnostic",
+      "drive_archive": {
+        "format": "zip",
+        "url": "https://drive.google.com/file/d/1BhKOdKZ37LPiBHEoWnfeVY63XV4DQMQg/view?usp=drivesdk"
+      },
       "original_filename": "results (2).zip",
       "sha256": "aecd1bf67621e94dc4368d35b53a4828f592cffae54c217e0b3d78a42d30e236",
       "training": {
