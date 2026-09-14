@@ -6,6 +6,7 @@ import pytest
 import torch
 
 from chronopde.data.datasets import HDF5VelocityDataset, collate_velocity_samples
+from chronopde.diagnostics.balanced_batch import resolve_balanced_sample_indices
 from chronopde.numerics import build_quintic_spline, evaluate_quintic_spline
 
 
@@ -119,3 +120,27 @@ def test_fixed_velocity_samples_do_not_change_between_epochs(velocity_hdf5: Path
     assert resampled[0].time.item() != resampled_before.time.item()
     fixed.close()
     resampled.close()
+
+
+def test_balanced_sample_indices_are_resolved_by_identity(velocity_hdf5: Path) -> None:
+    dataset = HDF5VelocityDataset(
+        velocity_hdf5,
+        "train",
+        "full",
+        seed=0,
+        gamma=0.0,
+        resample_each_epoch=False,
+    )
+    indices = resolve_balanced_sample_indices(
+        dataset,
+        trajectory_ids=("train-0000", "train-0001"),
+        intervals=(0, 3),
+    )
+    assert indices == (0, 3, 4, 7)
+    assert [dataset.sample_identity(index) for index in indices] == [
+        ("train-0000", 0),
+        ("train-0000", 3),
+        ("train-0001", 0),
+        ("train-0001", 3),
+    ]
+    dataset.close()

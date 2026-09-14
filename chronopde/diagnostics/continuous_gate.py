@@ -405,6 +405,7 @@ def train_fixed_diagnostic(
     learning_rate: float = 1e-3,
     spectral_weight: float | None = None,
     artifact_label: str | None = None,
+    sample_indices: tuple[int, ...] | None = None,
 ) -> TrainingDiagnosticReport:
     if config.training is None or config.model is None or config.evaluation is None:
         raise ValueError("model, training, and evaluation configuration sections are required")
@@ -428,8 +429,18 @@ def train_fixed_diagnostic(
         trajectory_ids=SMOKE_IDS,
         resample_each_epoch=False,
     )
+    if sample_indices is not None and kind != "single_batch":
+        raise ValueError("explicit sample indices apply only to single-batch diagnostics")
+    selected_indices = sample_indices or tuple(range(16))
+    if len(selected_indices) != 16 or len(set(selected_indices)) != 16:
+        raise ValueError("single-batch diagnostics require 16 unique sample indices")
+    if min(selected_indices) < 0 or max(selected_indices) >= len(dataset):
+        raise IndexError("diagnostic sample index is outside the fixed dataset")
+    selected_identities = [dataset.sample_identity(index) for index in selected_indices]
     if kind == "single_batch":
-        batch_list = [collate_velocity_samples([dataset[index] for index in range(16)])]
+        batch_list = [
+            collate_velocity_samples([dataset[index] for index in selected_indices])
+        ]
         training_loader: list[dict[str, Any]] | DataLoader[Any] = batch_list
     else:
         loader = DataLoader(
@@ -637,6 +648,17 @@ def train_fixed_diagnostic(
             "perturbation_gamma": 0.0,
             "spectral_weight": effective_spectral_weight,
             "trajectory_ids": list(SMOKE_IDS),
+            "sample_indices": list(selected_indices) if kind == "single_batch" else None,
+            "sample_trajectory_ids": (
+                [identity[0] for identity in selected_identities]
+                if kind == "single_batch"
+                else None
+            ),
+            "sample_interval_indices": (
+                [identity[1] for identity in selected_identities]
+                if kind == "single_batch"
+                else None
+            ),
             "weight_decay": 0.0,
         },
     )

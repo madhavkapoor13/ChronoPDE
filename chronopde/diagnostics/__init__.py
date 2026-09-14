@@ -1,5 +1,6 @@
 """Scientific diagnostics that do not alter production training runs."""
 
+from chronopde.diagnostics.balanced_batch import BalancedBatchReport, run_balanced_batch_suite
 from chronopde.diagnostics.continuous_gate import (
     ContinuousGateSuiteReport,
     run_continuous_gate_suite,
@@ -8,9 +9,11 @@ from chronopde.diagnostics.mechanics import MechanicsSuiteReport, run_single_bat
 from chronopde.diagnostics.velocity_audit import VelocityAuditReport, run_velocity_checkpoint_audit
 
 __all__ = [
+    "BalancedBatchReport",
     "ContinuousGateSuiteReport",
     "MechanicsSuiteReport",
     "VelocityAuditReport",
+    "run_balanced_batch_suite",
     "run_continuous_gate_suite",
     "run_single_batch_mechanics_suite",
     "run_velocity_checkpoint_audit",

@@ -21,3 +21,8 @@ batch and packages a best-step-aware optimizer/loss diagnosis.
 mechanics checkpoints. It replays `best.pt` and `last.pt`, compares median and
 pooled metrics without changing the gate, records exact sample/checkpoint
 provenance, and always packages its report. No GPU or training is used.
+
+`week6_balanced_batch_kaggle.ipynb` runs the next bounded GPU decision: four
+fixed intervals from each of the four training trajectories for both DCT and
+CT-FFT. It packages checkpoints and partial results on failure and does not
+launch the four-trajectory or OOD phases automatically.

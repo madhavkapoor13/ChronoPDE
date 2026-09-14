@@ -192,6 +192,22 @@ as metric sensitivity, not converted into a pass. The historical
 `physical_only` protocol name means normalized spatial MSE with zero spectral
 weight; it is not a physical-unit loss.
 
+The audit also showed that the original 16-example batch consists only of the
+first trajectory and is not representative of the fixed four-trajectory target
+distribution. Run the predeclared balanced follow-up on intervals `0`, `33`,
+`66`, and `99` from each of `train-0000` through `train-0003`:
+
+```bash
+python scripts/diagnose_balanced_batch.py \
+  --config configs/project.yaml \
+  --data-path data/chronopde.h5 \
+  --device cuda
+```
+
+Both backbones use the identical fixed batch, 5,000-step budget, constant
+learning rate `3e-4`, spectral weight `0.05`, and the unchanged median-nRMSE
+gate. Only a two-model pass routes to the fixed four-trajectory comparison.
+
 Only after `suite_summary.json` selects `proceed_week7` may the exploratory
 checkpoint be treated as satisfying the Week 6 gate. If a DCT architecture
 variant is selected, it requires a fresh seed-0 full run and frozen ID

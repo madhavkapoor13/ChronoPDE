@@ -311,6 +311,61 @@ def audit_velocity_main(argv: Sequence[str] | None = None) -> int:
     return 0
 
 
+def diagnose_balanced_batch_main(argv: Sequence[str] | None = None) -> int:
+    """Run the balanced Week 6 single-batch comparison."""
+
+    parser = argparse.ArgumentParser(description="Run the balanced Week 6 memorization gate.")
+    parser.add_argument("--config", default="configs/project.yaml")
+    parser.add_argument("--data-path")
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda", "mps"), default="auto")
+    parser.add_argument("--max-steps", type=int, default=5_000)
+    parser.add_argument("--evaluation-interval", type=int, default=100)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args(argv)
+    config = load_config(resolve_config_path(args.config))
+    root = repository_root()
+    data_path = (
+        Path(args.data_path).expanduser().resolve()
+        if args.data_path
+        else (root / config.data.output_path).resolve()
+    )
+    payload: dict[str, object] = {
+        "command": "diagnose_balanced_week6_batch",
+        "data_path": str(data_path),
+        "device": args.device,
+        "training": True,
+        "seed": 0,
+        "trajectory_ids": [f"train-{index:04d}" for index in range(4)],
+        "interval_indices_per_trajectory": [0, 33, 66, 99],
+        "batch_size": 16,
+        "fixed_samples": True,
+        "perturbation_gamma": 0.0,
+        "learning_rate": 3e-4,
+        "spectral_weight": config.training.spectral_loss_weight if config.training else None,
+        "weight_decay": 0.0,
+        "max_steps": args.max_steps,
+        "evaluation_interval": args.evaluation_interval,
+        "minimum_loss_reduction": 1_000,
+        "median_velocity_nrmse_threshold": 0.01,
+        "output_directory": str(root / "artifacts/diagnostics/week6/balanced_batch"),
+    }
+    if args.dry_run:
+        print_payload(payload)
+        return 0
+    from chronopde.diagnostics import run_balanced_batch_suite
+
+    report = run_balanced_batch_suite(
+        config,
+        root,
+        data_path,
+        device_name=args.device,
+        max_steps=args.max_steps,
+        evaluation_interval=args.evaluation_interval,
+    )
+    print_payload(asdict(report))
+    return 0
+
+
 def evaluate_main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Evaluate a ChronoPDE checkpoint.")
     parser.add_argument("--config", default="configs/project.yaml")

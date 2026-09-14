@@ -108,6 +108,23 @@ def test_velocity_audit_dry_run() -> None:
     assert payload["exact_batch_indices"] == list(range(16))
 
 
+def test_balanced_batch_diagnostic_dry_run() -> None:
+    result = run_script("scripts/diagnose_balanced_batch.py", "--device", "cpu", "--dry-run")
+    assert result.returncode == 0, result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["command"] == "diagnose_balanced_week6_batch"
+    assert payload["trajectory_ids"] == [
+        "train-0000",
+        "train-0001",
+        "train-0002",
+        "train-0003",
+    ]
+    assert payload["interval_indices_per_trajectory"] == [0, 33, 66, 99]
+    assert payload["batch_size"] == 16
+    assert payload["max_steps"] == 5_000
+    assert payload["median_velocity_nrmse_threshold"] == 0.01
+
+
 def test_chronopde_training_is_operational(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, object] = {}
     from chronopde.training.continuous import ContinuousTrainingReport

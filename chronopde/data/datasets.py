@@ -250,6 +250,11 @@ class HDF5VelocityDataset(_LazyHDF5Dataset):
     def __len__(self) -> int:
         return len(self._samples)
 
+    def sample_identity(self, index: int) -> tuple[str, int]:
+        """Return the trajectory and interval without loading spline tensors."""
+        _, interval, trajectory_id = self._samples[index]
+        return trajectory_id, interval
+
     def _generator(self, trajectory_id: str, interval: int) -> torch.Generator:
         sample_epoch = self.epoch if self.resample_each_epoch else 0
         payload = f"{self.seed}:{sample_epoch}:{trajectory_id}:{interval}".encode()
