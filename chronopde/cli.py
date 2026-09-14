@@ -158,6 +158,63 @@ def train_main(argv: Sequence[str] | None = None) -> int:
     return 0
 
 
+def diagnose_main(argv: Sequence[str] | None = None) -> int:
+    """Run the isolated Week 6 continuous-time diagnostic suite."""
+
+    parser = argparse.ArgumentParser(description="Diagnose the Week 6 continuous-time gate.")
+    parser.add_argument("--config", default="configs/project.yaml")
+    parser.add_argument("--data-path")
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda", "mps"), default="auto")
+    parser.add_argument("--single-batch-steps", type=int, default=2_000)
+    parser.add_argument("--four-trajectory-steps", type=int, default=10_000)
+    parser.add_argument("--evaluation-interval", type=int, default=250)
+    parser.add_argument("--rollout-interval", type=int, default=1_000)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args(argv)
+    config = load_config(resolve_config_path(args.config))
+    root = repository_root()
+    data_path = (
+        Path(args.data_path).expanduser().resolve()
+        if args.data_path
+        else (root / config.data.output_path).resolve()
+    )
+    payload: dict[str, object] = {
+        "command": "diagnose_continuous_gate",
+        "data_path": str(data_path),
+        "device": args.device,
+        "seed": 0,
+        "trajectory_ids": [f"train-{index:04d}" for index in range(4)],
+        "fixed_samples": True,
+        "perturbation_gamma": 0.0,
+        "batch_size": 16,
+        "learning_rate": 1e-3,
+        "weight_decay": 0.0,
+        "single_batch_steps": args.single_batch_steps,
+        "four_trajectory_steps": args.four_trajectory_steps,
+        "evaluation_interval": args.evaluation_interval,
+        "rollout_interval": args.rollout_interval,
+        "output_directory": str(root / "artifacts/diagnostics/week6"),
+    }
+    if args.dry_run:
+        print_payload(payload)
+        return 0
+    from chronopde.diagnostics import run_continuous_gate_suite
+
+    report = run_continuous_gate_suite(
+        config,
+        root,
+        data_path,
+        device_name=args.device,
+        single_batch_steps=args.single_batch_steps,
+        four_trajectory_steps=args.four_trajectory_steps,
+        evaluation_interval=args.evaluation_interval,
+        rollout_interval=args.rollout_interval,
+    )
+    print_payload(asdict(report))
+    # Scientific gate failures are valid diagnostic outcomes and must remain packageable.
+    return 0
+
+
 def evaluate_main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Evaluate a ChronoPDE checkpoint.")
     parser.add_argument("--config", default="configs/project.yaml")

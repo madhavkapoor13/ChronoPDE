@@ -1,0 +1,41 @@
+{
+  "archives": [
+    {
+      "label": "exploratory pending gate diagnosis",
+      "original_filename": "results (1).zip",
+      "sha256": "fb1ed6edfbb165756849ca212e75d13d08928f17492220a52f3ee890096c65e5",
+      "training": {
+        "best_validation_nrmse": 0.22545664012432098,
+        "epochs": 85,
+        "final_loss": 0.0005512657906898918,
+        "initial_loss": 0.33569530460238456,
+        "optimizer_steps": 340000,
+        "passed_under_original_training_rule": true,
+        "velocity_nrmse": 0.20488056540489197
+      },
+      "frozen_id_evaluation": {
+        "divergence_fraction": 0.0,
+        "median_final_nrmse": 0.4667509198188782,
+        "median_relative_l2": 0.2607685625553131,
+        "trajectories": 100
+      }
+    },
+    {
+      "label": "failed resampled smoke diagnostic",
+      "original_filename": "results (2).zip",
+      "sha256": "aecd1bf67621e94dc4368d35b53a4828f592cffae54c217e0b3d78a42d30e236",
+      "training": {
+        "best_rollout_nrmse": 0.09883388876914978,
+        "epochs": 400,
+        "final_loss": 0.00008623780908237677,
+        "initial_loss": 0.2302533933520317,
+        "loss_reduction": 2669.979682143765,
+        "optimizer_steps": 10000,
+        "passed": false,
+        "velocity_nrmse": 0.2782849073410034
+      }
+    }
+  ],
+  "decision": "Pause Week 7 and OOD work pending the fixed-sample diagnostic suite.",
+  "recorded_on": "2026-09-14"
+}

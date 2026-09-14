@@ -98,3 +98,24 @@ def test_velocity_perturbation_is_deterministic(velocity_hdf5: Path) -> None:
     assert torch.isfinite(first.target_velocity).all()
     perturbed.close()
     baseline.close()
+
+
+def test_fixed_velocity_samples_do_not_change_between_epochs(velocity_hdf5: Path) -> None:
+    fixed = HDF5VelocityDataset(
+        velocity_hdf5,
+        "train",
+        "full",
+        seed=9,
+        gamma=0.0,
+        resample_each_epoch=False,
+    )
+    resampled = HDF5VelocityDataset(velocity_hdf5, "train", "full", seed=9, gamma=0.0)
+    fixed_before = fixed[0]
+    resampled_before = resampled[0]
+    fixed.set_epoch(3)
+    resampled.set_epoch(3)
+    torch.testing.assert_close(fixed[0].state, fixed_before.state)
+    assert fixed[0].time.item() == fixed_before.time.item()
+    assert resampled[0].time.item() != resampled_before.time.item()
+    fixed.close()
+    resampled.close()

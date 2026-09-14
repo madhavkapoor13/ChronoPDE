@@ -51,16 +51,26 @@ class CosineSpectralConv2d(nn.Module):
 
 
 class ContinuousCosineBlock(nn.Module):
-    def __init__(self, width: int, modes_y: int, modes_x: int, activation: bool) -> None:
+    def __init__(
+        self,
+        width: int,
+        modes_y: int,
+        modes_x: int,
+        activation: bool,
+        residual_skip: bool = False,
+    ) -> None:
         super().__init__()
         self.spectral = CosineSpectralConv2d(width, modes_y, modes_x)
         self.pointwise = nn.Conv2d(width, width, 1)
         self.activation = activation
+        self.residual_skip = residual_skip
 
     def forward(self, x: Tensor, scale: Tensor, bias: Tensor) -> Tensor:
         if scale.shape != x.shape[:2] or bias.shape != x.shape[:2]:
             raise ValueError("FiLM scale and bias must have shape [B,C]")
         result = self.spectral(x) + self.pointwise(x)
+        if self.residual_skip:
+            result = result + x
         result = result * (1 + scale[:, :, None, None]) + bias[:, :, None, None]
         return functional.gelu(result) if self.activation else result
 
@@ -76,6 +86,7 @@ class DCTContinuousVectorField(nn.Module):
         blocks: int = 4,
         film_hidden_width: int = 128,
         time_range: tuple[float, float] = (0.0, 50.0),
+        residual_skip: bool = False,
     ) -> None:
         super().__init__()
         if blocks < 1 or time_range[1] <= time_range[0]:
@@ -84,7 +95,13 @@ class DCTContinuousVectorField(nn.Module):
         self.lift = nn.Conv2d(2, width, 1)
         self.conditioner = FiLMConditioner(width, blocks, film_hidden_width)
         self.blocks = nn.ModuleList(
-            ContinuousCosineBlock(width, modes_y, modes_x, activation=index < blocks - 1)
+            ContinuousCosineBlock(
+                width,
+                modes_y,
+                modes_x,
+                activation=index < blocks - 1,
+                residual_skip=residual_skip,
+            )
             for index in range(blocks)
         )
         self.projection = nn.Sequential(

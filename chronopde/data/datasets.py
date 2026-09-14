@@ -204,6 +204,8 @@ class HDF5VelocityDataset(_LazyHDF5Dataset):
         seed: int,
         gamma: float = 1e-5,
         trajectory_ids: tuple[str, ...] | None = None,
+        *,
+        resample_each_epoch: bool = True,
     ) -> None:
         super().__init__(path)
         if split not in {"train", "validation"}:
@@ -215,6 +217,7 @@ class HDF5VelocityDataset(_LazyHDF5Dataset):
         self.seed = seed
         self.gamma = gamma
         self.epoch = 0
+        self.resample_each_epoch = resample_each_epoch
         with h5py.File(self.path, "r") as handle:
             group = handle[f"splits/{split}"]
             ids = [
@@ -248,7 +251,8 @@ class HDF5VelocityDataset(_LazyHDF5Dataset):
         return len(self._samples)
 
     def _generator(self, trajectory_id: str, interval: int) -> torch.Generator:
-        payload = f"{self.seed}:{self.epoch}:{trajectory_id}:{interval}".encode()
+        sample_epoch = self.epoch if self.resample_each_epoch else 0
+        payload = f"{self.seed}:{sample_epoch}:{trajectory_id}:{interval}".encode()
         sample_seed = int.from_bytes(hashlib.sha256(payload).digest()[:8], "little")
         return torch.Generator().manual_seed(sample_seed)
 

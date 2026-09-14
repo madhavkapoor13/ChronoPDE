@@ -143,14 +143,29 @@ continuous-time velocity target, FiLM conditioning, RK4 rollout, optimizer,
 and 12x12 spectral budget as `fno_ct`. Width 57 gives 1,951,125 trainable
 parameters, within 10% of all three controlled baselines.
 
-Run the mandatory four-trajectory gate first:
+The original resampled gate failed despite a 2,670x loss reduction. The
+85-epoch full run is therefore retained only as exploratory evidence while OOD
+work remains paused. Run the isolated target audit, true single-batch
+memorization tests, and matched fixed-sample controls with:
 
 ```bash
-python scripts/train.py --config configs/project.yaml --model chronopde --regime full --seed 0 --smoke-overfit --device cuda
+python scripts/diagnose_continuous.py --config configs/project.yaml --data-path data/chronopde.h5 --device cuda
 ```
 
-Only after that summary reports `passed: true`, launch the full run and frozen
-ID evaluation:
+The command writes only to `artifacts/diagnostics/week6/`. It first performs a
+CPU target audit, then runs fixed seed-0 samples for DCT and CT-FFT with batch
+size 16, constant AdamW learning rate `1e-3`, zero weight decay, and evaluations
+every 250 steps. It conditionally runs the predeclared DCT variants only when
+the CT-FFT control passes and the DCT candidate fails. Scientific failures
+return normally so their JSON, CSV, plots, configuration, and checkpoints can
+still be archived.
+
+Only after `suite_summary.json` selects `proceed_week7` may the exploratory
+checkpoint be treated as satisfying the Week 6 gate. If a DCT architecture
+variant is selected, it requires a fresh seed-0 full run and frozen ID
+evaluation. Do not launch OOD evaluation before one of those routes completes.
+
+Production training remains available without changed defaults:
 
 ```bash
 python scripts/train.py --config configs/project.yaml --model chronopde --regime full --seed 0 --device cuda --resume
@@ -158,8 +173,9 @@ python scripts/evaluate.py --config configs/project.yaml --model chronopde --exp
 ```
 
 For unattended Kaggle execution, use
-`notebooks/week6_chronopde_kaggle.ipynb`. It checkpoints after every epoch,
-stops before Kaggle's wall-time limit, and packages resumable state.
+`notebooks/week6_gate_diagnostics_kaggle.ipynb`. It packages partial artifacts
+even when a diagnostic fails. The earlier training notebooks remain available
+for provenance but should not be rerun during this diagnostic phase.
 
 The demo becomes active after a trained checkpoint exists:
 

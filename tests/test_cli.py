@@ -61,6 +61,23 @@ def test_train_help_exposes_week4_options() -> None:
     assert "--steps-per-interval" in result.stdout
 
 
+def test_continuous_diagnostic_dry_run() -> None:
+    result = run_script("scripts/diagnose_continuous.py", "--device", "cpu", "--dry-run")
+    assert result.returncode == 0, result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["command"] == "diagnose_continuous_gate"
+    assert payload["trajectory_ids"] == [
+        "train-0000",
+        "train-0001",
+        "train-0002",
+        "train-0003",
+    ]
+    assert payload["fixed_samples"] is True
+    assert payload["perturbation_gamma"] == 0.0
+    assert payload["single_batch_steps"] == 2_000
+    assert payload["four_trajectory_steps"] == 10_000
+
+
 def test_chronopde_training_is_operational(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, object] = {}
     from chronopde.training.continuous import ContinuousTrainingReport

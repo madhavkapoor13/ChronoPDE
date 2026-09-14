@@ -80,6 +80,20 @@ def test_chronopde_parameter_count_matches_controlled_baselines() -> None:
     assert all(abs(chronopde_count - count) / count < 0.10 for count in comparisons)
 
 
+def test_predeclared_dct_diagnostic_variants_preserve_parameter_budget() -> None:
+    residual = DCTContinuousVectorField(residual_skip=True)
+    modes16 = DCTContinuousVectorField(width=43, modes_y=16, modes_x=16)
+    assert trainable_parameter_count(residual) == 1_951_125
+    assert trainable_parameter_count(modes16) == 1_950_047
+
+
+def test_default_dct_checkpoint_identity_is_unchanged_by_optional_skip() -> None:
+    production = DCTContinuousVectorField()
+    residual = DCTContinuousVectorField(residual_skip=True)
+    assert production.state_dict().keys() == residual.state_dict().keys()
+    residual.load_state_dict(production.state_dict(), strict=True)
+
+
 def test_continuous_builder_selects_distinct_model_families() -> None:
     config = load_config(Path(__file__).resolve().parents[1] / "configs/project.yaml")
     assert isinstance(build_continuous_model(config, "chronopde"), DCTContinuousVectorField)

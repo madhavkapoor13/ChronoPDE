@@ -50,6 +50,12 @@
 - [x] Add checkpoint model-identity validation and CPU contract tests.
 - [x] Add an unattended, resumable Kaggle workflow.
 - [ ] Pass the four-trajectory GPU overfit gate.
+- [x] Preserve and checksum the failed resampled smoke result and the 85-epoch
+  exploratory run.
+- [x] Implement the CPU target audit, true fixed-batch memorization controls,
+  matched fixed-trajectory comparison, and conditional DCT variants.
+- [ ] Run the isolated diagnostic suite and follow its predeclared route.
+- [ ] Keep Week 7 and OOD evaluation paused until the corrected gate passes.
 - [ ] Beat persistence on validation and publish the frozen ID comparison.
 
 Later weeks follow the twelve-week project plan, subject to the documented gates.
