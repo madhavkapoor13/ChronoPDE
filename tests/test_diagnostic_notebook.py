@@ -3,10 +3,11 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-NOTEBOOK = ROOT / "notebooks/week6_gate_diagnostics_kaggle.ipynb"
-MECHANICS_NOTEBOOK = ROOT / "notebooks/week6_mechanics_diagnostics_kaggle.ipynb"
-AUDIT_NOTEBOOK = ROOT / "notebooks/week6_velocity_audit_kaggle.ipynb"
-BALANCED_NOTEBOOK = ROOT / "notebooks/week6_balanced_batch_kaggle.ipynb"
+ARCHIVE = ROOT / "notebooks/archive"
+NOTEBOOK = ARCHIVE / "week6_gate_diagnostics_kaggle.ipynb"
+MECHANICS_NOTEBOOK = ARCHIVE / "week6_mechanics_diagnostics_kaggle.ipynb"
+AUDIT_NOTEBOOK = ARCHIVE / "week6_velocity_audit_kaggle.ipynb"
+BALANCED_NOTEBOOK = ARCHIVE / "week6_balanced_batch_kaggle.ipynb"
 ALIGNMENT_NOTEBOOK = ROOT / "notebooks/week6_loss_alignment_kaggle.ipynb"
 
 

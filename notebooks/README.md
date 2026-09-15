@@ -1,33 +1,29 @@
-# Notebooks
+# Notebook index
 
-`week4_baselines_colab.ipynb` covers the original autoregressive workflows.
-`week6_chronopde_smoke_kaggle.ipynb` runs only the corrected strict smoke gate
-and packages its diagnostic without launching full training.
-`week6_chronopde_kaggle.ipynb` runs the boundary-aware model in Kaggle with a
-smoke gate, epoch-level checkpointing, a safe wall-time cutoff, resumable ZIP
-packaging, and conditional frozen ID evaluation. Notebook outputs are cleared;
-reusable logic belongs in the `chronopde` package rather than notebook-only cells.
+## Canonical workflow
 
-`week6_gate_diagnostics_kaggle.ipynb` is the current Week 6 entry point. It runs
-the CPU target audit and the controlled fixed-sample DCT/CT-FFT diagnostics,
-then always creates `chronopde_week6_gate_diagnostics.zip`. It does not read or
-write production checkpoints and it never evaluates OOD data.
+`week6_loss_alignment_kaggle.ipynb` is the final reproducible Kaggle workflow.
+It verifies the dataset, runs the matched CT-FFT and ChronoPDE DCT
+loss-alignment diagnostic, displays progress, and packages partial or completed
+outputs safely.
 
-`week6_mechanics_diagnostics_kaggle.ipynb` is the short follow-up when the first
-suite routes to `debug_model_loss_optimizer`. It tests only the fixed 16-example
-batch and packages a best-step-aware optimizer/loss diagnosis.
+The final run selected
+`stop_and_document_model_or_conditioning_limitation`. The notebook is retained
+for provenance and should not be interpreted as authorization to reopen the
+stopped experiment.
 
-`week6_velocity_audit_kaggle.ipynb` is the CPU-only follow-up for completed
-mechanics checkpoints. It replays `best.pt` and `last.pt`, compares median and
-pooled metrics without changing the gate, records exact sample/checkpoint
-provenance, and always packages its report. No GPU or training is used.
+## Archived workflows
 
-`week6_balanced_batch_kaggle.ipynb` runs the next bounded GPU decision: four
-fixed intervals from each of the four training trajectories for both DCT and
-CT-FFT. It packages checkpoints and partial results on failure and does not
-launch the four-trajectory or OOD phases automatically.
+The `archive/` directory preserves earlier Colab and Kaggle stages:
 
-`week6_loss_alignment_kaggle.ipynb` is the follow-up after the balanced global
-objective fails. It trains both backbones on the same 16 samples with the fixed
-full-field relative objective, preserves the original gate, and always packages
-the resulting checkpoints and metrics without launching later phases.
+| Notebook | Historical purpose |
+| --- | --- |
+| `week4_baselines_colab.ipynb` | Autoregressive U-Net and FFT-FNO training |
+| `week6_chronopde_kaggle.ipynb` | Exploratory full DCT training and resume |
+| `week6_chronopde_smoke_kaggle.ipynb` | Original resampled smoke gate |
+| `week6_gate_diagnostics_kaggle.ipynb` | Target audit and initial fixed controls |
+| `week6_mechanics_diagnostics_kaggle.ipynb` | Optimizer/loss mechanics sweep |
+| `week6_velocity_audit_kaggle.ipynb` | CPU checkpoint and metric audit |
+| `week6_balanced_batch_kaggle.ipynb` | Corrected four-trajectory batch |
+
+These files document the decision trail. They are not current entry points.

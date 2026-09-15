@@ -26,6 +26,14 @@ for DCT and `0.01895` for FFT. DCT was lower on all 16 paired identities, but
 both exceeded the required `0.01` threshold. This is a diagnostic result rather
 than evidence of generalization.
 
+## Qualitative context
+
+The public held-out rollout figure uses frozen checkpoints on `id-0042`, chosen
+by a deterministic median-rank rule. Its JSON sidecar records the dataset and
+checkpoint hashes, source commits, time indices, and per-channel errors. Because
+the FFT and DCT checkpoints have unequal training histories, the figure is
+explicitly exploratory and is not used to change the diagnostic decision.
+
 ## Limitations
 
 - The aligned diagnostic has one development seed and only 16 fixed samples.

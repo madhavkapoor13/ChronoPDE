@@ -11,6 +11,7 @@ import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "reports/final"
+FIGURES = ROOT / "figures"
 
 
 def load_json(name: str) -> dict[str, Any]:
@@ -40,8 +41,15 @@ middle.metric("FFT gate nRMSE", f"{models['fno_ct']['historical_gate_median_nrms
 right.metric("Paired DCT wins", f"{summary['dct_wins']} / 16")
 last.metric("Target-audit samples", str(summary["target_audit"]["samples"]))
 
-overview, samples, context, provenance = st.tabs(
-    ("Outcome", "Matched samples", "Exploratory ID context", "Provenance")
+overview, architecture, samples, rollout, context, provenance = st.tabs(
+    (
+        "Outcome",
+        "Architecture",
+        "Matched samples",
+        "Field rollout",
+        "Exploratory ID context",
+        "Provenance",
+    )
 )
 
 with overview:
@@ -54,6 +62,14 @@ with overview:
         "failed. DCT's within-diagnostic advantage is not presented as a generalization claim."
     )
 
+with architecture:
+    st.image(str(FIGURES / "architecture_overview.svg"), use_container_width=True)
+    st.markdown(
+        "The two continuous-time models share FiLM conditioning, block count, retained "
+        "spectral resolution, velocity projection, and RK4 rollout. Their controlled "
+        "difference is the FFT versus DCT spatial basis."
+    )
+
 with samples:
     frame = pd.read_csv(REPORT / "paired_sample_comparison.csv")
     trajectory = st.selectbox(
@@ -63,6 +79,19 @@ with samples:
     st.image(str(REPORT / "paired_model_comparison.png"), use_container_width=True)
     st.image(str(REPORT / "conditioning_analysis.png"), use_container_width=True)
     st.dataframe(shown, hide_index=True, use_container_width=True)
+
+with rollout:
+    st.warning(
+        "Exploratory context only: CT-FFT trained for 150 epochs while DCT stopped after 85."
+    )
+    st.image(str(FIGURES / "qualitative_rollout.png"), use_container_width=True)
+    rollout_metadata = json.loads(
+        (FIGURES / "qualitative_rollout.json").read_text(encoding="utf-8")
+    )
+    st.caption(
+        f"Trajectory {rollout_metadata['trajectory_id']} at physical times "
+        f"{rollout_metadata['times']}; exact hashes are preserved in the provenance record."
+    )
 
 with context:
     st.info(

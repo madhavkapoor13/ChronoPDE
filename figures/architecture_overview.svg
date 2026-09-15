@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="820" viewBox="0 0 1600 820" role="img" aria-labelledby="title description">
+  <title id="title">ChronoPDE architecture and spectral-basis comparison</title>
+  <desc id="description">The state, time, and physical parameters condition four DCT spectral blocks through FiLM. The predicted velocity is integrated by RK4. A lower panel contrasts the periodic FFT control with the Neumann-aligned DCT model.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#eef2ff"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font: 700 38px Inter, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 19px Inter, Arial, sans-serif; fill: #475569; }
+      .box-title { font: 700 21px Inter, Arial, sans-serif; fill: #0f172a; }
+      .box-copy { font: 400 16px Inter, Arial, sans-serif; fill: #475569; }
+      .small-title { font: 700 18px Inter, Arial, sans-serif; fill: #0f172a; }
+      .small-copy { font: 400 15px Inter, Arial, sans-serif; fill: #475569; }
+      .pill { font: 700 15px Inter, Arial, sans-serif; fill: #ffffff; letter-spacing: .4px; }
+      .arrow { stroke: #334155; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .soft-arrow { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="820" rx="28" fill="url(#background)"/>
+  <text x="70" y="70" class="title">ChronoPDE: boundary-aware continuous-time prediction</text>
+  <text x="70" y="105" class="subtitle">Only the spectral basis changes in the matched FFT control; conditioning and RK4 rollout remain fixed.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="170" width="220" height="150" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="180" y="210" text-anchor="middle" class="box-title">Inputs</text>
+    <rect x="95" y="230" width="170" height="34" rx="17" fill="#dbeafe"/>
+    <text x="180" y="253" text-anchor="middle" class="small-title">state [u, v]</text>
+    <text x="180" y="287" text-anchor="middle" class="box-copy">64 x 64 field</text>
+    <text x="180" y="310" text-anchor="middle" class="box-copy">normalized</text>
+
+    <rect x="70" y="355" width="220" height="130" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="180" y="397" text-anchor="middle" class="box-title">Condition</text>
+    <text x="180" y="432" text-anchor="middle" class="box-copy">physical time t</text>
+    <text x="180" y="460" text-anchor="middle" class="box-copy">Du, Dv, k</text>
+  </g>
+
+  <path d="M290 245 H355" class="arrow"/>
+  <path d="M290 420 H340 Q355 420 355 405 V340" class="soft-arrow"/>
+
+  <g filter="url(#shadow)">
+    <rect x="370" y="185" width="200" height="120" rx="20" fill="#ffffff" stroke="#93c5fd" stroke-width="2"/>
+    <text x="470" y="230" text-anchor="middle" class="box-title">State lift</text>
+    <text x="470" y="263" text-anchor="middle" class="box-copy">2 to 57 channels</text>
+
+    <rect x="370" y="355" width="200" height="130" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2"/>
+    <text x="470" y="397" text-anchor="middle" class="box-title">FiLM network</text>
+    <text x="470" y="430" text-anchor="middle" class="box-copy">scale + bias</text>
+    <text x="470" y="458" text-anchor="middle" class="box-copy">for every block</text>
+  </g>
+
+  <path d="M570 245 H635" class="arrow"/>
+  <path d="M570 420 H610 Q625 420 625 405 V330" class="soft-arrow"/>
+
+  <g filter="url(#shadow)">
+    <rect x="650" y="155" width="370" height="250" rx="24" fill="#ffffff" stroke="#7c3aed" stroke-width="3"/>
+    <rect x="650" y="155" width="370" height="50" rx="24" fill="url(#accent)"/>
+    <rect x="650" y="181" width="370" height="24" fill="url(#accent)"/>
+    <text x="835" y="188" text-anchor="middle" class="pill">4 x CHRONOPDE BLOCK</text>
+    <rect x="685" y="230" width="138" height="80" rx="14" fill="#ede9fe"/>
+    <text x="754" y="263" text-anchor="middle" class="small-title">DCT spectral</text>
+    <text x="754" y="288" text-anchor="middle" class="small-copy">12 x 12 modes</text>
+    <text x="850" y="277" text-anchor="middle" class="box-title">+</text>
+    <rect x="877" y="230" width="108" height="80" rx="14" fill="#e0f2fe"/>
+    <text x="931" y="263" text-anchor="middle" class="small-title">1 x 1</text>
+    <text x="931" y="288" text-anchor="middle" class="small-copy">pointwise</text>
+    <path d="M685 334 H985" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="835" y="370" text-anchor="middle" class="box-copy">FiLM modulation + GELU</text>
+  </g>
+
+  <path d="M1020 280 H1085" class="arrow"/>
+  <g filter="url(#shadow)">
+    <rect x="1100" y="185" width="200" height="120" rx="20" fill="#ffffff" stroke="#93c5fd" stroke-width="2"/>
+    <text x="1200" y="230" text-anchor="middle" class="box-title">Projection</text>
+    <text x="1200" y="263" text-anchor="middle" class="box-copy">predicted du/dt, dv/dt</text>
+  </g>
+  <path d="M1300 245 H1360" class="arrow"/>
+  <g filter="url(#shadow)">
+    <rect x="1375" y="170" width="155" height="150" rx="20" fill="#0f172a"/>
+    <text x="1452" y="218" text-anchor="middle" class="pill">RK4</text>
+    <text x="1452" y="252" text-anchor="middle" class="pill">INTEGRATION</text>
+    <text x="1452" y="292" text-anchor="middle" class="pill">future [u, v]</text>
+  </g>
+
+  <text x="70" y="570" class="box-title">Controlled architectural comparison</text>
+  <g filter="url(#shadow)">
+    <rect x="70" y="610" width="690" height="145" rx="22" fill="#ffffff" stroke="#93c5fd" stroke-width="2"/>
+    <rect x="70" y="610" width="14" height="145" rx="7" fill="#2563eb"/>
+    <text x="115" y="650" class="box-title">CT-FFT control</text>
+    <text x="115" y="687" class="box-copy">complex Fourier basis</text>
+    <text x="115" y="720" class="box-copy">naturally periodic spatial assumption</text>
+    <text x="650" y="689" text-anchor="end" class="small-title">1,973,657 parameters</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="840" y="610" width="690" height="145" rx="22" fill="#ffffff" stroke="#c4b5fd" stroke-width="2"/>
+    <rect x="840" y="610" width="14" height="145" rx="7" fill="#7c3aed"/>
+    <text x="885" y="650" class="box-title">ChronoPDE DCT</text>
+    <text x="885" y="687" class="box-copy">real cosine basis</text>
+    <text x="885" y="720" class="box-copy">aligned with homogeneous Neumann / no-flux boundaries</text>
+    <text x="1420" y="689" text-anchor="end" class="small-title">1,951,125 parameters</text>
+  </g>
+</svg>

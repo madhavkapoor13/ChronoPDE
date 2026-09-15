@@ -73,6 +73,15 @@
 - [x] Recover the Week 4 seed-0 summaries from Google Drive.
 - [x] Publish the negative-result report, offline demo, model card, and clean-environment release.
 
+## Portfolio release
+
+- [x] Make the README the evidence-first project landing page.
+- [x] Add a CPU-only command that reproduces the frozen headline result.
+- [x] Publish an architecture overview and a checksum-verified qualitative rollout.
+- [x] Consolidate runnable notebooks and archive historical Kaggle workflows.
+- [x] Add a detailed reproduction guide and concise resume-ready project summary.
+- [x] Preserve `v0.1.0-negative-result` and publish the additive `v0.1.1-portfolio` release.
+
 Original Weeks 7-10 are intentionally not executed in this release. The project
 continues through a narrower reproducibility and communication track rather than
 manufacturing a positive result after a predeclared stop rule fired.

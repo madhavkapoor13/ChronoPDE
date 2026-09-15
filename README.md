@@ -1,304 +1,175 @@
 # ChronoPDE
 
-**A controlled study of boundary-aware continuous-time neural operators.**
+ChronoPDE investigates whether a cosine spectral neural operator matched to
+homogeneous Neumann boundary conditions improves continuous-time PDE modeling
+over a parameter-matched FFT control. The project covers deterministic PDE data
+generation, learned velocity fields, RK4 rollout, and reproducible failure
+analysis in PyTorch.
 
-ChronoPDE is a from-scratch PyTorch research project on coupled two-dimensional
-reaction-diffusion dynamics. It implements a deterministic 720-trajectory PDE
-dataset, autoregressive U-Net and FFT-FNO baselines, parameter-conditioned
-continuous-time FFT and DCT operators, quintic spline velocity targets, and RK4
-rollout.
+> **Headline result:** objective alignment reduced the DCT model's fixed-sample
+> velocity nRMSE from **0.2480 to 0.01421**, compared with **0.1205 to 0.01895**
+> for CT-FFT. DCT was lower-error on **16/16 matched diagnostic samples**, but
+> neither model passed the predefined **0.01 gate**.
 
-The main Week 6 hypothesis was not confirmed. Under a fixed, parameter-matched
-5,000-step diagnostic, an objective aligned to per-sample relative error reduced
-ChronoPDE's velocity nRMSE from `0.2480` to `0.0142`, and DCT was better than FFT
-on all 16 matched samples. Both nevertheless missed the predeclared `0.01` gate,
-so production retraining and OOD experiments were stopped. The failure, evidence
-chain, and claim boundary are preserved instead of weakening the criterion.
+![Objective-alignment result](reports/final/objective_alignment.png)
 
-![Loss-alignment result](reports/final/objective_alignment.png)
+## Motivation
 
-## Research question
+Fourier neural operators are naturally periodic, while this reaction-diffusion
+system uses homogeneous Neumann, or no-flux, boundaries. ChronoPDE tests a
+specific architectural hypothesis: does replacing the Fourier basis with a
+real cosine basis improve a continuous-time neural operator when everything
+else is held as constant as possible?
 
-Under matched data, parameter count, and optimization budgets:
+The project used predefined gates. When the final Week 6 gate failed, later
+sparse-time and out-of-distribution experiments stopped rather than changing
+the threshold after observing the result.
 
-1. Does continuous-time velocity learning improve forecasts as temporal
-   observations become sparse or irregular?
-2. Does a cosine spectral backbone aligned with homogeneous Neumann boundaries
-   improve boundary-gradient or spectral errors relative to an FFT backbone?
+## Method and architecture
 
-The final release answers these questions with a valid negative result. It does
-not claim confirmed sparse-time or OOD performance.
+Both continuous-time models receive a normalized two-channel state, physical
+time, and three PDE parameters. A FiLM network conditions four spectral blocks.
+The model predicts the instantaneous velocity, and fixed-step RK4 integrates it
+to future states. The controlled difference is the spatial spectral basis.
 
-## Quick start
+![ChronoPDE architecture](figures/architecture_overview.svg)
 
-ChronoPDE targets Python 3.11.
+| Component | CT-FFT control | ChronoPDE DCT |
+| --- | --- | --- |
+| Spectral basis | Complex Fourier modes | Real orthonormal cosine modes |
+| Boundary assumption | Periodic | Homogeneous Neumann / no-flux |
+| Retained modes | 12 x 12 | 12 x 12 |
+| Parameters | 1,973,657 | 1,951,125 |
+| Conditioning | Time and `[Du, Dv, k]` through FiLM | Same |
+| Rollout | Fixed-step RK4 | Same |
+
+The repository also includes residual U-Net and autoregressive FFT-FNO
+baselines, quintic spline velocity targets, and shared evaluation metrics.
+
+## Dataset
+
+- 720 deterministic trajectories of a two-species, parameterized 2D
+  reaction-diffusion system.
+- State layout: `[trajectory, time, channel, 64, 64]`.
+- 101 stored states over physical time `[0, 50]`.
+- Frozen train, validation, ID, parameter-OOD, and initial-condition-OOD splits.
+- Full, irregular-50%, and irregular-25% temporal masks.
+- Normalization fitted only on the training split.
+
+The raw HDF5 dataset is intentionally excluded from Git. Its frozen SHA-256 is
+recorded in the evidence and figure provenance.
+
+## Experiments and results
+
+The decisive diagnostic used seed 0, the same 16 samples from four trajectories,
+batch size 16, no spline perturbation, constant learning rate `3e-4`, no weight
+decay, and 5,000 optimizer steps. The aligned objective directly minimized
+per-sample full-field relative velocity error.
+
+| Model | Original objective nRMSE | Aligned objective nRMSE | 0.01 gate |
+| --- | ---: | ---: | :---: |
+| CT-FFT | 0.1205 | 0.01895 | Fail |
+| ChronoPDE DCT | 0.2480 | **0.01421** | Fail |
+
+Both models exceeded the required 1,000x optimization-loss reduction. DCT had
+lower velocity nRMSE for every matched identity; the paired mean DCT-minus-FFT
+difference was `-0.00503`, with a deterministic 10,000-resample bootstrap 95%
+interval of `[-0.00668, -0.00354]`. This is a fixed diagnostic result, not a
+multi-seed generalization claim.
+
+## What went wrong?
+
+The original objective combined global MSE with relative error in only the
+lowest 12 x 12 spectral modes. High-energy samples therefore had greater
+influence, while the gate weighted each sample through its own full-field target
+energy. Aligning the objective with the gate improved both models dramatically,
+showing that loss-metric mismatch was real.
+
+It did not fully explain the failure. The CPU target audit found finite targets
+and a median spline-to-PDE velocity nRMSE of `0.00151`, far below the repair
+threshold. After the complete aligned budget, both backbones still remained
+above `0.01`. The declared route was therefore to document a model or
+conditioning limitation and stop the study.
+
+## Exploratory held-out rollout
+
+The following visualization replays existing frozen ID checkpoints on
+`id-0042`, selected deterministically as the trajectory nearest the median
+combined error rank. It is qualitative context only: CT-FFT trained for 150
+epochs while DCT stopped after 85, so it is not a confirmatory comparison.
+
+![Exploratory held-out rollout](figures/qualitative_rollout.png)
+
+The companion [figure provenance](figures/qualitative_rollout.json) records the
+dataset, checkpoint hashes, source commits, selection rule, time indices, and
+per-channel errors.
+
+## Reproduce the main result
+
+The headline result can be recomputed from committed lightweight evidence on a
+CPU without the dataset, checkpoints, GPU, Kaggle, or Internet:
 
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
-pytest -q
-ruff check .
-mypy chronopde
+python scripts/reproduce_diagnostic.py --model both
 ```
 
-Run the non-mutating Week 1 interface checks:
+Expected core output:
 
-```bash
-python scripts/generate_data.py --config configs/data.yaml --dry-run
-python scripts/train.py --config configs/project.yaml --model chronopde --regime irreg25 --seed 0 --dry-run
-python scripts/evaluate.py --config configs/project.yaml --experiment id_rollout --checkpoint placeholder.pt --dry-run
+```text
+CT-FFT
+  Best step: 4100
+  Median velocity nRMSE: 0.01895
+  Gate: 0.01000
+  Result: FAIL
+
+ChronoPDE DCT
+  Best step: 5000
+  Median velocity nRMSE: 0.01421
+  Gate: 0.01000
+  Result: FAIL
+
+Matched samples: DCT lower error on 16 / 16
 ```
 
-Regenerate the frozen Week 6 analysis without a dataset, checkpoint, GPU, or
-Internet connection:
+Use `--format json` for machine-readable output and `--archive-root PATH` to
+verify all seven original Kaggle archives byte-for-byte. Full dataset,
+training, evaluation, figure-generation, and Kaggle instructions are in the
+[reproduction guide](docs/REPRODUCTION.md).
 
-```bash
-python scripts/analyze_week6_failure.py \
-  --evidence-manifest reports/diagnostics/week6/evidence_manifest.json
+## Repository structure
+
+```text
+ChronoPDE/
+├── chronopde/         # data, models, numerics, training, evaluation, diagnostics
+├── configs/           # frozen experiment and dataset configuration
+├── scripts/           # generation, training, evaluation, and reproduction CLIs
+├── tests/             # numerical, model, CLI, and evidence contracts
+├── figures/           # public architecture and qualitative figures
+├── reports/           # lightweight scientific evidence and generated analysis
+├── notebooks/         # canonical Kaggle workflow plus archived provenance
+├── demo/              # offline Streamlit evidence explorer
+├── docs/              # method, roadmap, reproduction, and portfolio notes
+└── output/pdf/        # controlled study and failure-analysis report
 ```
 
-To additionally verify the original local archives, pass
-`--archive-root /path/to/archive/directory`.
+## Limitations and claim boundary
 
-Launch the offline evidence explorer—no dataset, checkpoint, GPU, or Internet
-connection is required:
+- The aligned comparison uses one seed and 16 fixed development samples.
+- The held-out rollout figure uses unequal exploratory training histories.
+- Sparse-time, hidden-time, parameter-OOD, and initial-condition-OOD claims were
+  not evaluated after the stop rule fired.
+- The result supports an objective-alignment finding and a matched diagnostic
+  DCT advantage; it does not establish general DCT superiority.
+- Checkpoints are research artifacts, not validated scientific simulators.
 
-```bash
-python -m pip install -e ".[demo]"
-streamlit run demo/app.py
-```
+See the [model card](MODEL_CARD.md),
+[experimental report](output/pdf/chronopde_negative_result_report.pdf),
+[release record](docs/RELEASE.md), and [portfolio summary](docs/PORTFOLIO.md).
 
-The rendered technical report is committed at
-`output/pdf/chronopde_negative_result_report.pdf`. To rebuild it after changing
-the frozen analysis, install the report extra and run:
+## License and attribution
 
-```bash
-python -m pip install -e ".[report]"
-python scripts/build_negative_result_report.py
-```
-
-Run or resume the frozen 24-trajectory simulator pilot:
-
-```bash
-python scripts/generate_data.py --config configs/project.yaml --pilot
-```
-
-Raw pilot trajectories are written to `artifacts/pilot/week2/` and remain
-ignored by Git. The publishable summary, diagnostic table, and plots are written
-to `reports/pilot/week2/`. The completed pilot passed 24/24 trajectories without
-changing any parameter range.
-
-Freeze the full dataset manifest, then generate or resume all 720 trajectories:
-
-```bash
-python scripts/generate_data.py --config configs/project.yaml --manifest-only
-python scripts/generate_data.py --config configs/project.yaml --full
-```
-
-The manifest and its SHA-256 file are committed under
-`reports/dataset/week3/`. Raw per-trajectory checkpoints live under the ignored
-`artifacts/dataset/week3/` directory. The validated dataset is written atomically
-to the ignored `data/chronopde.h5`; rerunning `--full` validates and reuses all
-successful checkpoints.
-
-The HDF5 state layout is `[N,T,2,H,W]`. Each split contains parameters, seeds,
-trajectory IDs, diagnostics, and the `full`, `irregular_50`, and `irregular_25`
-masks. Channel and parameter normalizers are fitted from the training split only.
-
-The reusable numerical APIs are available from `chronopde.numerics`: orthonormal
-`dct2`/`idct2`, irregular quintic spline construction and evaluation, conditional
-path sampling, and differentiable fixed-step integration.
-
-## Week 4 autoregressive baselines
-
-ChronoPDE includes parameter-matched residual U-Net and FFT-FNO baselines. Both
-consume normalized states, the time increment, physical parameters, and spatial
-coordinates, then predict a normalized state residual.
-
-Run the mandatory four-trajectory checks on a CUDA machine before full training:
-
-```bash
-python scripts/train.py --config configs/project.yaml --model unet_ar --regime full --seed 0 --smoke-overfit --device cuda
-python scripts/train.py --config configs/project.yaml --model fno_ar --regime full --seed 0 --smoke-overfit --device cuda
-```
-
-Run or resume full seed-0 training:
-
-```bash
-python scripts/train.py --config configs/project.yaml --model unet_ar --regime full --seed 0 --device cuda --resume
-python scripts/train.py --config configs/project.yaml --model fno_ar --regime full --seed 0 --device cuda --resume
-```
-
-Use `--data-path` when the HDF5 file is stored outside the repository, as in the
-provided `notebooks/week4_baselines_colab.ipynb`. Checkpoints and logs are saved
-under the ignored `artifacts/runs/` directory.
-
-After training, generate the frozen ID report with:
-
-```bash
-python scripts/evaluate.py --config configs/project.yaml --model unet_ar --experiment id_rollout --checkpoint artifacts/runs/unet_ar-full-train-s0/best.pt
-```
-
-## Week 5 continuous-time FFT baseline
-
-`fno_ct` learns a normalized state velocity from deterministic samples on the
-quintic observation paths. Time and normalized PDE parameters condition every
-FFT block through FiLM. Inference integrates the learned velocity over physical
-time with the differentiable fixed-step RK4 solver.
-
-Run the mandatory four-trajectory gate before a full run:
-
-```bash
-python scripts/train.py --config configs/project.yaml --model fno_ct --regime full --seed 0 --smoke-overfit --device cuda
-```
-
-Train, resume, and evaluate with:
-
-```bash
-python scripts/train.py --config configs/project.yaml --model fno_ct --regime full --seed 0 --device cuda --resume
-python scripts/evaluate.py --config configs/project.yaml --model fno_ct --experiment id_rollout --checkpoint artifacts/runs/fno_ct-full-train-s0/best.pt --device cuda
-```
-
-Use `--learning-rate 1e-4` only for the predefined validation recovery run and
-`--steps-per-interval 4` only for the integration-resolution diagnostic. The
-Colab notebook verifies the exact dataset hash before launching any GPU job.
-
-The completed seed-0 baseline ran for 150 epochs and achieved median ID final
-nRMSE 0.4219 with no divergent trajectories. Its archived results are the
-locked comparison point for Week 6.
-
-## Week 6 boundary-aware ChronoPDE
-
-`chronopde` replaces periodic FFT modes with a real orthonormal DCT basis that
-matches the simulator's Neumann boundary condition. It retains the same
-continuous-time velocity target, FiLM conditioning, RK4 rollout, optimizer,
-and 12x12 spectral budget as `fno_ct`. Width 57 gives 1,951,125 trainable
-parameters, within 10% of all three controlled baselines.
-
-The original resampled gate failed despite a 2,670x loss reduction. The
-85-epoch full run is therefore retained only as exploratory evidence while OOD
-work remains paused. Run the isolated target audit, true single-batch
-memorization tests, and matched fixed-sample controls with:
-
-```bash
-python scripts/diagnose_continuous.py --config configs/project.yaml --data-path data/chronopde.h5 --device cuda
-```
-
-The command writes only to `artifacts/diagnostics/week6/`. It first performs a
-CPU target audit, then runs fixed seed-0 samples for DCT and CT-FFT with batch
-size 16, constant AdamW learning rate `1e-3`, zero weight decay, and evaluations
-every 250 steps. It conditionally runs the predeclared DCT variants only when
-the CT-FFT control passes and the DCT candidate fails. Scientific failures
-return normally so their JSON, CSV, plots, configuration, and checkpoints can
-still be archived.
-
-If that suite selects `debug_model_loss_optimizer`, run the shared fixed-batch
-mechanics sweep before any four-trajectory comparison:
-
-```bash
-python scripts/diagnose_mechanics.py --config configs/project.yaml --data-path data/chronopde.h5 --device cuda
-```
-
-This compares constant learning rates `3e-4` and `1e-4` under the original
-spectral objective, followed only if needed by an isolated physical-MSE loss
-ablation. Both backbones must pass the same protocol. The gate is evaluated at
-the best eligible logged step so a late optimizer spike cannot hide a valid
-memorization result.
-
-The completed mechanics sweep found best logged velocity nRMSE values of
-`0.013-0.017` for both backbones across the three shared protocols. That is a
-shared failure under the tested budgets, not proof of an optimization floor or
-an invalid metric. The loss-reduction condition passed by wide margins, and DCT
-was not materially worse than CT-FFT. Audit the exact checkpoints and metric
-aggregation on CPU before changing the architecture or advancing:
-
-```bash
-python scripts/audit_velocity.py \
-  --config configs/project.yaml \
-  --data-path data/chronopde.h5 \
-  --mechanics-root artifacts/diagnostics/week6/mechanics
-```
-
-The original gate remains authoritative. A pooled score below `0.01` is reported
-as metric sensitivity, not converted into a pass. The historical
-`physical_only` protocol name means normalized spatial MSE with zero spectral
-weight; it is not a physical-unit loss.
-
-The audit also showed that the original 16-example batch consists only of the
-first trajectory and is not representative of the fixed four-trajectory target
-distribution. Run the predeclared balanced follow-up on intervals `0`, `33`,
-`66`, and `99` from each of `train-0000` through `train-0003`:
-
-```bash
-python scripts/diagnose_balanced_batch.py \
-  --config configs/project.yaml \
-  --data-path data/chronopde.h5 \
-  --device cuda
-```
-
-Both backbones use the identical fixed batch, 5,000-step budget, constant
-learning rate `3e-4`, spectral weight `0.05`, and the unchanged median-nRMSE
-gate. Only a two-model pass routes to the fixed four-trajectory comparison.
-
-The balanced run failed for both backbones despite large reductions in its
-global objective. Run the diagnostic-only loss-alignment test next:
-
-```bash
-python scripts/diagnose_loss_alignment.py \
-  --config configs/project.yaml \
-  --data-path data/chronopde.h5 \
-  --device cuda
-```
-
-This test minimizes mean per-sample full-field relative squared error on the
-same balanced batch. It does not change production training or the `0.01`
-median velocity-nRMSE gate.
-
-The completed alignment suite selected
-`stop_and_document_model_or_conditioning_limitation`. DCT reached `0.01421` and
-CT-FFT `0.01895`; both exceeded the required 1,000x loss reduction but missed
-the unchanged `0.01` velocity-nRMSE threshold. The target audit passed, so this
-is documented as a model/conditioning limitation rather than dataset corruption.
-Week 7, architecture variants, production retraining, and OOD evaluation are
-closed for this release.
-
-Production training remains available without changed defaults:
-
-```bash
-python scripts/train.py --config configs/project.yaml --model chronopde --regime full --seed 0 --device cuda --resume
-python scripts/evaluate.py --config configs/project.yaml --model chronopde --experiment id_rollout --checkpoint artifacts/runs/chronopde-full-train-s0/best.pt --device cuda
-```
-
-For unattended Kaggle execution, use
-`notebooks/week6_gate_diagnostics_kaggle.ipynb`. It packages partial artifacts
-even when a diagnostic fails. The earlier training notebooks remain available
-for provenance but should not be rerun during this diagnostic phase.
-
-The offline results explorer requires no checkpoint or dataset:
-
-```bash
-python -m pip install -e ".[demo]"
-streamlit run demo/app.py
-```
-
-## Repository contract
-
-- `chronopde/`: reusable configuration, interfaces, experiment planning, and reproducibility code.
-- `configs/`: versioned scientific and runtime decisions.
-- `scripts/`: stable command-line interfaces.
-- `tests/`: fast CPU-only contract tests.
-- `docs/`: mathematical specification, development log, and roadmap.
-
-Generated datasets and experiment artifacts are excluded from version control.
-Every future run will save its resolved configuration, environment, Git commit,
-metrics, checkpoints, and figures under a deterministic experiment identifier.
-
-## Attribution
-
-ChronoPDE is independently implemented in PyTorch. Its continuous-time training
-design is inspired by *CFO: Learning Continuous-Time PDE Dynamics via
-Flow-Matched Neural Operators*. The reaction-diffusion equations and reference
-simulation conventions are based on PDEBench. See `docs/method_spec.md` for the
-precise boundary between referenced ideas and original implementation.
+ChronoPDE is released under the [MIT License](LICENSE). The implementation is
+independent; PDEBench reference fixtures are used only for numerical comparison.

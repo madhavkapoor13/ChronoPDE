@@ -1,4 +1,4 @@
-# Negative-result recovery release
+# Controlled study and portfolio release
 
 ## Scope
 
@@ -51,6 +51,8 @@ verify local copies byte-for-byte.
 
 ## Release boundary
 
-Tag this state as `v0.1.0-negative-result`. Any future work on whitening,
-channel-balanced objectives, residual vector fields, multiple seeds, sparse
-time, or OOD evaluation must begin as a separately registered study.
+The scientific stopping decision remains frozen at `v0.1.0-negative-result`.
+The public-facing documentation and visualization pass is tagged separately as
+`v0.1.1-portfolio`. Any future work on whitening, channel-balanced objectives,
+residual vector fields, multiple seeds, sparse time, or OOD evaluation must
+begin as a separately registered study.

@@ -136,7 +136,7 @@ def build() -> Path:
         leftMargin=18 * mm,
         topMargin=18 * mm,
         bottomMargin=20 * mm,
-        title="ChronoPDE: A Controlled Negative Result",
+        title="ChronoPDE: Controlled Study and Failure Analysis",
         author="Madhav Kapoor",
     )
     story: list[Any] = []
@@ -163,7 +163,7 @@ def build() -> Path:
             ),
             Spacer(1, 20 * mm),
             Paragraph("Madhav Kapoor | September 2026", subtitle),
-            Paragraph("Negative-result recovery release", small),
+            Paragraph("Controlled Study &amp; Failure Analysis", small),
         ]
     )
     story.append(PageBreak())

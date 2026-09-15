@@ -1,0 +1,59 @@
+{
+  "artifact_status": "exploratory_context_only",
+  "checkpoint_sha256": {
+    "chronopde": "2d09db1df2b4c2513af852e7848f8267aa3d989378882e85e59b1b3626b62735",
+    "fno_ct": "8c2ccbf0e6dad3fcd7c279bdb8861b440336a70d850ccc97dbbab69f2b76e229"
+  },
+  "dataset_sha256": "907aa0d79e604e68ce2d4f5cccfd93ffc64eb68c473caf3edae4be438472caec",
+  "device": "cpu",
+  "nrmse": {
+    "chronopde": {
+      "10": {
+        "u": 0.13702687621116638,
+        "v": 0.10294173657894135
+      },
+      "30": {
+        "u": 0.27152588963508606,
+        "v": 0.23473909497261047
+      },
+      "50": {
+        "u": 0.42037829756736755,
+        "v": 0.382983922958374
+      }
+    },
+    "fno_ct": {
+      "10": {
+        "u": 0.1692008525133133,
+        "v": 0.1756114959716797
+      },
+      "30": {
+        "u": 0.29967984557151794,
+        "v": 0.28513896465301514
+      },
+      "50": {
+        "u": 0.4305615723133087,
+        "v": 0.4100426435470581
+      }
+    }
+  },
+  "selection_rule": "closest to the median combined percentile rank of mean rollout nRMSE across the two archived 100-trajectory ID evaluations; lexicographic ID tie-break",
+  "source_commits": {
+    "chronopde": "47fb45711391b34f5d06e6e5dc3808f18ef60665",
+    "fno_ct": "7d15658c9229e989a85feb4807c37e65daa71485"
+  },
+  "time_indices": [
+    20,
+    60,
+    100
+  ],
+  "times": [
+    10.0,
+    30.0,
+    50.0
+  ],
+  "training_histories": {
+    "chronopde": "85 epochs; early-stopped exploratory run",
+    "fno_ct": "150 epochs; completed exploratory run"
+  },
+  "trajectory_id": "id-0042"
+}
