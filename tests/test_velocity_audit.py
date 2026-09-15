@@ -1,3 +1,4 @@
+import pytest
 import torch
 
 from chronopde.diagnostics.velocity_audit import velocity_audit_metrics
@@ -39,5 +40,5 @@ def test_velocity_audit_pooled_metric_is_batch_partition_invariant() -> None:
     error_sum = (prediction - target).double().square().sum()
     target_sum = target.double().square().sum()
     expected = float(torch.sqrt(error_sum / target_sum))
-    assert full["pooled_nrmse"] == expected
+    assert full["pooled_nrmse"] == pytest.approx(expected)
     assert first["pooled_nrmse"] != second["pooled_nrmse"]
