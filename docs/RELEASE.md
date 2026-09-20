@@ -56,3 +56,12 @@ The public-facing documentation and visualization pass is tagged separately as
 `v0.1.1-portfolio`. Any future work on whitening, channel-balanced objectives,
 residual vector fields, multiple seeds, sparse time, or OOD evaluation must
 begin as a separately registered study.
+
+## Additive errata and future-study boundary
+
+ChronoPDE V2 Phase 1 preserves this release while adding a machine-readable
+[claim ledger](../reports/chronopde_v2/phase1/claim_ledger.yaml). It records the
+Week 5 four-trajectory gate as unverified pending its exact source artifact,
+labels the unequal-history ID results exploratory, and prevents the exposed
+legacy ID set from serving as a fresh V2 confirmatory test. These annotations do
+not rewrite the original results or release tags.

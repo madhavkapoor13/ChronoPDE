@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import cast
 
 import numpy as np
+from numpy.typing import NDArray
 from scipy.stats import qmc
 
 from chronopde.config import ProjectConfig
@@ -36,16 +37,18 @@ FIELDS = (
 )
 
 
-def _scale_lhs(count: int, bounds: tuple[tuple[float, float], ...], seed: int) -> np.ndarray:
+def _scale_lhs(
+    count: int, bounds: tuple[tuple[float, float], ...], seed: int
+) -> NDArray[np.float64]:
     sample = qmc.LatinHypercube(d=len(bounds), seed=seed).random(count)
     lower = np.asarray([item[0] for item in bounds], dtype=np.float64)
     upper = np.asarray([item[1] for item in bounds], dtype=np.float64)
-    return cast(np.ndarray, qmc.scale(sample, lower, upper))
+    return cast(NDArray[np.float64], qmc.scale(sample, lower, upper))
 
 
 def _entries(
     split: str,
-    values: np.ndarray,
+    values: NDArray[np.float64],
     config: ProjectConfig,
     *,
     ic_regime: str,
@@ -91,7 +94,7 @@ def build_dataset_manifest(config: ProjectConfig) -> list[TrajectoryManifestEntr
             )
         )
 
-    ood_values: list[np.ndarray] = []
+    ood_values: list[NDArray[np.float64]] = []
     ood_bands: list[str] = []
     ood = config.data.ood_ranges
     for combo_index, choices in enumerate(product((0, 1), repeat=3)):

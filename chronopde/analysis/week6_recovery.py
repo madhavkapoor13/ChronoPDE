@@ -13,6 +13,7 @@ from typing import Any, cast
 
 import matplotlib
 import numpy as np
+from numpy.typing import NDArray
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -148,7 +149,7 @@ def _best_step(selection: dict[str, Any]) -> int:
     return int(raw["optimizer_steps"])
 
 
-def _paired_bootstrap(differences: np.ndarray) -> tuple[float, float]:
+def _paired_bootstrap(differences: NDArray[np.float64]) -> tuple[float, float]:
     rng = np.random.default_rng(BOOTSTRAP_SEED)
     indices = rng.integers(0, len(differences), size=(BOOTSTRAP_RESAMPLES, len(differences)))
     means = differences[indices].mean(axis=1)

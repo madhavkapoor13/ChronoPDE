@@ -12,6 +12,7 @@ from typing import Any, cast
 import matplotlib
 import numpy as np
 import torch
+from numpy.typing import NDArray
 from torch import Tensor
 from torch.utils.data import DataLoader
 
@@ -58,7 +59,7 @@ def _denormalize(states: Tensor, stats: NormalizationStats) -> Tensor:
     )
 
 
-def _write_time_errors(path: Path, errors: np.ndarray) -> None:
+def _write_time_errors(path: Path, errors: NDArray[np.float32]) -> None:
     with path.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.writer(stream)
         writer.writerow(
@@ -97,7 +98,7 @@ def evaluate_continuous_baseline(
     if integration_steps < 1:
         raise ValueError("steps_per_interval must be positive")
     rows: list[dict[str, Any]] = []
-    time_errors: list[np.ndarray] = []
+    time_errors: list[NDArray[np.float32]] = []
     persistence_final: list[float] = []
     elapsed = 0.0
     nfev = 0
@@ -156,7 +157,7 @@ def evaluate_continuous_baseline(
     _write_time_errors(output / "nrmse_by_time.csv", error_array)
     figure, axis = plt.subplots(figsize=(7, 4), constrained_layout=True)
     axis.plot(np.median(error_array, axis=0), label=model_name)
-    persistence_curve: list[np.ndarray] = []
+    persistence_curve: list[NDArray[np.float32]] = []
     for sample_index in range(len(dataset)):
         sample = dataset[sample_index]
         physical = _denormalize(sample.states[None].to(device), stats)

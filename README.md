@@ -169,6 +169,9 @@ See the [model card](MODEL_CARD.md),
 [experimental report](output/pdf/chronopde_negative_result_report.pdf),
 [release record](docs/RELEASE.md), and [portfolio summary](docs/PORTFOLIO.md).
 
+The additive [ChronoPDE V2 Phase 1 evidence audit](reports/chronopde_v2/phase1/README.md)
+records claim-level errata and provenance without changing the frozen study.
+
 ## License and attribution
 
 ChronoPDE is released under the [MIT License](LICENSE). The implementation is

@@ -1,0 +1,69 @@
+{
+  "archives": [
+    {"duplicate_matches": 0, "expected_sha256": "a0d42826fab76add0113860f09965ef723ea22aa41baf7423dfbc3559a82295d", "historical_filename": "results.zip", "id": "ct_fft_full", "matching_paths": [], "source_commit": "7d15658c9229e989a85feb4807c37e65daa71485", "status": "declared_only"},
+    {"duplicate_matches": 0, "expected_sha256": "fb1ed6edfbb165756849ca212e75d13d08928f17492220a52f3ee890096c65e5", "historical_filename": "results (1).zip", "id": "chronopde_exploratory", "matching_paths": [], "source_commit": "47fb45711391b34f5d06e6e5dc3808f18ef60665", "status": "declared_only"},
+    {"duplicate_matches": 0, "expected_sha256": "aecd1bf67621e94dc4368d35b53a4828f592cffae54c217e0b3d78a42d30e236", "historical_filename": "results (2).zip", "id": "resampled_smoke", "matching_paths": [], "source_commit": "094d0e4ce0063da22dab511b54cc6a7c576a4169", "status": "declared_only"},
+    {"duplicate_matches": 0, "expected_sha256": "e114d2d2bf2a65c8adb7e833c73b407cc0c02ed2003f67fc6c0ea1b827fb7051", "historical_filename": "results (4).zip", "id": "initial_gate_and_target_audit", "matching_paths": [], "source_commit": "80bafb5f09a2d924535f1530ed104bda8d62a714", "status": "declared_only"},
+    {"duplicate_matches": 0, "expected_sha256": "6016fd4eef552b9405066d65b2a254a18abb9cd0220bf48d2330cebb23fb3631", "historical_filename": "results (5).zip", "id": "mechanics_sweep", "matching_paths": [], "source_commit": "68a511867ed4f02bbbefe7743ff42799d0fd8a66", "status": "declared_only"},
+    {"duplicate_matches": 0, "expected_sha256": "fe8a7a813937e800bf14133e140fa0a73bd8e48ef7d44d281be5eb55fc142322", "historical_filename": "chronopde_week6_balanced_batch.zip", "id": "balanced_batch", "matching_paths": [], "source_commit": "30381c36472d2fc98afdde977084745f5edd3504", "status": "declared_only"},
+    {"duplicate_matches": 0, "expected_sha256": "8ece1bf8587995f0b6a87be609d2f192ad0aa4e9f9d86c3b97c101946e680db8", "historical_filename": "results (7).zip", "id": "loss_alignment", "matching_paths": [], "source_commit": "107bbef5560caa1862ac04012320ace76216331a", "status": "declared_only"}
+  ],
+  "legacy_evidence_manifest": "reports/diagnostics/week6/evidence_manifest.json",
+  "legacy_evidence_manifest_sha256": "65742ec2f8e628bcdd12ecf8204a34e43a28103eb9b6ebf6b701bb62dbc9a789",
+  "lightweight_evidence": [
+    {"path": "reports/diagnostics/week6/evidence/balanced/protocol.json", "sha256": "767de82c8a7e71e2df67733ab5d618978b41d1717af9d056589d3fc56a28f024", "size_bytes": 1876},
+    {"path": "reports/diagnostics/week6/evidence/balanced/suite_summary.json", "sha256": "825b1337347107c867c8e55bf9956cb3fc78a8e198b3e50d98b4ce29a924b843", "size_bytes": 2731},
+    {"path": "reports/diagnostics/week6/evidence/chronopde_exploratory/environment.json", "sha256": "7e01bf8daee002cd2542c017b6750889b8b860ca564cd7c4bc1941caef8f65ff", "size_bytes": 542},
+    {"path": "reports/diagnostics/week6/evidence/chronopde_exploratory/id_summary.json", "sha256": "c83fb305b027894ff7600db01e08e10cb5d7485454a9d2a5c23042a97c544382", "size_bytes": 460},
+    {"path": "reports/diagnostics/week6/evidence/chronopde_exploratory/training_summary.json", "sha256": "685c54e7ff618a1cc90ca8acf902d6c7351b074ba32deb92f3b395df0066a999", "size_bytes": 562},
+    {"path": "reports/diagnostics/week6/evidence/ct_fft_full/environment.json", "sha256": "76cdde96aa33c37854b0342faac9100368db123bd257d515bb50156577d694de", "size_bytes": 542},
+    {"path": "reports/diagnostics/week6/evidence/ct_fft_full/id_summary.json", "sha256": "c7de21c9f1090ca63bf054153fbde0801f68c89571afe0bae03c471305f7738a", "size_bytes": 455},
+    {"path": "reports/diagnostics/week6/evidence/ct_fft_full/training_summary.json", "sha256": "7d85b60a3aa3af04b3abf2ef03ce87ed46e95b19f268ef06dafa3aa8fc50c45d", "size_bytes": 558},
+    {"path": "reports/diagnostics/week6/evidence/initial_gate/suite_summary.json", "sha256": "467c2580cae62727e10227c9e2a87389a1987567959771e710fa241318404835", "size_bytes": 2380},
+    {"path": "reports/diagnostics/week6/evidence/initial_gate/target_audit_summary.json", "sha256": "19121ae6fb6d4d5b3f6700cb949c7a17601c4dd5ec4401006a51293283f63ead", "size_bytes": 565},
+    {"path": "reports/diagnostics/week6/evidence/loss_alignment/chronopde/checkpoint_selection.json", "sha256": "922a191599b14e238d6a1eb39d3e7991e308aa104585979b3be75034b5484e87", "size_bytes": 306},
+    {"path": "reports/diagnostics/week6/evidence/loss_alignment/chronopde/metrics.csv", "sha256": "9b61681fea7807691980bec4be41edc134214c93ff5ce1e60234c4817c53c8ac", "size_bytes": 8738},
+    {"path": "reports/diagnostics/week6/evidence/loss_alignment/chronopde/per_sample_metrics.jsonl", "sha256": "d9e829011a7821ae05d2f0a2ff0a8d556d0e61cd3e98c4b2405d248f9ea6f536", "size_bytes": 297702},
+    {"path": "reports/diagnostics/week6/evidence/loss_alignment/fno_ct/checkpoint_selection.json", "sha256": "a0da6e95b8ab3c89f1ad85bfd3a6deeed915f626a6e585af0cddfd3916a417db", "size_bytes": 306},
+    {"path": "reports/diagnostics/week6/evidence/loss_alignment/fno_ct/metrics.csv", "sha256": "4fc4af5159f655bfc7d3a7ec23b78d225803984f543cabb9a53e5d74c759c9f6", "size_bytes": 8686},
+    {"path": "reports/diagnostics/week6/evidence/loss_alignment/fno_ct/per_sample_metrics.jsonl", "sha256": "fbfc34c38cb11fd36177b5a7bf46cc8331ae9b954d4f6e414f0bb2672c2bebf6", "size_bytes": 297147},
+    {"path": "reports/diagnostics/week6/evidence/loss_alignment/protocol.json", "sha256": "60c7746a955d0dbc33624839b6ca8c29ea6f80094bf3bc23bcae851cce25a107", "size_bytes": 1921},
+    {"path": "reports/diagnostics/week6/evidence/loss_alignment/suite_summary.json", "sha256": "412cbdbdd26483f2d521cb8a5ee231404bd24382d900e985169c61076e755f76", "size_bytes": 2611},
+    {"path": "reports/diagnostics/week6/evidence/mechanics/suite_summary.json", "sha256": "cf26601369467d4067b0b9793454664c6377028f5c479ce36bfae9e01afac99e", "size_bytes": 7132},
+    {"path": "reports/diagnostics/week6/evidence/resampled_smoke/summary.json", "sha256": "6c35596574bf1a611fb4ce48de6b34980897d3c860ffe01d58b5618165adc1de", "size_bytes": 610},
+    {"path": "reports/diagnostics/week6/evidence/week4_ar/drive_inventory.json", "sha256": "566b785bb77fd579e03d930ff9938aaa1cb495e1ec27be56733d68e03ab56a02", "size_bytes": 588},
+    {"path": "reports/diagnostics/week6/evidence/week4_ar/fno_ar_id_summary.json", "sha256": "2a7393d1a0659feaf0be17e101e37be6d6e77b1346dd97401bc4d254b1d4e9a4", "size_bytes": 451},
+    {"path": "reports/diagnostics/week6/evidence/week4_ar/fno_ar_training_summary.json", "sha256": "04d25bc2ba6b9a7a253ceae06bae7613764b0e09696d28bfaf24557b0fd6df94", "size_bytes": 473},
+    {"path": "reports/diagnostics/week6/evidence/week4_ar/unet_ar_id_summary.json", "sha256": "9a8b84922d1ca507e7f886378cc975e8e152c0a570c3310f899308c014794284", "size_bytes": 454},
+    {"path": "reports/diagnostics/week6/evidence/week4_ar/unet_ar_training_summary.json", "sha256": "6c3e2924f6b246aebe06c008190f627f7a1629cccb4d2ca55dc40dd21b4629fc", "size_bytes": 472}
+  ],
+  "parent_commit": "ebaa66781c646eb85cdf270d474fff3f05611ada",
+  "recorded_results": {
+    "checkpoint_selection": {
+      "chronopde": {"best.pt": {"criterion": "minimum_total_loss", "optimizer_steps": 5000}, "best_velocity.pt": {"criterion": "minimum_velocity_nrmse_after_1000x_loss_reduction", "optimizer_steps": 5000}, "last.pt": {"criterion": "final_optimizer_step", "optimizer_steps": 5000}},
+      "fno_ct": {"best.pt": {"criterion": "minimum_total_loss", "optimizer_steps": 4100}, "best_velocity.pt": {"criterion": "minimum_velocity_nrmse_after_1000x_loss_reduction", "optimizer_steps": 4100}, "last.pt": {"criterion": "final_optimizer_step", "optimizer_steps": 5000}}
+    },
+    "classification": {"confirmatory_evidence": "none", "legacy_id": "exploratory_evaluation", "loss_alignment": "training_diagnostic"},
+    "dct_wins": 16,
+    "decision": "stop_and_document_model_or_conditioning_limitation",
+    "models": {
+      "chronopde": {"best_eligible_step": 5000, "conventional_sample_median_nrmse": 0.015137499198317528, "historical_gate_median_nrmse": 0.014205897226929665, "loss_reduction": 7980.265656466323, "model": "chronopde", "parameter_count": 1951125, "passed": false, "sample_max_nrmse": 0.03192788362503052, "sample_mean_nrmse": 0.01698349925572984, "sample_min_nrmse": 0.00616713659837842, "velocity_nrmse_u": 0.018369531258940697, "velocity_nrmse_v": 0.008643812499940395},
+      "fno_ct": {"best_eligible_step": 4100, "conventional_sample_median_nrmse": 0.019495482556521893, "historical_gate_median_nrmse": 0.018945075571537018, "loss_reduction": 188683.75756073103, "model": "fno_ct", "parameter_count": 1973657, "passed": false, "sample_max_nrmse": 0.037705693393945694, "sample_mean_nrmse": 0.022017660492565483, "sample_min_nrmse": 0.011582043021917343, "velocity_nrmse_u": 0.02938089892268181, "velocity_nrmse_v": 0.0144982123747468}
+    },
+    "objective": "full_field_relative",
+    "sample_count": 16,
+    "seed": 0,
+    "threshold": 0.01,
+    "training_budget": {"batch_size": 16, "evaluation_interval": 100, "max_optimizer_steps": 5000}
+  },
+  "release_tags": [
+    {"commit": "2a6efc8a6e4295aed95cd4868916284bbb7a8ea5", "name": "v0.1.0-negative-result"},
+    {"commit": "9d8a7d1e400eeccecefc9fa1949b2a85c892b915", "name": "v0.1.1-portfolio"},
+    {"commit": "0bf99b51dc436b56c40ce26d136443b1d4d64ad0", "name": "week1-foundation"},
+    {"commit": "617efd85e42aadded4877573d44c564e3da67cba", "name": "week2-simulator-pilot"},
+    {"commit": "e2f6411edbc0ec10faa66fa4a95feaf956fc48a9", "name": "week3-data-numerics"}
+  ],
+  "repository_head_at_freeze": "ebaa66781c646eb85cdf270d474fff3f05611ada",
+  "schema_version": 1,
+  "study_id": "chronopde_v2"
+}
