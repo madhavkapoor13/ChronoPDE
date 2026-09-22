@@ -234,3 +234,108 @@ def load_phase3_protocol(path: Path) -> Phase3Protocol:
     if not isinstance(raw, dict):
         raise ValueError("Phase 3 protocol root must be a mapping")
     return Phase3Protocol.model_validate(raw)
+
+
+class Phase4Models(_StrictModel):
+    width: Literal[29]
+    blocks: Literal[4]
+    film_hidden_width: Literal[128]
+    fft_modes: tuple[Literal[12], Literal[12]]
+    dct_modes: tuple[Literal[24], Literal[24]]
+    residual_skip: Literal[False]
+
+
+class Phase4Training(_StrictModel):
+    seed: Literal[0]
+    maximum_steps: int = Field(ge=1)
+    batch_size: int = Field(ge=1)
+    learning_rate: float = Field(gt=0)
+    minimum_learning_rate: float = Field(gt=0)
+    warmup_steps: int = Field(ge=0)
+    weight_decay: float = Field(ge=0)
+    gradient_clip_norm: float = Field(gt=0)
+    evaluation_interval: int = Field(ge=1)
+    checkpoint_interval: int = Field(ge=1)
+    validation_velocity_samples: int = Field(ge=1)
+    validation_rollout_trajectories: int = Field(ge=1)
+    rollout_steps_per_interval: int = Field(ge=1)
+    objective: Literal["mean_per_sample_full_field_relative_rhs_error"]
+
+    @model_validator(mode="after")
+    def valid_schedule(self) -> Phase4Training:
+        if self.minimum_learning_rate > self.learning_rate:
+            raise ValueError("minimum learning rate cannot exceed the initial rate")
+        if self.warmup_steps >= self.maximum_steps:
+            raise ValueError("warmup must finish before the training budget")
+        if self.evaluation_interval > self.maximum_steps:
+            raise ValueError("evaluation interval exceeds the training budget")
+        return self
+
+
+class Phase4Gate(_StrictModel):
+    minimum_validation_loss_reduction: float = Field(gt=1)
+    maximum_velocity_nrmse: float = Field(gt=0)
+    require_rollout_better_than_persistence: Literal[True]
+    maximum_divergence_fraction: float = Field(ge=0, le=0)
+
+
+class Phase4Restrictions(_StrictModel):
+    development_only: Literal[True]
+    generate_confirmatory: Literal[False]
+    inspect_confirmatory: Literal[False]
+    ood_evaluation: Literal[False]
+    superiority_claim: Literal[False]
+    model_selection_split: Literal["validation"]
+
+
+class Phase4Protocol(_StrictModel):
+    schema_version: Literal[1]
+    study_id: Literal["chronopde_v2"]
+    phase: Literal[4]
+    protocol_version: Literal[1]
+    parent_phase_commit: Literal["53fc3e9"]
+    phase2_descriptor: Literal["configs/chronopde_v2/phase2.yaml"]
+    phase3_descriptor: Literal["configs/chronopde_v2/phase3.yaml"]
+    phase3_protocol_sha256: Literal[
+        "f8e716c73eb09341f015b4783c6d0ee7971daaf215c3c59ee98b2dd3aaf5bb34"
+    ]
+    development_dataset_sha256: Literal[
+        "4eb0482bdadb5fe836076131ecb01588409bdb7c3aa0914727a69107deaeded6"
+    ]
+    normalization_sha256: Literal[
+        "c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d"
+    ]
+    target: Literal["exact_discrete_rhs"]
+    time_units: Literal["physical"]
+    models: Phase4Models
+    training: Phase4Training
+    gate: Phase4Gate
+    checkpoint_selection: Literal[
+        "minimum_validation_rollout_relative_l2_then_velocity_nrmse"
+    ]
+    outputs: OutputContract
+    restrictions: Phase4Restrictions
+
+    @model_validator(mode="after")
+    def validate_phase4(self) -> Phase4Protocol:
+        if self.outputs.report_root != Path("reports/chronopde_v2/phase4"):
+            raise ValueError("Phase 4 reports must use the Phase 4 report root")
+        if self.training.validation_rollout_trajectories > 128:
+            raise ValueError("rollout subset exceeds the frozen validation split")
+        if self.training.validation_velocity_samples > 128 * 101:
+            raise ValueError("velocity subset exceeds the frozen validation split")
+        return self
+
+    @property
+    def digest(self) -> str:
+        return hashlib.sha256(canonical_json_bytes(self.model_dump(mode="json"))).hexdigest()
+
+
+def load_phase4_protocol(path: Path) -> Phase4Protocol:
+    """Load the strict, development-only Phase 4 protocol."""
+
+    with path.open(encoding="utf-8") as stream:
+        raw = yaml.safe_load(stream)
+    if not isinstance(raw, dict):
+        raise ValueError("Phase 4 protocol root must be a mapping")
+    return Phase4Protocol.model_validate(raw)

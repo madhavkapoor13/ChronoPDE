@@ -74,3 +74,7 @@ no model training; therefore it does not revise this release's model conclusions
 The additive [Phase 3 data report](../reports/chronopde_v2/phase3/README.md)
 records the new exact-RHS development dataset. Confirmatory trajectories remain
 sealed, and the V1 model conclusions remain unchanged.
+
+The [Phase 4 protocol](../reports/chronopde_v2/phase4/README.md) adds a bounded,
+development-only feasibility trainer for the matched V2 models. Its GPU study
+has not yet run, so it also leaves every V1 conclusion unchanged.

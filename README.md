@@ -182,6 +182,12 @@ records a validated 512-trajectory training and 128-trajectory validation
 dataset with exact discrete-RHS labels. The 256 confirmatory identities remain
 sealed and ungenerated.
 
+The [Phase 4 feasibility protocol](reports/chronopde_v2/phase4/README.md)
+implements matched FFT-12 and DCT-24 training on that development dataset,
+including deterministic resume, validation-only selection, and verified
+recovery packages. It is implementation-complete but scientifically pending a
+real GPU run; no new model-quality claim is made here.
+
 ## License and attribution
 
 ChronoPDE is released under the [MIT License](LICENSE). The implementation is
