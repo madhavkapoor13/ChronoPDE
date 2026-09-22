@@ -177,6 +177,11 @@ validates the discrete Neumann operator, freezes exact-RHS supervision and fresh
 split identities, and records a successful CPU pilot without making a new model
 quality claim.
 
+The [ChronoPDE V2 Phase 3 data report](reports/chronopde_v2/phase3/README.md)
+records a validated 512-trajectory training and 128-trajectory validation
+dataset with exact discrete-RHS labels. The 256 confirmatory identities remain
+sealed and ungenerated.
+
 ## License and attribution
 
 ChronoPDE is released under the [MIT License](LICENSE). The implementation is

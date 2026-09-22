@@ -116,9 +116,9 @@ class OutputContract(_StrictModel):
     @model_validator(mode="after")
     def isolated_roots(self) -> OutputContract:
         if self.artifact_root != Path("artifacts/chronopde_v2/runs"):
-            raise ValueError("Phase 2 artifacts must use the isolated V2 root")
-        if self.report_root != Path("reports/chronopde_v2/phase2"):
-            raise ValueError("Phase 2 reports must use the Phase 2 report root")
+            raise ValueError("V2 artifacts must use the isolated V2 root")
+        if not self.report_root.is_relative_to(Path("reports/chronopde_v2")):
+            raise ValueError("V2 reports must use the isolated V2 report root")
         return self
 
 
@@ -158,6 +158,8 @@ class Phase2Protocol(_StrictModel):
             raise ValueError("tight solver rtol must be stricter than the standard solver")
         if self.data.tight_solver.atol >= self.pde.solver.atol:
             raise ValueError("tight solver atol must be stricter than the standard solver")
+        if self.outputs.report_root != Path("reports/chronopde_v2/phase2"):
+            raise ValueError("Phase 2 reports must use the Phase 2 report root")
         return self
 
     @property
@@ -174,3 +176,61 @@ def load_phase2_protocol(path: Path) -> Phase2Protocol:
     if not isinstance(raw, dict):
         raise ValueError("Phase 2 protocol root must be a mapping")
     return Phase2Protocol.model_validate(raw)
+
+
+class Phase3SplitContract(_StrictModel):
+    training: Literal[512]
+    validation: Literal[128]
+
+
+class Phase3Restrictions(_StrictModel):
+    generate_confirmatory: Literal[False]
+    gpu_training: Literal[False]
+    model_training: Literal[False]
+    use_pilot_normalization: Literal[False]
+    use_legacy_data: Literal[False]
+
+
+class Phase3Protocol(_StrictModel):
+    schema_version: Literal[1]
+    study_id: Literal["chronopde_v2"]
+    phase: Literal[3]
+    protocol_version: Literal[1]
+    parent_phase_commit: Literal["a18f651"]
+    phase2_descriptor: Literal["configs/chronopde_v2/phase2.yaml"]
+    phase2_protocol_sha256: Literal[
+        "017a1857d6d34f778455f23648728696db7120a2b9504354f00fd97a2776780a"
+    ]
+    frozen_future_manifest_sha256: Literal[
+        "273f7ba6b7a0645fc3f5df236aa1886cca67a4ce7897270a5119e5ad35cea7c5"
+    ]
+    target: Literal["exact_discrete_rhs"]
+    time_units: Literal["physical"]
+    development_splits: Phase3SplitContract
+    sealed_confirmatory_trajectories: Literal[256]
+    workers: int = Field(ge=1, le=16)
+    rhs_spot_checks: int = Field(ge=1)
+    outputs: OutputContract
+    restrictions: Phase3Restrictions
+
+    @model_validator(mode="after")
+    def validate_phase3_outputs(self) -> Phase3Protocol:
+        if self.outputs.report_root != Path("reports/chronopde_v2/phase3"):
+            raise ValueError("Phase 3 reports must use the Phase 3 report root")
+        if self.rhs_spot_checks > self.development_splits.training:
+            raise ValueError("RHS spot checks cannot exceed the training split")
+        return self
+
+    @property
+    def digest(self) -> str:
+        return hashlib.sha256(canonical_json_bytes(self.model_dump(mode="json"))).hexdigest()
+
+
+def load_phase3_protocol(path: Path) -> Phase3Protocol:
+    """Load the strict Phase 3 development-data protocol."""
+
+    with path.open(encoding="utf-8") as stream:
+        raw = yaml.safe_load(stream)
+    if not isinstance(raw, dict):
+        raise ValueError("Phase 3 protocol root must be a mapping")
+    return Phase3Protocol.model_validate(raw)

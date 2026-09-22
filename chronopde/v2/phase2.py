@@ -33,7 +33,9 @@ def _write_or_verify(path: Path, contents: bytes) -> None:
     atomic_write_bytes(path, contents)
 
 
-def _package_evidence(package: Path, paths: list[Path], root: Path) -> dict[str, Any]:
+def _package_evidence(
+    package: Path, paths: list[Path], root: Path, *, phase: int = 2
+) -> dict[str, Any]:
     entries: dict[str, bytes] = {}
     checksums: dict[str, str] = {}
     for path in sorted(paths):
@@ -44,7 +46,7 @@ def _package_evidence(package: Path, paths: list[Path], root: Path) -> dict[str,
     package_manifest = {
         "schema_version": 1,
         "study_id": "chronopde_v2",
-        "phase": 2,
+        "phase": phase,
         "partial": False,
         "files": checksums,
     }
@@ -64,11 +66,11 @@ def _package_evidence(package: Path, paths: list[Path], root: Path) -> dict[str,
         atomic_write_bytes(package, temporary.read_bytes())
     finally:
         temporary.unlink(missing_ok=True)
-    return verify_phase2_package(package)
+    return verify_evidence_package(package, expected_phase=phase)
 
 
-def verify_phase2_package(package: Path) -> dict[str, Any]:
-    """Verify member safety, uniqueness, and checksums in a Phase 2 package."""
+def verify_evidence_package(package: Path, *, expected_phase: int) -> dict[str, Any]:
+    """Verify member safety, identity, uniqueness, and checksums in a V2 package."""
 
     with zipfile.ZipFile(package) as archive:
         names = archive.namelist()
@@ -79,13 +81,22 @@ def verify_phase2_package(package: Path) -> dict[str, Any]:
             if path.is_absolute() or ".." in path.parts:
                 raise ValueError("Phase 2 package contains an unsafe member path")
         manifest = cast(dict[str, Any], json.loads(archive.read("package_manifest.json")))
-        if manifest.get("study_id") != "chronopde_v2" or manifest.get("phase") != 2:
-            raise ValueError("Phase 2 package identity mismatch")
+        if (
+            manifest.get("study_id") != "chronopde_v2"
+            or manifest.get("phase") != expected_phase
+        ):
+            raise ValueError(f"Phase {expected_phase} package identity mismatch")
         for name, expected in manifest["files"].items():
             actual = hashlib.sha256(archive.read(name)).hexdigest()
             if actual != expected:
                 raise ValueError(f"Phase 2 package checksum mismatch: {name}")
     return manifest
+
+
+def verify_phase2_package(package: Path) -> dict[str, Any]:
+    """Verify a Phase 2 recovery package."""
+
+    return verify_evidence_package(package, expected_phase=2)
 
 
 def _decision(

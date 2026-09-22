@@ -1,0 +1,52 @@
+{
+  "confirmatory_data_generated": false,
+  "dataset": {
+    "confirmatory_status": "sealed_not_generated",
+    "confirmatory_trajectories_generated": 0,
+    "development_manifest_sha256": "c9656195614fb9df042ef56e02f7dbb7b707c98e9a6c8ceb7915a2a8a998694c",
+    "frozen_future_manifest_sha256": "273f7ba6b7a0645fc3f5df236aa1886cca67a4ce7897270a5119e5ad35cea7c5",
+    "logical_content_sha256": "4eb0482bdadb5fe836076131ecb01588409bdb7c3aa0914727a69107deaeded6",
+    "maximum_absolute_state": 2.8197755813598633,
+    "maximum_rhs_spot_check_relative_l2": 2.6961045607720636e-08,
+    "normalization": {
+      "parameter_mean": [
+        0.0009999926845585376,
+        0.0049999779957072945,
+        0.004999971715839271
+      ],
+      "parameter_std": [
+        0.00011546142741944936,
+        0.0005773998366849966,
+        0.0005773716624897576
+      ],
+      "state_mean": [
+        -0.02014411607185972,
+        -0.01979434809058196
+      ],
+      "state_std": [
+        0.42329105854578575,
+        0.2524774817210733
+      ]
+    },
+    "normalization_sha256": "c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d",
+    "normalization_source": "training_split_only",
+    "passed": true,
+    "rhs_spot_checks": 16,
+    "successful_trajectories": 640,
+    "target": "exact_discrete_rhs_per_physical_time",
+    "training_trajectories": 512,
+    "trajectory_cache_entries": 640,
+    "validation_trajectories": 128
+  },
+  "decision": "phase3_complete_phase4_feasibility_training_allowed",
+  "gpu_training_performed": false,
+  "model_training_performed": false,
+  "next_gate": "Phase 4 may train matched models on training data and select on validation data only; confirmatory identities remain sealed.",
+  "passed": true,
+  "phase": 3,
+  "phase2_protocol_sha256": "017a1857d6d34f778455f23648728696db7120a2b9504354f00fd97a2776780a",
+  "protocol_sha256": "f8e716c73eb09341f015b4783c6d0ee7971daaf215c3c59ee98b2dd3aaf5bb34",
+  "run_id": "chronopde_v2-p3-reaction_diffusion-data-reference-development-s20260922-f8e716c7",
+  "schema_version": 1,
+  "study_id": "chronopde_v2"
+}

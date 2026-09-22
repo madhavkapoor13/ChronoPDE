@@ -70,3 +70,7 @@ Phase 2 is documented separately in
 [`reports/chronopde_v2/phase2/README.md`](../reports/chronopde_v2/phase2/README.md).
 It validates the numerical ground truth and a fresh data protocol but performs
 no model training; therefore it does not revise this release's model conclusions.
+
+The additive [Phase 3 data report](../reports/chronopde_v2/phase3/README.md)
+records the new exact-RHS development dataset. Confirmatory trajectories remain
+sealed, and the V1 model conclusions remain unchanged.

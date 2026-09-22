@@ -198,7 +198,7 @@ def generate_v2_initial_condition(protocol: Phase2Protocol, seed: int) -> Float3
     return np.stack(fields).astype(np.float32, copy=False)
 
 
-def _rhs_series(states: Float32, params: PhysicalParameters, pde: PDEConfig) -> Float32:
+def exact_rhs_series(states: Float32, params: PhysicalParameters, pde: PDEConfig) -> Float32:
     grid = build_grid(pde)
     laplacian = build_neumann_laplacian(grid)
     result = np.empty_like(states, dtype=np.float32)
@@ -297,7 +297,7 @@ def generate_cpu_pilot(
         if not result.diagnostics.success:
             raise RuntimeError(f"pilot trajectory failed: {row['trajectory_id']}")
         states.append(result.states)
-        rhs_values.append(_rhs_series(result.states, params, protocol.pde))
+        rhs_values.append(exact_rhs_series(result.states, params, protocol.pde))
         times.append(result.times)
         parameters.append(params.as_array())
         maximum_values.append(result.diagnostics.max_abs_state)
