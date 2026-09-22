@@ -1,0 +1,49 @@
+{
+  "dct": {
+    "active_real_spectral_dof_per_block": 484416,
+    "basis": "dct",
+    "blocks": 4,
+    "film_hidden_width": 128,
+    "maximum_wavenumber_x": 36.12831551628262,
+    "maximum_wavenumber_y": 36.12831551628262,
+    "modes_x": 24,
+    "modes_y": 24,
+    "total_real_parameters": 1973657,
+    "width": 29
+  },
+  "fft": {
+    "active_real_spectral_dof_per_block": 484416,
+    "basis": "fft",
+    "blocks": 4,
+    "film_hidden_width": 128,
+    "maximum_wavenumber_x": 34.55751918948772,
+    "maximum_wavenumber_y": 37.69911184307752,
+    "modes_x": 12,
+    "modes_y": 12,
+    "total_real_parameters": 1973657,
+    "width": 29
+  },
+  "mismatch": {
+    "physical_cutoff_relative_mismatch": 0.04347826086956527,
+    "spectral_dof_relative_mismatch": 0.0,
+    "total_parameter_relative_mismatch": 0.0
+  },
+  "passed": true,
+  "selection": "predeclared_expected_pair",
+  "shared_architecture": {
+    "activation": "GELU except final spectral block",
+    "blocks": 4,
+    "conditioner": "FiLMConditioner",
+    "film_hidden_width": 128,
+    "lift": "1x1 convolution",
+    "pointwise_path": "1x1 convolution in every block",
+    "projection": "1x1 convolution, GELU, 1x1 convolution",
+    "residual_skip": false,
+    "spectral_weight_initialization": "normal with scale 1 / width"
+  },
+  "tolerances": {
+    "physical_cutoff": 0.1,
+    "spectral_dof": 0.05,
+    "total_parameters": 0.02
+  }
+}

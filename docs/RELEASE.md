@@ -65,3 +65,8 @@ Week 5 four-trajectory gate as unverified pending its exact source artifact,
 labels the unequal-history ID results exploratory, and prevents the exposed
 legacy ID set from serving as a fresh V2 confirmatory test. These annotations do
 not rewrite the original results or release tags.
+
+Phase 2 is documented separately in
+[`reports/chronopde_v2/phase2/README.md`](../reports/chronopde_v2/phase2/README.md).
+It validates the numerical ground truth and a fresh data protocol but performs
+no model training; therefore it does not revise this release's model conclusions.

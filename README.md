@@ -172,6 +172,11 @@ See the [model card](MODEL_CARD.md),
 The additive [ChronoPDE V2 Phase 1 evidence audit](reports/chronopde_v2/phase1/README.md)
 records claim-level errata and provenance without changing the frozen study.
 
+The [ChronoPDE V2 Phase 2 numerical audit](reports/chronopde_v2/phase2/README.md)
+validates the discrete Neumann operator, freezes exact-RHS supervision and fresh
+split identities, and records a successful CPU pilot without making a new model
+quality claim.
+
 ## License and attribution
 
 ChronoPDE is released under the [MIT License](LICENSE). The implementation is
