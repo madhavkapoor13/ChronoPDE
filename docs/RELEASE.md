@@ -88,3 +88,10 @@ instability rather than an RK4-resolution artifact and authorized the
 Phase 5 uses fresh seeds and keeps all confirmatory states sealed. Even a Phase
 5 pass only freezes a candidate for later confirmation; it does not revise the
 public V1 scientific claim boundary.
+
+The additive [Phase 6 sealed-confirmation protocol](../reports/chronopde_v2/phase6/README.md)
+cryptographically fixes the Phase 5 archive, all ten checkpoints, the 256
+Phase 2 holdout identities, RK4 settings, metrics and decision rule. It permits
+one unchanged confirmatory execution and never rewrites this V1 release. A
+Phase 6 result may update current-facing V2 wording only after all ten frozen
+runs complete and the strict gate is applied.

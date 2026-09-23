@@ -9,10 +9,13 @@ The active V2 workflows are:
 | `chronopde_v2_phase4_kaggle.ipynb` | Completed matched feasibility training |
 | `chronopde_v2_phase4b_kaggle.ipynb` | Evaluation-only RK4 integration audit |
 | `chronopde_v2_phase5_kaggle.ipynb` | Fresh five-seed matched development study |
+| `chronopde_v2_phase6_generate_kaggle.ipynb` | Generate sealed confirmatory trajectories |
+| `chronopde_v2_phase6_evaluate_kaggle.ipynb` | One-shot frozen confirmatory evaluation |
 
-Phase 5 is the current entry point. It requires the private Phase 3 development
-dataset and uses both GPUs in a T4x2 session, one matched backbone per GPU. It
-does not read or generate confirmatory data.
+Phase 6A is the current entry point after the Phase 5 gate passed. It consumes
+the curated Phase 5 ZIP and generates the sealed confirmatory dataset on CPU.
+Phase 6B then consumes both private datasets and evaluates one matched pair per
+T4 without training.
 
 ## Frozen V1 workflow
 

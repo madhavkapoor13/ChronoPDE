@@ -202,6 +202,12 @@ for seeds 0–4, selects checkpoints only on fixed validation velocity error, an
 applies a predeclared paired stability and performance gate. Confirmatory data
 remain sealed, so Phase 5 cannot itself support a superiority claim.
 
+The [Phase 6 protocol](reports/chronopde_v2/phase6/README.md) implements the
+one-shot sealed confirmation. It generates the 256 identities frozen in Phase
+2, validates the exact-RHS dataset, evaluates all ten frozen Phase 5
+checkpoints, and applies the predeclared five-of-five paired gate. Until that
+workflow is completed, no confirmatory V2 superiority claim is authorized.
+
 ## License and attribution
 
 ChronoPDE is released under the [MIT License](LICENSE). The implementation is

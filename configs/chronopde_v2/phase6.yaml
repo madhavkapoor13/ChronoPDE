@@ -1,0 +1,60 @@
+schema_version: 1
+study_id: chronopde_v2
+phase: 6
+protocol_version: 1
+parent_phase_commit: dc9b2c5
+phase2_descriptor: configs/chronopde_v2/phase2.yaml
+phase3_summary: reports/chronopde_v2/phase3/dataset_summary.json
+phase5_descriptor: configs/chronopde_v2/phase5.yaml
+phase5_protocol_sha256: 73d7ad0540351fc206574e1cc4d6f47685f7fe392b7c918a867e73d09b02776f
+frozen_future_manifest_sha256: 273f7ba6b7a0645fc3f5df236aa1886cca67a4ce7897270a5119e5ad35cea7c5
+confirmatory_manifest_sha256: dbb177527a5e740df474d0bd26d39be42904fdc649bd1e81bd5f6ed98a1b85a1
+normalization_sha256: c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d
+checkpoints:
+  source_archive_sha256: cf3eede191de4f9e1dd43b36f1d9f1000d314d3a0e01bc90f71a80d4ebee3c54
+  source_code_commit: dc9b2c55c4dd1055dce834164ee4e410258de1aa
+  fft:
+    - f7a6ec9a0567743fdea72c944e9872456b4b7bf1a4f42cabc535169b66cdba33
+    - 0539b05d1b2233ce5f53d8d869197bb7a114fa7793aeb40c731ca85afa2b49ea
+    - a89cacf37f3d730d72284f9b15d11760e6e1fef690904bc60360cae57ce6bc36
+    - ddb78f0a13fcfabae49f46e5e5c3b465f05ccd8b58bc4d8ca1524d480d8c686b
+    - d1fbedaf35e22dd0af0115d45e720d49120abd80aadcf7fec6b76398a570b445
+  dct:
+    - 786471ba79270d7033fecb67ec06e0c2566782e7e46064343a8d02e3b197db22
+    - 06d2382aa7507eb84c31fb5d6882754087fd74e7f31ddcb345e018e082bbd582
+    - c4d469c5e6dcd416dda106c7d2ad377c86a380e9f4378096542219799a30295a
+    - 9a464b29a54726836ee0d223b0437b77d2f2b1f0a7f178438334531044a5de94
+    - bf2c5b7669784e09618a8834bb45cfe18f6982c8870e4b9b5be55d54f304ec0a
+generation:
+  trajectories: 256
+  workers: 4
+  rhs_spot_checks: 32
+  tight_solver_indices: [0, 23, 46, 70, 93, 116, 139, 162, 185, 209, 232, 255]
+evaluation:
+  seeds: [0, 1, 2, 3, 4]
+  method: rk4
+  steps_per_interval: 8
+  rollout_batch_size: 4
+  velocity_batch_size: 16
+  bootstrap_resamples: 20000
+  bootstrap_seed: 20260923
+gate:
+  require_all_runs_complete: true
+  require_dct_zero_divergence: true
+  require_dct_rollout_wins: 5
+  minimum_median_relative_improvement: 0.10
+  require_dct_velocity_wins: 5
+  require_dct_beats_persistence: 5
+  require_dct_divergence_no_worse: 5
+outputs:
+  artifact_root: artifacts/chronopde_v2/runs
+  report_root: reports/chronopde_v2/phase6
+restrictions:
+  training: false
+  optimizer_updates: false
+  checkpoint_writes: false
+  checkpoint_selection: false
+  development_data_access: false
+  ood_evaluation: false
+  sparse_time_evaluation: false
+  repeat_with_changed_settings: false

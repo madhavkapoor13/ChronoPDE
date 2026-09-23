@@ -523,3 +523,117 @@ def load_phase5_protocol(path: Path) -> Phase5Protocol:
     if not isinstance(raw, dict):
         raise ValueError("Phase 5 protocol root must be a mapping")
     return Phase5Protocol.model_validate(raw)
+
+
+class Phase6Checkpoints(_StrictModel):
+    source_archive_sha256: Literal[
+        "cf3eede191de4f9e1dd43b36f1d9f1000d314d3a0e01bc90f71a80d4ebee3c54"
+    ]
+    source_code_commit: Literal["dc9b2c55c4dd1055dce834164ee4e410258de1aa"]
+    fft: tuple[str, str, str, str, str]
+    dct: tuple[str, str, str, str, str]
+
+    @model_validator(mode="after")
+    def validate_hashes(self) -> Phase6Checkpoints:
+        import re
+
+        if any(not re.fullmatch(r"[0-9a-f]{64}", value) for value in (*self.fft, *self.dct)):
+            raise ValueError("Phase 6 checkpoint identities must be SHA-256 digests")
+        return self
+
+
+class Phase6Generation(_StrictModel):
+    trajectories: Literal[256]
+    workers: int = Field(ge=1, le=16)
+    rhs_spot_checks: Literal[32]
+    tight_solver_indices: tuple[int, ...]
+
+    @model_validator(mode="after")
+    def validate_indices(self) -> Phase6Generation:
+        if len(self.tight_solver_indices) != 12 or len(set(self.tight_solver_indices)) != 12:
+            raise ValueError("Phase 6 requires 12 unique tight-solver controls")
+        if min(self.tight_solver_indices) < 0 or max(self.tight_solver_indices) >= 256:
+            raise ValueError("Phase 6 tight-solver controls exceed the sealed split")
+        return self
+
+
+class Phase6Evaluation(_StrictModel):
+    seeds: tuple[Literal[0], Literal[1], Literal[2], Literal[3], Literal[4]]
+    method: Literal["rk4"]
+    steps_per_interval: Literal[8]
+    rollout_batch_size: int = Field(ge=1)
+    velocity_batch_size: int = Field(ge=1)
+    bootstrap_resamples: Literal[20000]
+    bootstrap_seed: Literal[20260923]
+
+
+class Phase6Gate(_StrictModel):
+    require_all_runs_complete: Literal[True]
+    require_dct_zero_divergence: Literal[True]
+    require_dct_rollout_wins: Literal[5]
+    minimum_median_relative_improvement: float = Field(gt=0)
+    require_dct_velocity_wins: Literal[5]
+    require_dct_beats_persistence: Literal[5]
+    require_dct_divergence_no_worse: Literal[5]
+
+
+class Phase6Restrictions(_StrictModel):
+    training: Literal[False]
+    optimizer_updates: Literal[False]
+    checkpoint_writes: Literal[False]
+    checkpoint_selection: Literal[False]
+    development_data_access: Literal[False]
+    ood_evaluation: Literal[False]
+    sparse_time_evaluation: Literal[False]
+    repeat_with_changed_settings: Literal[False]
+
+
+class Phase6Protocol(_StrictModel):
+    schema_version: Literal[1]
+    study_id: Literal["chronopde_v2"]
+    phase: Literal[6]
+    protocol_version: Literal[1]
+    parent_phase_commit: Literal["dc9b2c5"]
+    phase2_descriptor: Literal["configs/chronopde_v2/phase2.yaml"]
+    phase3_summary: Literal["reports/chronopde_v2/phase3/dataset_summary.json"]
+    phase5_descriptor: Literal["configs/chronopde_v2/phase5.yaml"]
+    phase5_protocol_sha256: Literal[
+        "73d7ad0540351fc206574e1cc4d6f47685f7fe392b7c918a867e73d09b02776f"
+    ]
+    frozen_future_manifest_sha256: Literal[
+        "273f7ba6b7a0645fc3f5df236aa1886cca67a4ce7897270a5119e5ad35cea7c5"
+    ]
+    confirmatory_manifest_sha256: Literal[
+        "dbb177527a5e740df474d0bd26d39be42904fdc649bd1e81bd5f6ed98a1b85a1"
+    ]
+    normalization_sha256: Literal[
+        "c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d"
+    ]
+    checkpoints: Phase6Checkpoints
+    generation: Phase6Generation
+    evaluation: Phase6Evaluation
+    gate: Phase6Gate
+    outputs: OutputContract
+    restrictions: Phase6Restrictions
+
+    @model_validator(mode="after")
+    def validate_phase6(self) -> Phase6Protocol:
+        if self.outputs.report_root != Path("reports/chronopde_v2/phase6"):
+            raise ValueError("Phase 6 reports must use the Phase 6 report root")
+        if self.gate.minimum_median_relative_improvement != 0.10:
+            raise ValueError("Phase 6 practical-effect threshold is frozen")
+        return self
+
+    @property
+    def digest(self) -> str:
+        return hashlib.sha256(canonical_json_bytes(self.model_dump(mode="json"))).hexdigest()
+
+
+def load_phase6_protocol(path: Path) -> Phase6Protocol:
+    """Load the strict sealed-confirmatory Phase 6 protocol."""
+
+    with path.open(encoding="utf-8") as stream:
+        raw = yaml.safe_load(stream)
+    if not isinstance(raw, dict):
+        raise ValueError("Phase 6 protocol root must be a mapping")
+    return Phase6Protocol.model_validate(raw)
