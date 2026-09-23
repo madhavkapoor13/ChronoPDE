@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Phase 1 provenance verifies the frozen release-tag inventory.
+          # A shallow checkout omits those tags and incorrectly reports stale evidence.
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
