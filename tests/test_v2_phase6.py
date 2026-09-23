@@ -192,3 +192,17 @@ def test_phase6_corrupt_resumable_cache_is_rejected(tmp_path: Path) -> None:
 
 def test_phase6_models_are_exactly_the_two_frozen_backbones() -> None:
     assert MODEL_NAMES == ("fft", "dct")
+
+
+def test_committed_phase6_evidence_records_the_frozen_passing_gate() -> None:
+    protocol = load_phase6_protocol(CONFIG)
+    report_root = ROOT / "reports/chronopde_v2/phase6"
+    decision = json.loads((report_root / "decision_report.json").read_text())
+    snapshot = json.loads((report_root / "protocol_snapshot.json").read_text())
+    assert decision["protocol_sha256"] == protocol.digest
+    assert decision["complete"] is decision["passed"] is True
+    assert decision["superiority_claim_authorized"] is True
+    assert decision["rollout_wins"] == decision["velocity_wins"] == 5
+    assert decision["median_relative_improvement"] == pytest.approx(0.21135876577066035)
+    assert decision["hierarchical_bootstrap"]["available_resamples"] == 20_000
+    assert snapshot == protocol.model_dump(mode="json")

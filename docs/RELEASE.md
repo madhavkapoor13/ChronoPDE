@@ -89,9 +89,11 @@ Phase 5 uses fresh seeds and keeps all confirmatory states sealed. Even a Phase
 5 pass only freezes a candidate for later confirmation; it does not revise the
 public V1 scientific claim boundary.
 
-The additive [Phase 6 sealed-confirmation protocol](../reports/chronopde_v2/phase6/README.md)
+The additive [Phase 6 sealed-confirmation report](../reports/chronopde_v2/phase6/README.md)
 cryptographically fixes the Phase 5 archive, all ten checkpoints, the 256
-Phase 2 holdout identities, RK4 settings, metrics and decision rule. It permits
-one unchanged confirmatory execution and never rewrites this V1 release. A
-Phase 6 result may update current-facing V2 wording only after all ten frozen
-runs complete and the strict gate is applied.
+Phase 2 holdout identities, RK4 settings, metrics and decision rule. All ten
+frozen runs completed and the strict gate passed: DCT won rollout and
+exact-velocity error in `5/5` seeds, achieved `21.14%` median paired rollout
+improvement, and had zero divergence across 1,280 confirmatory rollouts. This
+authorizes the scoped V2 claim while leaving the historical V1 release and its
+negative result unchanged.

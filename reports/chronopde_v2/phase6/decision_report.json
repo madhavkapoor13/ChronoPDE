@@ -1,0 +1,92 @@
+{
+  "boundary_wording_authorized": true,
+  "complete": true,
+  "conditions": {
+    "all_runs_complete": true,
+    "dct_beats_persistence_all_seeds": true,
+    "dct_divergence_no_worse_all_seeds": true,
+    "dct_rollout_wins_all_seeds": true,
+    "dct_velocity_wins_all_seeds": true,
+    "dct_zero_divergence": true,
+    "median_relative_improvement_at_least_10_percent": true
+  },
+  "dataset": {
+    "file_sha256": "0a432d24d34605274a4e4bfa06d97831602062b016b44f4d5b81f91cc14e64e3",
+    "logical_content_sha256": "2c44b74196f03c20c65935592f870c52551be89dd9ff6d2196fd58cd772dbdc8",
+    "maximum_absolute_state": 2.3858554363250732,
+    "maximum_rhs_spot_check_relative_l2": 2.8016987512748706e-08,
+    "rhs_spot_checks": 32,
+    "trajectory_count": 256
+  },
+  "decision": "phase6_confirmatory_superiority_supported",
+  "hierarchical_bootstrap": {
+    "available_resamples": 20000,
+    "relative_improvement_ci_high": 0.2772115352816319,
+    "relative_improvement_ci_low": 0.16353042010042135,
+    "resamples": 20000
+  },
+  "median_relative_improvement": 0.21135876577066035,
+  "one_sided_exact_sign_test_p": 0.03125,
+  "paired_results": [
+    {
+      "dct_divergence_fraction": 0.0,
+      "dct_rollout_relative_l2": 0.9403426349163055,
+      "dct_velocity_nrmse": 0.18787297628228006,
+      "fft_divergence_fraction": 0.640625,
+      "fft_rollout_relative_l2": 1.3299986124038696,
+      "fft_velocity_nrmse": 0.2551511642132432,
+      "relative_improvement": 0.2929747248256831,
+      "seed": 0
+    },
+    {
+      "dct_divergence_fraction": 0.0,
+      "dct_rollout_relative_l2": 0.8259439170360565,
+      "dct_velocity_nrmse": 0.18447085913679934,
+      "fft_divergence_fraction": 0.0,
+      "fft_rollout_relative_l2": 0.9927360415458679,
+      "fft_velocity_nrmse": 0.23356644839919283,
+      "relative_improvement": 0.16801256077102447,
+      "seed": 1
+    },
+    {
+      "dct_divergence_fraction": 0.0,
+      "dct_rollout_relative_l2": 0.9436821937561035,
+      "dct_velocity_nrmse": 0.18499536756762636,
+      "fft_divergence_fraction": 0.25390625,
+      "fft_rollout_relative_l2": 1.1965925097465515,
+      "fft_velocity_nrmse": 0.25347611211777726,
+      "relative_improvement": 0.21135876577066035,
+      "seed": 2
+    },
+    {
+      "dct_divergence_fraction": 0.0,
+      "dct_rollout_relative_l2": 0.9335674345493317,
+      "dct_velocity_nrmse": 0.1763305865767322,
+      "fft_divergence_fraction": 0.0078125,
+      "fft_rollout_relative_l2": 1.1211881041526794,
+      "fft_velocity_nrmse": 0.23852503972441008,
+      "relative_improvement": 0.16734093851730544,
+      "seed": 3
+    },
+    {
+      "dct_divergence_fraction": 0.0,
+      "dct_rollout_relative_l2": 0.8941035270690918,
+      "dct_velocity_nrmse": 0.18074920377452144,
+      "fft_divergence_fraction": 0.09375,
+      "fft_rollout_relative_l2": 1.1363768577575684,
+      "fft_velocity_nrmse": 0.24394237364515303,
+      "relative_improvement": 0.21319805048349771,
+      "seed": 4
+    }
+  ],
+  "passed": true,
+  "permitted_boundary_claim": "Boundary-strip and first-interior normal-derivative errors were lower for DCT in all five frozen seeds; this does not establish boundary enforcement or physical wall-flux correctness.",
+  "permitted_claim": "For this reaction-diffusion PDE, 64x64 grid, central parameter range and frozen training protocol, the matched DCT operator had lower rollout and exact-velocity error than FFT across all five seeds on 256 sealed in-distribution trajectories.",
+  "phase": 6,
+  "protocol_sha256": "7a869166876c6bd2a6143bd334a71128f692b7dc77cc9554d69e510b09c26464",
+  "rollout_wins": 5,
+  "schema_version": 1,
+  "study_id": "chronopde_v2",
+  "superiority_claim_authorized": true,
+  "velocity_wins": 5
+}

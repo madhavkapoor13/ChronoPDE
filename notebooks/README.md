@@ -12,10 +12,10 @@ The active V2 workflows are:
 | `chronopde_v2_phase6_generate_kaggle.ipynb` | Generate sealed confirmatory trajectories |
 | `chronopde_v2_phase6_evaluate_kaggle.ipynb` | One-shot frozen confirmatory evaluation |
 
-Phase 6A is the current entry point after the Phase 5 gate passed. It consumes
-the curated Phase 5 ZIP and generates the sealed confirmatory dataset on CPU.
-Phase 6B then consumes both private datasets and evaluates one matched pair per
-T4 without training.
+Phase 6A generated the sealed confirmatory dataset on CPU, and Phase 6B
+completed the one-shot five-seed evaluation on T4x2. The strict gate passed.
+These notebooks are now frozen reproduction workflows; rerunning with altered
+settings is not part of the completed study.
 
 ## Frozen V1 workflow
 
