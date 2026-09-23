@@ -1,15 +1,15 @@
 # ChronoPDE V2 Phase 4 — matched feasibility training
 
-Phase 4 is implemented but has not been scientifically executed in this
-repository snapshot. It trains the matched Phase 2 FFT-12 and DCT-24 models on
-the Phase 3 exact-RHS development dataset using seed 0. Training uses only the
-512 training trajectories; checkpoint selection and the feasibility gate use
-only the 128 validation trajectories.
+Phase 4 trained the matched Phase 2 FFT-12 and DCT-24 models on the Phase 3
+exact-RHS development dataset using seed 0. Training used only the 512 training
+trajectories; checkpoint selection and the feasibility gate used only the 128
+validation trajectories. The source archive and headline result are frozen in
+`result_summary.json`.
 
-The confirmatory identities remain sealed and their states must not exist in
-the input HDF5. This phase cannot authorize a DCT-superiority claim. If both
-models pass the declared feasibility gate, Phase 5 may perform a multi-seed
-development-only comparison before a single frozen confirmatory evaluation.
+The DCT model passed; the FFT control failed because of velocity error and
+rollout divergence. The confirmatory identities remain sealed. This phase does
+not authorize a DCT-superiority claim and routes to the Phase 4B integration
+audit before any multi-seed development comparison.
 
 The frozen command is:
 

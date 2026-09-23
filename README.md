@@ -185,8 +185,15 @@ sealed and ungenerated.
 The [Phase 4 feasibility protocol](reports/chronopde_v2/phase4/README.md)
 implements matched FFT-12 and DCT-24 training on that development dataset,
 including deterministic resume, validation-only selection, and verified
-recovery packages. It is implementation-complete but scientifically pending a
-real GPU run; no new model-quality claim is made here.
+recovery packages. The completed seed-0 development run produced a split gate:
+DCT passed with velocity nRMSE `0.0846` and zero divergence, while FFT failed
+with velocity nRMSE `0.3791` and `0.625` divergence at its selected step. This
+does not establish general DCT superiority.
+
+The [Phase 4B integration audit](reports/chronopde_v2/phase4b/README.md) is the
+predeclared evaluation-only follow-up. It tests whether the FFT result is an
+RK4-resolution artifact or persistent learned-vector-field instability before
+any multi-seed development study is allowed.
 
 ## License and attribution
 

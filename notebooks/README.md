@@ -2,6 +2,19 @@
 
 ## Canonical workflow
 
+The active V2 workflows are:
+
+| Notebook | Purpose |
+| --- | --- |
+| `chronopde_v2_phase4_kaggle.ipynb` | Completed matched feasibility training |
+| `chronopde_v2_phase4b_kaggle.ipynb` | Evaluation-only RK4 integration audit |
+
+Phase 4B is the current entry point. It requires the private Phase 3
+development dataset and Phase 4 feasibility-results dataset. It performs no
+training and does not access confirmatory data.
+
+## Frozen V1 workflow
+
 `week6_loss_alignment_kaggle.ipynb` is the final reproducible Kaggle workflow.
 It verifies the dataset, runs the matched CT-FFT and ChronoPDE DCT
 loss-alignment diagnostic, displays progress, and packages partial or completed

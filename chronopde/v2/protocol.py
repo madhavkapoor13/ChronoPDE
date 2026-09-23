@@ -339,3 +339,83 @@ def load_phase4_protocol(path: Path) -> Phase4Protocol:
     if not isinstance(raw, dict):
         raise ValueError("Phase 4 protocol root must be a mapping")
     return Phase4Protocol.model_validate(raw)
+
+
+class Phase4BCheckpointContract(_StrictModel):
+    source_archive_sha256: Literal[
+        "e5447d71004ce82f4791d4a9ced4b6191eb0fabac0a81b459dc0d93d9f00c8fb"
+    ]
+    source_code_commit: Literal["d5813dbf4c43181d54510b89d0016ffd4f297f76"]
+    fft_best_step: Literal[7000]
+    fft_best_sha256: Literal[
+        "26a41544f41a61a8ba8b84a62e8b54a64d711187b70806687ce20178daa669a4"
+    ]
+    dct_best_step: Literal[9000]
+    dct_best_sha256: Literal[
+        "d969f6d146f2747adb43e57d1231a7e28aaac50e23f538ce8cce6ce80f48b348"
+    ]
+
+
+class Phase4BIntegratorContract(_StrictModel):
+    method: Literal["rk4"]
+    steps_per_interval: tuple[Literal[1], Literal[2], Literal[4], Literal[8]]
+    comparison_pair: tuple[Literal[4], Literal[8]]
+    maximum_convergence_relative_l2_p95: float = Field(gt=0)
+    material_rollout_improvement_fraction: float = Field(gt=0, lt=1)
+
+
+class Phase4BRestrictions(_StrictModel):
+    training: Literal[False]
+    optimizer_updates: Literal[False]
+    checkpoint_writes: Literal[False]
+    development_only: Literal[True]
+    generate_confirmatory: Literal[False]
+    inspect_confirmatory: Literal[False]
+    ood_evaluation: Literal[False]
+    superiority_claim: Literal[False]
+
+
+class Phase4BProtocol(_StrictModel):
+    schema_version: Literal[1]
+    study_id: Literal["chronopde_v2"]
+    phase: Literal["4b"]
+    protocol_version: Literal[1]
+    parent_phase_commit: Literal["d5813db"]
+    phase4_descriptor: Literal["configs/chronopde_v2/phase4.yaml"]
+    phase4_protocol_sha256: Literal[
+        "f03756e767817af7261ee039663aa9bb8a70347e4e293dd46aed0fd2ccf23c95"
+    ]
+    development_dataset_sha256: Literal[
+        "4eb0482bdadb5fe836076131ecb01588409bdb7c3aa0914727a69107deaeded6"
+    ]
+    normalization_sha256: Literal[
+        "c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d"
+    ]
+    checkpoints: Phase4BCheckpointContract
+    validation_trajectory_indices: tuple[int, ...]
+    integrator: Phase4BIntegratorContract
+    outputs: OutputContract
+    restrictions: Phase4BRestrictions
+
+    @model_validator(mode="after")
+    def validate_phase4b(self) -> Phase4BProtocol:
+        expected = (0, 8, 16, 25, 33, 42, 50, 59, 67, 76, 84, 93, 101, 110, 118, 127)
+        if self.validation_trajectory_indices != expected:
+            raise ValueError("Phase 4B must reuse the exact Phase 4 validation trajectories")
+        if self.outputs.report_root != Path("reports/chronopde_v2/phase4b"):
+            raise ValueError("Phase 4B reports must use the Phase 4B report root")
+        return self
+
+    @property
+    def digest(self) -> str:
+        return hashlib.sha256(canonical_json_bytes(self.model_dump(mode="json"))).hexdigest()
+
+
+def load_phase4b_protocol(path: Path) -> Phase4BProtocol:
+    """Load the strict, evaluation-only Phase 4B protocol."""
+
+    with path.open(encoding="utf-8") as stream:
+        raw = yaml.safe_load(stream)
+    if not isinstance(raw, dict):
+        raise ValueError("Phase 4B protocol root must be a mapping")
+    return Phase4BProtocol.model_validate(raw)

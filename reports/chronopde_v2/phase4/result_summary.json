@@ -1,0 +1,28 @@
+{
+  "confirmatory_accessed": false,
+  "dataset_sha256": "4eb0482bdadb5fe836076131ecb01588409bdb7c3aa0914727a69107deaeded6",
+  "decision": "single_backbone_pass_controlled_investigation_required",
+  "dct": {
+    "divergence_fraction": 0.0,
+    "passed": true,
+    "rollout_relative_l2": 0.8904913067817688,
+    "selected_step": 9000,
+    "validation_loss_reduction": 4193.904218296993,
+    "velocity_nrmse": 0.08455511927604675
+  },
+  "fft": {
+    "divergence_fraction": 0.625,
+    "passed": false,
+    "rollout_relative_l2": 1.1255958080291748,
+    "selected_step": 7000,
+    "validation_loss_reduction": 249.30065405013877,
+    "velocity_nrmse": 0.37911349534988403
+  },
+  "normalization_sha256": "c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d",
+  "phase4_protocol_sha256": "f03756e767817af7261ee039663aa9bb8a70347e4e293dd46aed0fd2ccf23c95",
+  "schema_version": 1,
+  "source_archive_sha256": "e5447d71004ce82f4791d4a9ced4b6191eb0fabac0a81b459dc0d93d9f00c8fb",
+  "source_code_commit": "d5813dbf4c43181d54510b89d0016ffd4f297f76",
+  "study_id": "chronopde_v2",
+  "superiority_claim_authorized": false
+}

@@ -76,5 +76,8 @@ records the new exact-RHS development dataset. Confirmatory trajectories remain
 sealed, and the V1 model conclusions remain unchanged.
 
 The [Phase 4 protocol](../reports/chronopde_v2/phase4/README.md) adds a bounded,
-development-only feasibility trainer for the matched V2 models. Its GPU study
-has not yet run, so it also leaves every V1 conclusion unchanged.
+development-only feasibility trainer for the matched V2 models. Its seed-0 run
+produced a split result—DCT passed and FFT failed—which triggers the separate
+[Phase 4B integration audit](../reports/chronopde_v2/phase4b/README.md). Neither
+development result revises the frozen V1 conclusions or authorizes a V2
+superiority claim.
