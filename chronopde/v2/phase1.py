@@ -23,8 +23,16 @@ def phase1_report(root: Path, archive_root: Path | None = None) -> dict[str, Any
         (report_root / "evidence_inventory.json").read_text(encoding="utf-8")
     )
     current_inventory = build_inventory(root, archive_root)
+    frozen_tags = {
+        item["name"]: item["commit"] for item in committed_inventory["release_tags"]
+    }
+    current_tags = {item["name"]: item["commit"] for item in current_inventory["release_tags"]}
+    if any(current_tags.get(name) != commit for name, commit in frozen_tags.items()):
+        raise ValueError("a frozen Phase 1 release tag is missing or changed")
     comparable = dict(current_inventory)
     comparable["repository_head_at_freeze"] = committed_inventory["repository_head_at_freeze"]
+    # Preserve the Phase 1 tag snapshot while permitting later, additive releases.
+    comparable["release_tags"] = committed_inventory["release_tags"]
     comparable["archives"] = [
         {
             **archive,
