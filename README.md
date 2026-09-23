@@ -190,10 +190,17 @@ DCT passed with velocity nRMSE `0.0846` and zero divergence, while FFT failed
 with velocity nRMSE `0.3791` and `0.625` divergence at its selected step. This
 does not establish general DCT superiority.
 
-The [Phase 4B integration audit](reports/chronopde_v2/phase4b/README.md) is the
-predeclared evaluation-only follow-up. It tests whether the FFT result is an
-RK4-resolution artifact or persistent learned-vector-field instability before
-any multi-seed development study is allowed.
+The [Phase 4B integration audit](reports/chronopde_v2/phase4b/README.md) found
+that DCT was stable through RK4 refinement and that FFT's `0.625` divergence
+fraction persisted at every tested resolution. It classifies the seed-0 FFT
+failure as learned-vector-field instability and freezes 8 RK4 steps per stored
+interval for subsequent evaluation.
+
+The [Phase 5 protocol](reports/chronopde_v2/phase5/README.md) implements the
+authorized fresh five-seed development study. It retrains both matched models
+for seeds 0–4, selects checkpoints only on fixed validation velocity error, and
+applies a predeclared paired stability and performance gate. Confirmatory data
+remain sealed, so Phase 5 cannot itself support a superiority claim.
 
 ## License and attribution
 

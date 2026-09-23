@@ -81,3 +81,10 @@ produced a split result—DCT passed and FFT failed—which triggers the separat
 [Phase 4B integration audit](../reports/chronopde_v2/phase4b/README.md). Neither
 development result revises the frozen V1 conclusions or authorizes a V2
 superiority claim.
+
+Phase 4B classified the repeated FFT divergence as learned-vector-field
+instability rather than an RK4-resolution artifact and authorized the
+[Phase 5 multi-seed development study](../reports/chronopde_v2/phase5/README.md).
+Phase 5 uses fresh seeds and keeps all confirmatory states sealed. Even a Phase
+5 pass only freezes a candidate for later confirmation; it does not revise the
+public V1 scientific claim boundary.

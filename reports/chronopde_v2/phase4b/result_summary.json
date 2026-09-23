@@ -1,0 +1,25 @@
+{
+  "confirmatory_accessed": false,
+  "dct": {
+    "classification": "stable_across_refinement",
+    "convergence_relative_l2_p95": 0.000027857186523760902,
+    "divergence_fraction_step_1": 0.0,
+    "divergence_fraction_step_8": 0.0,
+    "rollout_relative_l2_step_8": 0.9068431854248047
+  },
+  "decision": "phase4b_complete_phase5_allowed_with_fft_instability_label",
+  "fft": {
+    "classification": "learned_vector_field_instability",
+    "divergence_fraction_step_1": 0.625,
+    "divergence_fraction_step_8": 0.625,
+    "rollout_relative_l2_step_8": 1.1365919709205627
+  },
+  "frozen_future_steps_per_interval": 8,
+  "output_archive_sha256": "8e8fb06f801898b7f4cc0b31df0e4add7354b49106e59bafb74cdfb7a0c7c09c",
+  "phase4b_protocol_sha256": "a6715eb8ee1f0031d5295b75393edc860aa23224fe5c5d2bc36e239cba2b0f1b",
+  "phase5_multiseed_development_allowed": true,
+  "schema_version": 1,
+  "study_id": "chronopde_v2",
+  "superiority_claim_authorized": false,
+  "training_performed": false
+}

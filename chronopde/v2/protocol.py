@@ -419,3 +419,107 @@ def load_phase4b_protocol(path: Path) -> Phase4BProtocol:
     if not isinstance(raw, dict):
         raise ValueError("Phase 4B protocol root must be a mapping")
     return Phase4BProtocol.model_validate(raw)
+
+
+class Phase5Training(_StrictModel):
+    seeds: tuple[Literal[0], Literal[1], Literal[2], Literal[3], Literal[4]]
+    maximum_steps: Literal[10000]
+    batch_size: Literal[16]
+    learning_rate: float = Field(gt=0)
+    minimum_learning_rate: float = Field(gt=0)
+    warmup_steps: Literal[500]
+    weight_decay: float = Field(ge=0)
+    gradient_clip_norm: float = Field(gt=0)
+    evaluation_interval: Literal[1000]
+    checkpoint_interval: Literal[250]
+    validation_velocity_samples: Literal[1024]
+    validation_rollout_trajectories: Literal[16]
+    rollout_steps_per_interval: Literal[8]
+    objective: Literal["mean_per_sample_full_field_relative_rhs_error"]
+
+    @model_validator(mode="after")
+    def frozen_hyperparameters(self) -> Phase5Training:
+        expected = (0.0003, 0.000001, 0.0001, 1.0)
+        actual = (
+            self.learning_rate,
+            self.minimum_learning_rate,
+            self.weight_decay,
+            self.gradient_clip_norm,
+        )
+        if actual != expected:
+            raise ValueError("Phase 5 optimizer hyperparameters are frozen")
+        return self
+
+
+class Phase5Gate(_StrictModel):
+    require_all_runs_complete: Literal[True]
+    require_dct_zero_divergence_all_seeds: Literal[True]
+    maximum_median_dct_velocity_nrmse: float = Field(gt=0)
+    require_dct_beats_persistence_all_seeds: Literal[True]
+    minimum_dct_rollout_wins: Literal[4]
+    minimum_dct_velocity_wins: Literal[4]
+    require_dct_divergence_no_worse_all_seeds: Literal[True]
+
+
+class Phase5Restrictions(_StrictModel):
+    development_only: Literal[True]
+    generate_confirmatory: Literal[False]
+    inspect_confirmatory: Literal[False]
+    ood_evaluation: Literal[False]
+    superiority_claim: Literal[False]
+    fresh_runs: Literal[True]
+    reuse_phase4_checkpoints: Literal[False]
+
+
+class Phase5Protocol(_StrictModel):
+    schema_version: Literal[1]
+    study_id: Literal["chronopde_v2"]
+    phase: Literal[5]
+    protocol_version: Literal[1]
+    parent_phase_commit: Literal["a4c4d46"]
+    phase4_descriptor: Literal["configs/chronopde_v2/phase4.yaml"]
+    phase4b_descriptor: Literal["configs/chronopde_v2/phase4b.yaml"]
+    phase4b_protocol_sha256: Literal[
+        "a6715eb8ee1f0031d5295b75393edc860aa23224fe5c5d2bc36e239cba2b0f1b"
+    ]
+    phase4b_output_sha256: Literal[
+        "8e8fb06f801898b7f4cc0b31df0e4add7354b49106e59bafb74cdfb7a0c7c09c"
+    ]
+    development_dataset_sha256: Literal[
+        "4eb0482bdadb5fe836076131ecb01588409bdb7c3aa0914727a69107deaeded6"
+    ]
+    normalization_sha256: Literal[
+        "c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d"
+    ]
+    models: Phase4Models
+    training: Phase5Training
+    gate: Phase5Gate
+    checkpoint_selection: Literal[
+        "minimum_fixed_validation_velocity_nrmse_then_relative_loss"
+    ]
+    outputs: OutputContract
+    restrictions: Phase5Restrictions
+
+    @model_validator(mode="after")
+    def validate_phase5(self) -> Phase5Protocol:
+        if self.training.seeds != (0, 1, 2, 3, 4):
+            raise ValueError("Phase 5 requires the five frozen seeds")
+        if self.outputs.report_root != Path("reports/chronopde_v2/phase5"):
+            raise ValueError("Phase 5 reports must use the Phase 5 report root")
+        if self.gate.maximum_median_dct_velocity_nrmse != 0.15:
+            raise ValueError("Phase 5 velocity gate is frozen")
+        return self
+
+    @property
+    def digest(self) -> str:
+        return hashlib.sha256(canonical_json_bytes(self.model_dump(mode="json"))).hexdigest()
+
+
+def load_phase5_protocol(path: Path) -> Phase5Protocol:
+    """Load the strict, multi-seed Phase 5 development protocol."""
+
+    with path.open(encoding="utf-8") as stream:
+        raw = yaml.safe_load(stream)
+    if not isinstance(raw, dict):
+        raise ValueError("Phase 5 protocol root must be a mapping")
+    return Phase5Protocol.model_validate(raw)

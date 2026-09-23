@@ -1,0 +1,53 @@
+schema_version: 1
+study_id: chronopde_v2
+phase: 5
+protocol_version: 1
+parent_phase_commit: a4c4d46
+phase4_descriptor: configs/chronopde_v2/phase4.yaml
+phase4b_descriptor: configs/chronopde_v2/phase4b.yaml
+phase4b_protocol_sha256: a6715eb8ee1f0031d5295b75393edc860aa23224fe5c5d2bc36e239cba2b0f1b
+phase4b_output_sha256: 8e8fb06f801898b7f4cc0b31df0e4add7354b49106e59bafb74cdfb7a0c7c09c
+development_dataset_sha256: 4eb0482bdadb5fe836076131ecb01588409bdb7c3aa0914727a69107deaeded6
+normalization_sha256: c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d
+models:
+  width: 29
+  blocks: 4
+  film_hidden_width: 128
+  fft_modes: [12, 12]
+  dct_modes: [24, 24]
+  residual_skip: false
+training:
+  seeds: [0, 1, 2, 3, 4]
+  maximum_steps: 10000
+  batch_size: 16
+  learning_rate: 3.0e-4
+  minimum_learning_rate: 1.0e-6
+  warmup_steps: 500
+  weight_decay: 1.0e-4
+  gradient_clip_norm: 1.0
+  evaluation_interval: 1000
+  checkpoint_interval: 250
+  validation_velocity_samples: 1024
+  validation_rollout_trajectories: 16
+  rollout_steps_per_interval: 8
+  objective: mean_per_sample_full_field_relative_rhs_error
+gate:
+  require_all_runs_complete: true
+  require_dct_zero_divergence_all_seeds: true
+  maximum_median_dct_velocity_nrmse: 0.15
+  require_dct_beats_persistence_all_seeds: true
+  minimum_dct_rollout_wins: 4
+  minimum_dct_velocity_wins: 4
+  require_dct_divergence_no_worse_all_seeds: true
+checkpoint_selection: minimum_fixed_validation_velocity_nrmse_then_relative_loss
+outputs:
+  artifact_root: artifacts/chronopde_v2/runs
+  report_root: reports/chronopde_v2/phase5
+restrictions:
+  development_only: true
+  generate_confirmatory: false
+  inspect_confirmatory: false
+  ood_evaluation: false
+  superiority_claim: false
+  fresh_runs: true
+  reuse_phase4_checkpoints: false

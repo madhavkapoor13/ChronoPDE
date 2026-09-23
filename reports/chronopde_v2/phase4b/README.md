@@ -17,3 +17,13 @@ dataset, and normalization are verified before evaluation. This audit cannot
 authorize a superiority claim or confirmatory evaluation. It only determines
 whether Phase 5 multi-seed development experiments are methodologically
 justified and freezes the future integration resolution when they are.
+
+## Recorded result
+
+The completed audit found the DCT model stable on all 16 trajectories at every
+tested resolution, with 4-vs-8-step p95 relative disagreement of approximately
+`2.79e-5`. The same 10 of 16 FFT trajectories diverged at every resolution.
+The result therefore records persistent learned-vector-field instability for
+the seed-0 FFT checkpoint, freezes 8 RK4 steps per stored interval, and permits
+the development-only Phase 5 multi-seed study. It does not authorize a
+superiority claim.
