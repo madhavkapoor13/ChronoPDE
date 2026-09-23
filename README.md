@@ -79,6 +79,8 @@ the predeclared one-sided exact sign-test value `p=0.03125`.
 | 3 | 1.1212 | 0.9336 | 16.73% |
 | 4 | 1.1364 | 0.8941 | 21.32% |
 
+![Five-seed sealed confirmatory summary](figures/v2_confirmatory_summary.png)
+
 Boundary-strip and first-interior normal-derivative errors were also lower for
 DCT in all five seeds. This supports lower boundary-region error, not boundary
 enforcement or physical wall-flux correctness. See the frozen
@@ -179,7 +181,7 @@ ChronoPDE/
 ├── notebooks/         # canonical Kaggle workflow plus archived provenance
 ├── demo/              # offline Streamlit evidence explorer
 ├── docs/              # method, roadmap, reproduction, and portfolio notes
-└── output/pdf/        # controlled study and failure-analysis report
+└── output/pdf/        # V2 confirmatory and historical V1 reports
 ```
 
 ## Limitations and claim boundary
@@ -195,8 +197,10 @@ ChronoPDE/
 - Checkpoints are research artifacts, not validated scientific simulators.
 
 See the [model card](MODEL_CARD.md),
-[experimental report](output/pdf/chronopde_negative_result_report.pdf),
-[release record](docs/RELEASE.md), and [portfolio summary](docs/PORTFOLIO.md).
+[V2 confirmatory report](output/pdf/chronopde_v2_confirmatory_report.pdf),
+[historical V1 report](output/pdf/chronopde_negative_result_report.pdf),
+[release record](docs/RELEASE.md), [v0.2.0 notes](docs/RELEASE_NOTES_v0.2.0.md),
+and [portfolio summary](docs/PORTFOLIO.md).
 
 The additive [ChronoPDE V2 Phase 1 evidence audit](reports/chronopde_v2/phase1/README.md)
 records claim-level errata and provenance without changing the frozen study.

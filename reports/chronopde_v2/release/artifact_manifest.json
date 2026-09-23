@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "study_id": "chronopde_v2",
+  "release": "v0.2.0",
+  "archive_root": "../ChronoPDE_V2_Archive",
+  "artifacts": [
+    {
+      "artifact_id": "phase3_development_hdf5",
+      "role": "training_and_validation_states_with_exact_rhs",
+      "filename": "phase3/chronopde_v2_development.h5",
+      "size_bytes": 4246501448,
+      "sha256": "f63ef2bb1023dd25ceb8839d668b8f2b20a07036890e1c213f70e126e7b82647",
+      "logical_content_sha256": "4eb0482bdadb5fe836076131ecb01588409bdb7c3aa0914727a69107deaeded6",
+      "kaggle_dataset": "ChronoPDE V2 Development Data",
+      "kaggle_version": 1,
+      "availability": "verified_local"
+    },
+    {
+      "artifact_id": "phase3_recovery",
+      "role": "phase3_lightweight_recovery_evidence",
+      "filename": "phase3/chronopde_v2_phase3_recovery.zip",
+      "size_bytes": 83657,
+      "sha256": "37d7045c1d4c6889f59d142342f1a28d54ff9e4642c36ecc2c6c52d028a7e351",
+      "kaggle_dataset": "ChronoPDE V2 Development Data",
+      "kaggle_version": 1,
+      "availability": "verified_local"
+    },
+    {
+      "artifact_id": "phase5_frozen_results",
+      "role": "ten_frozen_checkpoints_and_development_decision",
+      "filename": "phase5/chronopde_v2_phase5_outputs.zip",
+      "size_bytes": 221678592,
+      "sha256": "cf3eede191de4f9e1dd43b36f1d9f1000d314d3a0e01bc90f71a80d4ebee3c54",
+      "kaggle_dataset": "ChronoPDE V2 Phase 5 Frozen Results",
+      "kaggle_version": 1,
+      "availability": "verified_local"
+    },
+    {
+      "artifact_id": "phase6_confirmatory_hdf5",
+      "role": "sealed_confirmatory_states_and_exact_rhs",
+      "filename": "phase6/chronopde_v2_confirmatory.h5",
+      "size_bytes": null,
+      "sha256": "0a432d24d34605274a4e4bfa06d97831602062b016b44f4d5b81f91cc14e64e3",
+      "logical_content_sha256": "2c44b74196f03c20c65935592f870c52551be89dd9ff6d2196fd58cd772dbdc8",
+      "kaggle_dataset": "ChronoPDE V2 Phase 6 Confirmatory Data",
+      "kaggle_version": 1,
+      "availability": "kaggle_private_only"
+    },
+    {
+      "artifact_id": "phase6_local_regeneration_hdf5",
+      "role": "non_authoritative_cross_platform_recovery_only",
+      "filename": "phase6/local_regeneration/chronopde_v2_confirmatory.h5",
+      "size_bytes": 1698607696,
+      "sha256": "9e78fb55813d0834c99831e45b623b37220655ca56e3cf9c0eee0a9f2e0bfb0a",
+      "logical_content_sha256": "b39a609b6b2d071a4b8fcf940056f1bcb7e78691f87363d41f080844899e6516",
+      "kaggle_dataset": null,
+      "kaggle_version": null,
+      "availability": "verified_local_non_authoritative"
+    },
+    {
+      "artifact_id": "phase6_local_regeneration_evidence",
+      "role": "non_authoritative_cross_platform_generation_evidence",
+      "filename": "phase6/local_regeneration/chronopde_v2_phase6_generation_evidence.zip",
+      "size_bytes": 26150,
+      "sha256": "48e5e3ff77f018691e2e34e5d6f21e45dcf1c43bbc2d7f2f3fea626974b3d901",
+      "kaggle_dataset": null,
+      "kaggle_version": null,
+      "availability": "verified_local_non_authoritative"
+    },
+    {
+      "artifact_id": "phase6_results",
+      "role": "all_ten_confirmatory_evaluations_and_decision",
+      "filename": "phase6/chronopde_v2_phase6_confirmatory_results.zip",
+      "size_bytes": 353826,
+      "sha256": "151e0fb628735b21f7d63a159abfa9695253f2a210147c29555ced06d587cfc1",
+      "kaggle_dataset": "ChronoPDE V2 Phase 6 Evaluation Results",
+      "kaggle_version": 1,
+      "availability": "verified_local"
+    }
+  ]
+}

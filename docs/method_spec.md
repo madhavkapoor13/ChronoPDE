@@ -1,4 +1,8 @@
-# ChronoPDE Method Specification
+# ChronoPDE V1 Method Specification (historical)
+
+This file records the original Week 1-6 protocol and is retained unchanged in
+substance for provenance. It does not describe the matched V2 confirmatory
+study. See [`method_spec_v2.md`](method_spec_v2.md) for the current method.
 
 Status: frozen Week 1 contract. Changes require a dated decision record before
 final experiments begin.

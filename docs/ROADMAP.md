@@ -82,6 +82,35 @@
 - [x] Add a detailed reproduction guide and concise resume-ready project summary.
 - [x] Preserve `v0.1.0-negative-result` and publish the additive `v0.1.1-portfolio` release.
 
-Original Weeks 7-10 are intentionally not executed in this release. The project
-continues through a narrower reproducibility and communication track rather than
-manufacturing a positive result after a predeclared stop rule fired.
+## ChronoPDE V2 - fresh registered study
+
+- [x] Phase 1: preserve V1 evidence, reconcile claims, and add immutable run,
+  checkpoint, resume, and recovery contracts.
+- [x] Phase 2: validate the discrete Neumann operator, replace spline targets
+  with exact simulator RHS, match FFT/DCT capacity, and freeze fresh identities.
+- [x] Phase 3: generate 512 training and 128 validation trajectories while
+  leaving the 256 confirmatory identities ungenerated.
+- [x] Phase 4: run bounded seed-0 feasibility training on development data only.
+- [x] Phase 4B: show that FFT rollout instability persists under RK4 refinement
+  and freeze the eight-step evaluation protocol.
+- [x] Phase 5: train five fresh matched seeds per backbone and freeze all ten
+  checkpoints before confirmatory generation.
+- [x] Phase 6: generate the sealed set once, evaluate all checkpoints once, and
+  pass the predeclared confirmatory gate.
+- [x] Portfolio closeout: publish the V2 report, offline evidence explorer,
+  artifact checksums, reproduction paths, and `v0.2.0` release.
+
+The original Week 6 stop rule remains valid for V1. V2 is a separately
+registered study with corrected numerical targets, matched architectures, and a
+fresh sealed holdout; it does not retroactively turn the V1 diagnostic into a
+positive result.
+
+## Optional future research (not release blockers)
+
+- [ ] Sparse- and irregular-time observations under a new registered protocol.
+- [ ] Parameter and initial-condition OOD evaluation with fresh identities.
+- [ ] Resolution transfer and grid-convergence experiments.
+- [ ] Replication across additional PDE families and boundary conditions.
+
+These items require new development and confirmatory splits. Phase 6 trajectories
+must not be reused for tuning or for a changed-model confirmatory claim.
