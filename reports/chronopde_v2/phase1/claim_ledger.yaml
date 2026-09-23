@@ -1,0 +1,119 @@
+schema_version: 1
+study_id: chronopde_v2
+claims:
+  - id: aligned_fixed_diagnostic
+    wording: The aligned seed-0 diagnostic compared both models on 16 fixed samples.
+    status: verified
+    evidence:
+      - reports/diagnostics/week6/evidence/loss_alignment/protocol.json
+      - reports/diagnostics/week6/evidence/loss_alignment/suite_summary.json
+      - reports/diagnostics/week6/evidence/loss_alignment/chronopde/per_sample_metrics.jsonl
+      - reports/diagnostics/week6/evidence/loss_alignment/fno_ct/per_sample_metrics.jsonl
+    limitations:
+      - The samples came from four training trajectories and are not independent test trajectories.
+      - Only seed 0 was trained.
+    permitted_public_wording: >-
+      In a seed-0 fixed training diagnostic, DCT reached 0.0142 velocity nRMSE,
+      CT-FFT reached 0.0189, and neither met the historical 0.01 threshold.
+
+  - id: general_dct_superiority
+    wording: The DCT model is generally superior to FFT on unseen trajectories.
+    status: unsupported
+    evidence:
+      - reports/final/final_summary.json
+      - reports/final/week6_negative_result.md
+    limitations:
+      - The aligned comparison contains no held-out trajectory evaluation.
+      - The exploratory ID checkpoints used unequal training histories.
+    permitted_public_wording: >-
+      DCT was lower-error on all 16 fixed diagnostic samples; general superiority
+      on unseen trajectories was not established.
+
+  - id: sparse_time_performance
+    wording: ChronoPDE improves prediction from sparse or irregular temporal observations.
+    status: not_run
+    evidence: []
+    limitations:
+      - The registered sparse-time experiments were canceled after the Week 6 stop rule.
+    permitted_public_wording: Sparse-time performance was not evaluated in the original study.
+
+  - id: ood_performance
+    wording: ChronoPDE generalizes to parameter or initial-condition distribution shifts.
+    status: not_run
+    evidence: []
+    limitations:
+      - Parameter-OOD and initial-condition-OOD evaluations were not opened.
+    permitted_public_wording: OOD performance was not evaluated in the original study.
+
+  - id: exploratory_id_comparison
+    wording: Four trained models were evaluated on 100 legacy ID trajectories.
+    status: exploratory
+    evidence:
+      - reports/final/final_summary.json
+      - reports/diagnostics/week6/evidence/chronopde_exploratory/id_summary.json
+      - reports/diagnostics/week6/evidence/ct_fft_full/id_summary.json
+    limitations:
+      - Continuous-time checkpoints had unequal training histories.
+      - These results informed V2 development and cannot serve as a fresh confirmatory test.
+    permitted_public_wording: >-
+      The unequal-history ID comparison is retained as exploratory context only.
+
+  - id: week5_four_trajectory_gate
+    wording: The Week 5 CT-FFT model passed its four-trajectory overfit gate.
+    status: unsupported
+    evidence:
+      - docs/ROADMAP.md
+      - reports/baselines/week5/README.md
+      - reports/diagnostics/week6/evidence/ct_fft_full/training_summary.json
+    limitations:
+      - The roadmap marks the gate complete while the Week 5 status file marks it pending.
+      - No distinct passing smoke-gate artifact is present in committed evidence.
+      - A production training report with passed true is not proof of a smoke-gate pass.
+    permitted_public_wording: >-
+      The Week 5 four-trajectory gate is unverified pending its exact source artifact.
+
+  - id: only_spatial_basis_changed
+    wording: Only the spatial spectral basis changed between the DCT and FFT models.
+    status: contradicted
+    evidence:
+      - docs/method_spec.md
+      - reports/final/final_summary.json
+    limitations:
+      - Width, spectral degrees of freedom, initialization, and physical bandwidth differ.
+    permitted_public_wording: >-
+      The models were approximately parameter matched but differed in basis, width,
+      spectral degrees of freedom, initialization, and physical bandwidth.
+
+  - id: model_or_conditioning_cause
+    wording: A model or conditioning limitation caused the failed historical gate.
+    status: unsupported
+    evidence:
+      - reports/final/week6_negative_result.md
+      - reports/diagnostics/week6/evidence/loss_alignment/suite_summary.json
+    limitations:
+      - This phrase names the predeclared stopping route rather than an isolated cause.
+    permitted_public_wording: >-
+      The declared route recorded a possible model or conditioning limitation; the
+      causal explanation was not established.
+
+  - id: historical_boundary_metric
+    wording: The historical boundary metric measured normal flux at the physical wall.
+    status: contradicted
+    evidence:
+      - chronopde/diagnostics/continuous_gate.py
+    limitations:
+      - It computes a first-interior finite difference on a cell-centred grid.
+    permitted_public_wording: >-
+      The historical diagnostic measured a first-interior normal difference, not wall flux.
+
+  - id: software_validation
+    category: software
+    wording: The repository test suite validates software contracts.
+    status: verified
+    evidence:
+      - docs/RELEASE.md
+      - tests/test_week6_recovery.py
+    limitations:
+      - Software test counts do not establish model accuracy or scientific superiority.
+    permitted_public_wording: >-
+      Automated tests validate software and evidence contracts; they are not evidence of model quality.

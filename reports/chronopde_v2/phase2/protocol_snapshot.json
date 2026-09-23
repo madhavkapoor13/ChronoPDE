@@ -1,0 +1,132 @@
+{
+  "comparison": {
+    "blocks": 4,
+    "expected_dct_modes_x": 24,
+    "expected_dct_modes_y": 24,
+    "fft_modes_x": 12,
+    "fft_modes_y": 12,
+    "film_hidden_width": 128,
+    "physical_cutoff_tolerance": 0.1,
+    "search_modes_max": 32,
+    "search_modes_min": 8,
+    "search_width_max": 64,
+    "search_width_min": 16,
+    "spectral_dof_tolerance": 0.05,
+    "total_parameter_tolerance": 0.02,
+    "width": 29
+  },
+  "data": {
+    "confirmatory_trajectories": 256,
+    "initial_condition": {
+      "maximum_mode": 16,
+      "spectral_decay": 2.0,
+      "standard_deviation": 0.5
+    },
+    "master_seed": 20260922,
+    "parameter_ranges": {
+      "du": [
+        0.0008,
+        0.0012
+      ],
+      "dv": [
+        0.004,
+        0.006
+      ],
+      "k": [
+        0.004,
+        0.006
+      ]
+    },
+    "pilot_trajectories": 24,
+    "seed_offsets": {
+      "confirmatory": 400000,
+      "pilot": 100000,
+      "training": 200000,
+      "validation": 300000
+    },
+    "tight_solver": {
+      "atol": 1e-12,
+      "method": "DOP853",
+      "rtol": 1e-10
+    },
+    "tight_solver_indices": [
+      0,
+      4,
+      9,
+      14,
+      19,
+      23
+    ],
+    "training_trajectories": 512,
+    "validation_trajectories": 128
+  },
+  "metrics": {
+    "boundary_attribution": [
+      "boundary_strip_vs_interior_error",
+      "first_interior_normal_derivative_error"
+    ],
+    "forbidden_wording": "physical_wall_flux",
+    "primary": "held_out_rollout_relative_l2_over_physical_time",
+    "secondary": [
+      "exact_velocity_nrmse",
+      "final_time_nrmse",
+      "per_channel_error",
+      "divergence_rate",
+      "correlation_horizon"
+    ]
+  },
+  "outputs": {
+    "artifact_root": "artifacts/chronopde_v2/runs",
+    "report_root": "reports/chronopde_v2/phase2"
+  },
+  "parent_descriptor": "configs/chronopde_v2/study.yaml",
+  "parent_phase_commit": "58b0bd84ffab353c45f6df30a222edbc57c512c9",
+  "pde": {
+    "boundary": "neumann",
+    "du": 0.001,
+    "dv": 0.005,
+    "height": 64,
+    "k": 0.005,
+    "solver": {
+      "atol": 1e-09,
+      "method": "DOP853",
+      "rtol": 1e-07
+    },
+    "stored_times": 101,
+    "t_end": 50.0,
+    "t_start": 0.0,
+    "width": 64,
+    "x_max": 1.0,
+    "x_min": -1.0,
+    "y_max": 1.0,
+    "y_min": -1.0
+  },
+  "phase": 2,
+  "primary_question": "Does a Neumann-aligned cosine operator improve learning of the exact discrete PDE velocity near boundaries compared with a physically bandwidth- and parameter-matched Fourier operator?",
+  "protocol_version": 1,
+  "restrictions": {
+    "confirmatory_access_requires_frozen_model": true,
+    "full_dataset_generation": false,
+    "gpu_training": false,
+    "legacy_id_confirmatory_reuse": false,
+    "ood_claims": false,
+    "sparse_time_claims": false
+  },
+  "schema_version": 1,
+  "study_id": "chronopde_v2",
+  "target": {
+    "kind": "exact_discrete_rhs",
+    "normalized_formula": "physical_rhs / training_state_std",
+    "perturbations": false,
+    "spline_targets": false,
+    "time_units": "physical"
+  },
+  "tolerances": {
+    "divergence_threshold": 10.0,
+    "float32_relative": 1e-05,
+    "rhs_relative": 1e-10,
+    "solver_final_relative_l2": 0.0002,
+    "solver_state_p95_relative_l2": 0.0001,
+    "structural_relative": 1e-11
+  }
+}

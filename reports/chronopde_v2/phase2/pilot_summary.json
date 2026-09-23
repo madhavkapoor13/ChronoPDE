@@ -1,0 +1,23 @@
+{
+  "diagnostic_state_mean": [
+    -0.021340799929695266,
+    -0.020969231530585688
+  ],
+  "diagnostic_state_std": [
+    0.4219521023359565,
+    0.25236501905399195
+  ],
+  "file_sha256": "bdef1017feffe44955dd1c8a8bdc59cd012e016957fffaa81d0123a538065488",
+  "logical_content_sha256": "c315e5aa8057e1b0fac976995f3100c4788321de616de2d6443aa6c78ae2cbbe",
+  "manifest_sha256": "282dfe50d205795b88cb543ccc63f2097f298343d5e1c88fb039d7a19abea020",
+  "maximum_absolute_state": 1.8365248441696167,
+  "normalization_status": "diagnostic_only",
+  "passed": true,
+  "solver_convergence": {
+    "maximum_final_state_relative_l2": 1.1117709839705413e-08,
+    "state_relative_l2_p95": 4.47233921903865e-07,
+    "tight_trajectory_count": 6
+  },
+  "successful_trajectories": 24,
+  "trajectory_count": 24
+}

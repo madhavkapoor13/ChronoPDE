@@ -1,8 +1,9 @@
-"""Offline Streamlit explorer for the frozen ChronoPDE Week 6 evidence."""
+"""Offline Streamlit explorer for frozen ChronoPDE V2 and historical V1 evidence."""
 
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any, cast
 
@@ -10,120 +11,129 @@ import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "reports/final"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from chronopde.v2.publication import load_release_evidence  # noqa: E402
+
+V1_REPORT = ROOT / "reports/final"
+PHASE6_REPORT = ROOT / "reports/chronopde_v2/phase6"
 FIGURES = ROOT / "figures"
 
 
-def load_json(name: str) -> dict[str, Any]:
-    value = json.loads((REPORT / name).read_text(encoding="utf-8"))
+def load_v1_summary() -> dict[str, Any]:
+    """Load the historical V1 summary without treating it as current evidence."""
+
+    value = json.loads((V1_REPORT / "final_summary.json").read_text(encoding="utf-8"))
     return cast(dict[str, Any], value)
 
 
-st.set_page_config(page_title="ChronoPDE evidence", page_icon="⏱️", layout="wide")
-st.title("ChronoPDE")
-st.caption("A controlled study of boundary-aware continuous-time neural operators")
+st.set_page_config(page_title="ChronoPDE V2 evidence", page_icon="⏱️", layout="wide")
+st.title("ChronoPDE V2")
+st.caption("Matched continuous-time neural operators for reaction-diffusion dynamics")
 
-summary_path = REPORT / "final_summary.json"
-if not summary_path.is_file():
-    st.error("Final evidence is missing. Run `python scripts/analyze_week6_failure.py`.")
+try:
+    evidence = load_release_evidence(ROOT)
+except (OSError, ValueError, KeyError) as error:
+    st.error(f"Frozen Phase 6 evidence could not be validated: {error}")
     st.stop()
 
-summary = load_json("final_summary.json")
-models = cast(dict[str, dict[str, Any]], summary["models"])
-st.warning(
-    "Valid negative result: neither continuous-time model passed the unchanged "
-    "0.01 Week 6 gate. Sparse-time and OOD claims were not evaluated."
+st.success(
+    "The sealed confirmatory gate passed: DCT had lower rollout and exact-velocity "
+    "error in all five frozen seeds."
 )
 
 left, middle, right, last = st.columns(4)
-left.metric("DCT gate nRMSE", f"{models['chronopde']['historical_gate_median_nrmse']:.5f}")
-middle.metric("FFT gate nRMSE", f"{models['fno_ct']['historical_gate_median_nrmse']:.5f}")
-right.metric("Paired DCT wins", f"{summary['dct_wins']} / 16")
-last.metric("Target-audit samples", str(summary["target_audit"]["samples"]))
+left.metric("Median rollout improvement", f"{100 * evidence.median_relative_improvement:.2f}%")
+middle.metric(
+    "Hierarchical-bootstrap 95% CI",
+    f"{100 * evidence.bootstrap_ci_low:.2f}%-{100 * evidence.bootstrap_ci_high:.2f}%",
+)
+right.metric("DCT directional wins", "5 / 5")
+last.metric("DCT divergent rollouts", f"{evidence.dct_divergent_rollouts} / 1,280")
 
-overview, architecture, samples, rollout, context, provenance = st.tabs(
-    (
-        "Outcome",
-        "Architecture",
-        "Matched samples",
-        "Field rollout",
-        "Exploratory ID context",
-        "Provenance",
-    )
+overview, seeds_tab, architecture, provenance, historical = st.tabs(
+    ("Confirmed result", "Five frozen seeds", "Matched architecture", "Provenance", "Historical V1")
 )
 
 with overview:
-    st.subheader("Objective alignment")
-    st.image(str(REPORT / "objective_alignment.png"), use_container_width=True)
-    st.subheader("Training dynamics")
-    st.image(str(REPORT / "loss_alignment_convergence.png"), use_container_width=True)
-    st.markdown(
-        "The aligned objective improved both models, but the registered gate remained "
-        "failed. DCT's within-diagnostic advantage is not presented as a generalization claim."
+    st.image(str(FIGURES / "v2_confirmatory_summary.png"), width="stretch")
+    st.subheader("Authorized claim")
+    st.write(evidence.permitted_claim)
+    st.subheader("Boundary-region wording")
+    st.write(evidence.permitted_boundary_claim)
+    st.info(
+        "Scope is limited to this PDE, 64x64 grid, central parameter range and frozen "
+        "training protocol. Sparse-time, OOD and grid-transfer behavior remain unknown."
+    )
+
+with seeds_tab:
+    rows = pd.DataFrame(
+        [
+            {
+                "seed": row.seed,
+                "FFT rollout L2": row.fft_rollout_relative_l2,
+                "DCT rollout L2": row.dct_rollout_relative_l2,
+                "DCT improvement (%)": 100 * row.relative_improvement,
+                "FFT velocity nRMSE": row.fft_velocity_nrmse,
+                "DCT velocity nRMSE": row.dct_velocity_nrmse,
+                "FFT divergence (%)": 100 * row.fft_divergence_fraction,
+                "DCT divergence (%)": 100 * row.dct_divergence_fraction,
+            }
+            for row in evidence.seed_results
+        ]
+    )
+    st.dataframe(rows, hide_index=True, width="stretch")
+    st.subheader("Rollout relative L2")
+    st.bar_chart(rows.set_index("seed")[["FFT rollout L2", "DCT rollout L2"]])
+    st.caption(
+        f"Five of five directional wins give the predeclared one-sided exact sign-test "
+        f"p={evidence.sign_test_p:.5f}."
     )
 
 with architecture:
-    st.image(str(FIGURES / "architecture_overview.svg"), use_container_width=True)
+    st.image(str(FIGURES / "architecture_overview.svg"), width="stretch")
     st.markdown(
-        "The two continuous-time models share FiLM conditioning, block count, retained "
-        "spectral resolution, velocity projection, and RK4 rollout. Their controlled "
-        "difference is the FFT versus DCT spatial basis."
+        "Both fields have **1,973,657 parameters** and **484,416 active real spectral "
+        "degrees of freedom per block**. FFT retains 12x12 complex modes; DCT retains "
+        "24x24 real cosine modes. Conditioning, width, block layout, pointwise paths, "
+        "initialization and RK4 rollout are shared."
     )
-
-with samples:
-    frame = pd.read_csv(REPORT / "paired_sample_comparison.csv")
-    trajectory = st.selectbox(
-        "Trajectory", ["all", *sorted(frame["trajectory_id"].unique().tolist())]
-    )
-    shown = frame if trajectory == "all" else frame[frame["trajectory_id"] == trajectory]
-    st.image(str(REPORT / "paired_model_comparison.png"), use_container_width=True)
-    st.image(str(REPORT / "conditioning_analysis.png"), use_container_width=True)
-    st.dataframe(shown, hide_index=True, use_container_width=True)
-
-with rollout:
     st.warning(
-        "Exploratory context only: CT-FFT trained for 150 epochs while DCT stopped after 85."
+        "The DCT basis is Neumann-aligned, but the complete neural network does not "
+        "enforce the boundary condition."
     )
-    st.image(str(FIGURES / "qualitative_rollout.png"), use_container_width=True)
-    rollout_metadata = json.loads(
-        (FIGURES / "qualitative_rollout.json").read_text(encoding="utf-8")
-    )
-    st.caption(
-        f"Trajectory {rollout_metadata['trajectory_id']} at physical times "
-        f"{rollout_metadata['times']}; exact hashes are preserved in the provenance record."
-    )
-
-with context:
-    st.info(
-        "These 100-trajectory runs are context only: DCT stopped after 85 epochs while "
-        "CT-FFT ran 150 epochs, and the DCT gate did not pass."
-    )
-    id_results = cast(dict[str, Any], summary["exploratory_id"])
-    rows = []
-    for model in ("unet_ar", "fno_ar", "fno_ct", "chronopde"):
-        result = cast(dict[str, Any], id_results[model])
-        rows.append(
-            {
-                "model": model,
-                "median final nRMSE": result["median_final_nrmse"],
-                "median relative L2": result["median_relative_l2"],
-                "persistence final nRMSE": result["persistence_final_nrmse"],
-                "divergence fraction": result["divergence_fraction"],
-                "parameters": result["parameter_count"],
-            }
-        )
-    st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
 
 with provenance:
-    st.code(summary["decision"])
-    st.write(
-        "Every headline result is regenerated from committed lightweight evidence. "
-        "Original archive hashes and Git commits are recorded in the evidence manifest."
-    )
+    st.code(evidence.decision)
     st.json(
         {
-            "gate": summary["gate"],
-            "bootstrap": summary["bootstrap"],
-            "target_audit": summary["target_audit"],
+            "confirmatory_hdf5_sha256": evidence.dataset_sha256,
+            "phase6_results_zip_sha256": evidence.results_sha256,
+            "protocol_sha256": evidence.protocol_sha256,
+            "confirmatory_trajectories": 256,
+            "checkpoint_pairs": 5,
+            "rk4_steps_per_interval": 8,
         }
+    )
+    st.write(
+        "The explorer reads committed JSON, CSV and figures only. It performs no network "
+        "requests, checkpoint loading, model selection or inference."
+    )
+
+with historical:
+    v1 = load_v1_summary()
+    models = cast(dict[str, dict[str, Any]], v1["models"])
+    st.warning(
+        "V1 remains a valid controlled negative result. Its spline-target models did not "
+        "pass the unchanged 0.01 velocity gate; the unequal-history ID comparison is exploratory."
+    )
+    a, b, c = st.columns(3)
+    a.metric("V1 DCT gate nRMSE", f"{models['chronopde']['historical_gate_median_nrmse']:.5f}")
+    b.metric("V1 FFT gate nRMSE", f"{models['fno_ct']['historical_gate_median_nrmse']:.5f}")
+    c.metric("Matched-sample DCT wins", f"{v1['dct_wins']} / 16")
+    st.image(str(V1_REPORT / "objective_alignment.png"), width="stretch")
+    st.caption(
+        "V2 is a separately registered study with exact-RHS targets, matched capacity, "
+        "fresh identities and a sealed confirmatory set; it does not rewrite V1."
     )

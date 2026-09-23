@@ -6,12 +6,11 @@ over a parameter-matched FFT control. The project covers deterministic PDE data
 generation, learned velocity fields, RK4 rollout, and reproducible failure
 analysis in PyTorch.
 
-> **Headline result:** objective alignment reduced the DCT model's fixed-sample
-> velocity nRMSE from **0.2480 to 0.01421**, compared with **0.1205 to 0.01895**
-> for CT-FFT. DCT was lower-error on **16/16 matched diagnostic samples**, but
-> neither model passed the predefined **0.01 gate**.
-
-![Objective-alignment result](reports/final/objective_alignment.png)
+> **Headline result:** in a one-shot evaluation of five frozen checkpoint pairs
+> on 256 sealed trajectories, the matched DCT operator had lower rollout and
+> exact-velocity error in **5/5 seeds**, with **21.14% median paired rollout
+> improvement** (hierarchical-bootstrap 95% interval **16.35%–27.72%**) and
+> zero divergence across all **1,280** DCT rollouts.
 
 ## Motivation
 
@@ -21,9 +20,12 @@ specific architectural hypothesis: does replacing the Fourier basis with a
 real cosine basis improve a continuous-time neural operator when everything
 else is held as constant as possible?
 
-The project used predefined gates. When the final Week 6 gate failed, later
-sparse-time and out-of-distribution experiments stopped rather than changing
-the threshold after observing the result.
+The original study used predefined gates and stopped when its Week 6 diagnostic
+failed. ChronoPDE V2 was registered as a separate study: it replaced spline
+targets with exact discrete PDE velocities, matched spectral degrees of
+freedom and parameter counts, used five fresh training seeds, and reserved 256
+new trajectories for one-shot confirmation. Sparse-time and OOD claims remain
+outside the completed confirmatory scope.
 
 ## Method and architecture
 
@@ -34,32 +36,57 @@ to future states. The controlled difference is the spatial spectral basis.
 
 ![ChronoPDE architecture](figures/architecture_overview.svg)
 
-| Component | CT-FFT control | ChronoPDE DCT |
+| Component | FFT control | ChronoPDE DCT |
 | --- | --- | --- |
 | Spectral basis | Complex Fourier modes | Real orthonormal cosine modes |
 | Boundary assumption | Periodic | Homogeneous Neumann / no-flux |
-| Retained modes | 12 x 12 | 12 x 12 |
-| Parameters | 1,973,657 | 1,951,125 |
+| Retained modes | 12 x 12 | 24 x 24 |
+| Active real spectral DOF/block | 484,416 | 484,416 |
+| Parameters | 1,973,657 | 1,973,657 |
 | Conditioning | Time and `[Du, Dv, k]` through FiLM | Same |
 | Rollout | Fixed-step RK4 | Same |
 
 The repository also includes residual U-Net and autoregressive FFT-FNO
 baselines, quintic spline velocity targets, and shared evaluation metrics.
 
-## Dataset
+## V2 dataset
 
-- 720 deterministic trajectories of a two-species, parameterized 2D
-  reaction-diffusion system.
+- 512 training, 128 validation and 256 sealed confirmatory trajectories of a
+  two-species parameterized reaction-diffusion system.
 - State layout: `[trajectory, time, channel, 64, 64]`.
 - 101 stored states over physical time `[0, 50]`.
-- Frozen train, validation, ID, parameter-OOD, and initial-condition-OOD splits.
-- Full, irregular-50%, and irregular-25% temporal masks.
-- Normalization fitted only on the training split.
+- Exact discrete simulator RHS supervision in physical-time units.
+- Normalization fitted only on the 512 training trajectories.
+- Confirmatory identities were frozen before generation and evaluated once.
 
 The raw HDF5 dataset is intentionally excluded from Git. Its frozen SHA-256 is
 recorded in the evidence and figure provenance.
 
-## Experiments and results
+## Sealed confirmatory result
+
+All ten frozen Phase 5 checkpoints completed evaluation on every confirmatory
+trajectory. DCT beat FFT on rollout relative L2 and exact-velocity nRMSE in all
+five seeds, beat persistence in all five seeds, and had zero divergence. FFT
+diverged on 255 of 1,280 seed–trajectory rollouts; finite divergent predictions
+remained included in its rollout-error calculation. The directional result has
+the predeclared one-sided exact sign-test value `p=0.03125`.
+
+| Seed | FFT rollout L2 | DCT rollout L2 | Paired improvement |
+| ---: | ---: | ---: | ---: |
+| 0 | 1.3300 | 0.9403 | 29.30% |
+| 1 | 0.9927 | 0.8259 | 16.80% |
+| 2 | 1.1966 | 0.9437 | 21.14% |
+| 3 | 1.1212 | 0.9336 | 16.73% |
+| 4 | 1.1364 | 0.8941 | 21.32% |
+
+![Five-seed sealed confirmatory summary](figures/v2_confirmatory_summary.png)
+
+Boundary-strip and first-interior normal-derivative errors were also lower for
+DCT in all five seeds. This supports lower boundary-region error, not boundary
+enforcement or physical wall-flux correctness. See the frozen
+[Phase 6 decision report](reports/chronopde_v2/phase6/decision_report.json).
+
+## Original-study diagnostic
 
 The decisive diagnostic used seed 0, the same 16 samples from four trajectories,
 batch size 16, no spline perturbation, constant learning rate `3e-4`, no weight
@@ -70,6 +97,8 @@ per-sample full-field relative velocity error.
 | --- | ---: | ---: | :---: |
 | CT-FFT | 0.1205 | 0.01895 | Fail |
 | ChronoPDE DCT | 0.2480 | **0.01421** | Fail |
+
+![Original objective-alignment diagnostic](reports/final/objective_alignment.png)
 
 Both models exceeded the required 1,000x optimization-loss reduction. DCT had
 lower velocity nRMSE for every matched identity; the paired mean DCT-minus-FFT
@@ -152,22 +181,64 @@ ChronoPDE/
 ├── notebooks/         # canonical Kaggle workflow plus archived provenance
 ├── demo/              # offline Streamlit evidence explorer
 ├── docs/              # method, roadmap, reproduction, and portfolio notes
-└── output/pdf/        # controlled study and failure-analysis report
+└── output/pdf/        # V2 confirmatory and historical V1 reports
 ```
 
 ## Limitations and claim boundary
 
-- The aligned comparison uses one seed and 16 fixed development samples.
-- The held-out rollout figure uses unequal exploratory training histories.
-- Sparse-time, hidden-time, parameter-OOD, and initial-condition-OOD claims were
-  not evaluated after the stop rule fired.
-- The result supports an objective-alignment finding and a matched diagnostic
-  DCT advantage; it does not establish general DCT superiority.
+- Confirmation covers one reaction-diffusion PDE, a `64×64` grid, the central
+  parameter range, five fixed seeds and one frozen training protocol.
+- Sparse-time, hidden-time, parameter-OOD and initial-condition-OOD performance
+  remain untested in V2.
+- Lower boundary-region errors do not establish exact boundary enforcement or
+  physical wall-flux correctness.
+- The original one-seed diagnostic and unequal-history rollout figure remain
+  exploratory V1 evidence and are not the basis of the V2 claim.
 - Checkpoints are research artifacts, not validated scientific simulators.
 
 See the [model card](MODEL_CARD.md),
-[experimental report](output/pdf/chronopde_negative_result_report.pdf),
-[release record](docs/RELEASE.md), and [portfolio summary](docs/PORTFOLIO.md).
+[V2 confirmatory report](output/pdf/chronopde_v2_confirmatory_report.pdf),
+[historical V1 report](output/pdf/chronopde_negative_result_report.pdf),
+[release record](docs/RELEASE.md), [v0.2.0 notes](docs/RELEASE_NOTES_v0.2.0.md),
+and [portfolio summary](docs/PORTFOLIO.md).
+
+The additive [ChronoPDE V2 Phase 1 evidence audit](reports/chronopde_v2/phase1/README.md)
+records claim-level errata and provenance without changing the frozen study.
+
+The [ChronoPDE V2 Phase 2 numerical audit](reports/chronopde_v2/phase2/README.md)
+validates the discrete Neumann operator, freezes exact-RHS supervision and fresh
+split identities, and records a successful CPU pilot without making a new model
+quality claim.
+
+The [ChronoPDE V2 Phase 3 data report](reports/chronopde_v2/phase3/README.md)
+records a validated 512-trajectory training and 128-trajectory validation
+dataset with exact discrete-RHS labels. At Phase 3, the 256 confirmatory
+identities remained sealed and ungenerated; Phase 6 later generated them once.
+
+The [Phase 4 feasibility protocol](reports/chronopde_v2/phase4/README.md)
+implements matched FFT-12 and DCT-24 training on that development dataset,
+including deterministic resume, validation-only selection, and verified
+recovery packages. The completed seed-0 development run produced a split gate:
+DCT passed with velocity nRMSE `0.0846` and zero divergence, while FFT failed
+with velocity nRMSE `0.3791` and `0.625` divergence at its selected step. This
+does not establish general DCT superiority.
+
+The [Phase 4B integration audit](reports/chronopde_v2/phase4b/README.md) found
+that DCT was stable through RK4 refinement and that FFT's `0.625` divergence
+fraction persisted at every tested resolution. It classifies the seed-0 FFT
+failure as learned-vector-field instability and freezes 8 RK4 steps per stored
+interval for subsequent evaluation.
+
+The [Phase 5 protocol](reports/chronopde_v2/phase5/README.md) implements the
+authorized fresh five-seed development study. It retrains both matched models
+for seeds 0–4, selects checkpoints only on fixed validation velocity error, and
+applies a predeclared paired stability and performance gate. Confirmatory data
+remain sealed, so Phase 5 cannot itself support a superiority claim.
+
+The [Phase 6 report](reports/chronopde_v2/phase6/README.md) records the completed
+one-shot sealed confirmation and its predeclared five-of-five paired gate. The
+passing result authorizes only the narrow claim stated above for this PDE,
+grid, central parameter range and frozen training protocol.
 
 ## License and attribution
 

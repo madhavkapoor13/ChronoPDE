@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from typing import cast
 
 import numpy as np
 from scipy.integrate import solve_ivp
@@ -43,7 +44,7 @@ def reaction_diffusion_rhs(
     diffusion_v = np.asarray(laplacian.dot(v), dtype=np.float64)
     du_dt = params.du * diffusion_u + u - u**3 - params.k - v
     dv_dt = params.dv * diffusion_v + u - v
-    return np.concatenate((du_dt, dv_dt)).astype(np.float64, copy=False)
+    return cast(Float64Array, np.concatenate((du_dt, dv_dt)).astype(np.float64, copy=False))
 
 
 def simulate_trajectory(

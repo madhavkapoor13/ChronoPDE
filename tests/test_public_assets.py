@@ -14,6 +14,9 @@ def test_architecture_svg_is_valid_and_complete() -> None:
     text = " ".join(element.text or "" for element in root.iter())
     for label in ("FiLM", "DCT spectral", "RK4", "CT-FFT control", "Neumann"):
         assert label in text
+    for label in ("12 x 12 modes", "24 x 24 modes", "1,973,657 parameters"):
+        assert label in text
+    assert "boundary enforcement" in text
 
 
 def test_public_repository_has_no_large_training_artifacts() -> None:
@@ -38,5 +41,9 @@ def test_public_documentation_links_exist() -> None:
         ROOT / "figures/qualitative_rollout.json",
         ROOT / "notebooks/week6_loss_alignment_kaggle.ipynb",
         ROOT / "output/pdf/chronopde_negative_result_report.pdf",
+        ROOT / "output/pdf/chronopde_v2_confirmatory_report.pdf",
+        ROOT / "figures/v2_confirmatory_summary.png",
+        ROOT / "docs/method_spec_v2.md",
+        ROOT / "reports/chronopde_v2/release/artifact_manifest.json",
     )
     assert all(path.is_file() for path in expected)

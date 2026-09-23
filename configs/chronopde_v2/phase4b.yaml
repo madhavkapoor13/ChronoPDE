@@ -1,0 +1,35 @@
+schema_version: 1
+study_id: chronopde_v2
+phase: 4b
+protocol_version: 1
+parent_phase_commit: d5813db
+phase4_descriptor: configs/chronopde_v2/phase4.yaml
+phase4_protocol_sha256: f03756e767817af7261ee039663aa9bb8a70347e4e293dd46aed0fd2ccf23c95
+development_dataset_sha256: 4eb0482bdadb5fe836076131ecb01588409bdb7c3aa0914727a69107deaeded6
+normalization_sha256: c9b334d077ef1075dc3d7e0c0da230954a6b4abfae4b0ce02ecfa69505581c1d
+checkpoints:
+  source_archive_sha256: e5447d71004ce82f4791d4a9ced4b6191eb0fabac0a81b459dc0d93d9f00c8fb
+  source_code_commit: d5813dbf4c43181d54510b89d0016ffd4f297f76
+  fft_best_step: 7000
+  fft_best_sha256: 26a41544f41a61a8ba8b84a62e8b54a64d711187b70806687ce20178daa669a4
+  dct_best_step: 9000
+  dct_best_sha256: d969f6d146f2747adb43e57d1231a7e28aaac50e23f538ce8cce6ce80f48b348
+validation_trajectory_indices: [0, 8, 16, 25, 33, 42, 50, 59, 67, 76, 84, 93, 101, 110, 118, 127]
+integrator:
+  method: rk4
+  steps_per_interval: [1, 2, 4, 8]
+  comparison_pair: [4, 8]
+  maximum_convergence_relative_l2_p95: 0.05
+  material_rollout_improvement_fraction: 0.20
+outputs:
+  artifact_root: artifacts/chronopde_v2/runs
+  report_root: reports/chronopde_v2/phase4b
+restrictions:
+  training: false
+  optimizer_updates: false
+  checkpoint_writes: false
+  development_only: true
+  generate_confirmatory: false
+  inspect_confirmatory: false
+  ood_evaluation: false
+  superiority_claim: false

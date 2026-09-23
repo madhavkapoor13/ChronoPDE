@@ -11,6 +11,7 @@ from typing import Any
 import h5py
 import numpy as np
 import torch
+from numpy.typing import NDArray
 from torch import Tensor
 from torch.utils.data import Dataset
 
@@ -228,7 +229,7 @@ class HDF5VelocityDataset(_LazyHDF5Dataset):
             if selected is not None and not selected.issubset(ids):
                 raise ValueError(f"unknown trajectory IDs: {sorted(selected.difference(ids))}")
             masks = np.asarray(group[f"masks/{MASK_NAMES[regime]}"], dtype=np.bool_)
-            self._retained: dict[int, np.ndarray] = {}
+            self._retained: dict[int, NDArray[np.int64]] = {}
             self._samples: list[tuple[int, int, str]] = []
             for trajectory_index, trajectory_id in enumerate(ids):
                 if selected is not None and trajectory_id not in selected:
@@ -262,7 +263,7 @@ class HDF5VelocityDataset(_LazyHDF5Dataset):
         return torch.Generator().manual_seed(sample_seed)
 
     def _knot_data(
-        self, group: h5py.Group, trajectory: int, retained: np.ndarray, knot: int
+        self, group: h5py.Group, trajectory: int, retained: NDArray[np.int64], knot: int
     ) -> tuple[Tensor, Tensor, Tensor]:
         count = len(retained)
         if knot == 0:

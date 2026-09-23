@@ -1,0 +1,28 @@
+{
+  "basis_statement": "The DCT-II basis diagonalizes the frozen cell-centred Neumann operator. The complete neural network is basis-aligned, not boundary-enforcing: pointwise paths, nonlinearities, FiLM, lifting, and projection are not explicit physical-wall constraints.",
+  "passed": true,
+  "rhs_and_units": {
+    "float32_state_rhs_relative_error": 2.5255530604323058e-08,
+    "normalization_roundtrip_relative_error": 5.131521304926831e-17,
+    "sparse_vs_dct_relative_error": 4.046756569955544e-16,
+    "sparse_vs_stencil_relative_error": 1.1333246514256283e-16,
+    "target_time_units": "per_physical_time"
+  },
+  "structural": {
+    "constant_nullspace_relative_error": 0.0,
+    "diffusion_mass_relative_error": 1.908533458742985e-16,
+    "green_identity_relative_error": 1.0537991664434867e-15,
+    "maximum_analytical_eigenvalue": -0.0,
+    "sparse_vs_dct_laplacian_relative_error": 4.1572558116684756e-16,
+    "sparse_vs_reflected_stencil_relative_error": 1.1226364595240287e-16,
+    "symmetry_relative_error": 0.0
+  },
+  "tolerances": {
+    "divergence_threshold": 10.0,
+    "float32_relative": 1e-05,
+    "rhs_relative": 1e-10,
+    "solver_final_relative_l2": 0.0002,
+    "solver_state_p95_relative_l2": 0.0001,
+    "structural_relative": 1e-11
+  }
+}

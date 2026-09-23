@@ -12,6 +12,7 @@ from typing import Any, cast
 import matplotlib
 import numpy as np
 import torch
+from numpy.typing import NDArray
 from torch import Tensor
 from torch.utils.data import DataLoader
 
@@ -82,7 +83,7 @@ def evaluate_autoregressive_baseline(
     model.eval()
     stats = _stats_to(dataset.normalization, device)
     rows: list[dict[str, Any]] = []
-    time_errors: list[np.ndarray] = []
+    time_errors: list[NDArray[np.float32]] = []
     persistence_final: list[float] = []
     elapsed = 0.0
     with torch.no_grad():

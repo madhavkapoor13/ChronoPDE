@@ -2,6 +2,23 @@
 
 ## Canonical workflow
 
+The active V2 workflows are:
+
+| Notebook | Purpose |
+| --- | --- |
+| `chronopde_v2_phase4_kaggle.ipynb` | Completed matched feasibility training |
+| `chronopde_v2_phase4b_kaggle.ipynb` | Evaluation-only RK4 integration audit |
+| `chronopde_v2_phase5_kaggle.ipynb` | Fresh five-seed matched development study |
+| `chronopde_v2_phase6_generate_kaggle.ipynb` | Generate sealed confirmatory trajectories |
+| `chronopde_v2_phase6_evaluate_kaggle.ipynb` | One-shot frozen confirmatory evaluation |
+
+Phase 6A generated the sealed confirmatory dataset on CPU, and Phase 6B
+completed the one-shot five-seed evaluation on T4x2. The strict gate passed.
+These notebooks are now frozen reproduction workflows; rerunning with altered
+settings is not part of the completed study.
+
+## Frozen V1 workflow
+
 `week6_loss_alignment_kaggle.ipynb` is the final reproducible Kaggle workflow.
 It verifies the dataset, runs the matched CT-FFT and ChronoPDE DCT
 loss-alignment diagnostic, displays progress, and packages partial or completed

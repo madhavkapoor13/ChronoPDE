@@ -11,6 +11,7 @@ from typing import Any
 
 import h5py
 import numpy as np
+from numpy.typing import NDArray
 
 from chronopde.config import ProjectConfig
 from chronopde.contracts import GenerationDiagnostics, TrajectoryManifestEntry
@@ -208,11 +209,16 @@ def _write_diagnostics(
 
 def _training_normalization(
     entries: list[TrajectoryManifestEntry], directory: Path
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[
+    NDArray[np.float64],
+    NDArray[np.float64],
+    NDArray[np.float64],
+    NDArray[np.float64],
+]:
     total = np.zeros(2, dtype=np.float64)
     total_square = np.zeros(2, dtype=np.float64)
     count = 0
-    parameters: list[np.ndarray] = []
+    parameters: list[NDArray[np.float64]] = []
     for entry in entries:
         if entry.split != "train":
             continue

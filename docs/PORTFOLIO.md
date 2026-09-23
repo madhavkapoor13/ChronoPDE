@@ -4,15 +4,14 @@
 
 PyTorch | Scientific ML | Neural Operators | DCT/FFT | RK4
 
-- Developed approximately 1.95M-parameter continuous-time spectral neural
-  operators for parameter-conditioned 2D reaction-diffusion dynamics,
-  integrating learned velocity fields with RK4 across a deterministic
-  720-trajectory dataset.
-- Designed a Neumann boundary-aware DCT operator and matched FFT control;
-  metric-aligned optimization reduced DCT velocity nRMSE from `0.2480` to
-  `0.0142`, with DCT lower-error on all 16 matched diagnostic samples while
-  transparently reporting that neither model passed the predefined gate.
-- Built reproducible evaluation infrastructure including PDE/spline target
-  audits, spectral diagnostics, autoregressive U-Net/FNO baselines, checkpoint-
-  safe Kaggle workflows, paired bootstrap analysis, and predefined experimental
-  stopping criteria.
+- Developed matched 1.97M-parameter continuous-time FFT and Neumann-aligned DCT
+  neural operators for parameter-conditioned 2D reaction-diffusion dynamics,
+  learning exact discrete PDE velocities and integrating them with RK4.
+- Ran a preregistered five-seed comparison on 256 sealed trajectories: DCT won
+  rollout and exact-velocity error in `5/5` seeds, achieved `21.1%` median paired
+  rollout improvement (95% bootstrap interval `16.4%–27.7%`), and had zero
+  divergence across 1,280 confirmatory rollouts.
+- Built reproducible research infrastructure spanning deterministic data
+  generation, exact-RHS and solver audits, atomic checkpoint recovery,
+  checksum-pinned Kaggle workflows, sealed holdouts, paired hierarchical
+  bootstrap analysis, and predeclared decision gates.

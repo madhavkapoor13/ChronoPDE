@@ -1,0 +1,25 @@
+schema_version: 1
+study_id: chronopde_v2
+phase: 3
+protocol_version: 1
+parent_phase_commit: a18f651
+phase2_descriptor: configs/chronopde_v2/phase2.yaml
+phase2_protocol_sha256: 017a1857d6d34f778455f23648728696db7120a2b9504354f00fd97a2776780a
+frozen_future_manifest_sha256: 273f7ba6b7a0645fc3f5df236aa1886cca67a4ce7897270a5119e5ad35cea7c5
+target: exact_discrete_rhs
+time_units: physical
+development_splits:
+  training: 512
+  validation: 128
+sealed_confirmatory_trajectories: 256
+workers: 4
+rhs_spot_checks: 16
+outputs:
+  artifact_root: artifacts/chronopde_v2/runs
+  report_root: reports/chronopde_v2/phase3
+restrictions:
+  generate_confirmatory: false
+  gpu_training: false
+  model_training: false
+  use_pilot_normalization: false
+  use_legacy_data: false

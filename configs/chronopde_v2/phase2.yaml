@@ -1,0 +1,102 @@
+schema_version: 1
+study_id: chronopde_v2
+phase: 2
+protocol_version: 1
+parent_phase_commit: 58b0bd84ffab353c45f6df30a222edbc57c512c9
+parent_descriptor: configs/chronopde_v2/study.yaml
+primary_question: >-
+  Does a Neumann-aligned cosine operator improve learning of the exact discrete
+  PDE velocity near boundaries compared with a physically bandwidth- and
+  parameter-matched Fourier operator?
+target:
+  kind: exact_discrete_rhs
+  time_units: physical
+  normalized_formula: physical_rhs / training_state_std
+  spline_targets: false
+  perturbations: false
+pde:
+  du: 0.001
+  dv: 0.005
+  k: 0.005
+  t_start: 0.0
+  t_end: 50.0
+  stored_times: 101
+  x_min: -1.0
+  x_max: 1.0
+  y_min: -1.0
+  y_max: 1.0
+  height: 64
+  width: 64
+  boundary: neumann
+  solver:
+    method: DOP853
+    rtol: 1.0e-7
+    atol: 1.0e-9
+data:
+  master_seed: 20260922
+  pilot_trajectories: 24
+  training_trajectories: 512
+  validation_trajectories: 128
+  confirmatory_trajectories: 256
+  seed_offsets:
+    pilot: 100000
+    training: 200000
+    validation: 300000
+    confirmatory: 400000
+  parameter_ranges:
+    du: [0.0008, 0.0012]
+    dv: [0.0040, 0.0060]
+    k: [0.0040, 0.0060]
+  initial_condition:
+    maximum_mode: 16
+    spectral_decay: 2.0
+    standard_deviation: 0.5
+  tight_solver_indices: [0, 4, 9, 14, 19, 23]
+  tight_solver:
+    method: DOP853
+    rtol: 1.0e-10
+    atol: 1.0e-12
+comparison:
+  width: 29
+  blocks: 4
+  film_hidden_width: 128
+  fft_modes_y: 12
+  fft_modes_x: 12
+  expected_dct_modes_y: 24
+  expected_dct_modes_x: 24
+  total_parameter_tolerance: 0.02
+  spectral_dof_tolerance: 0.05
+  physical_cutoff_tolerance: 0.10
+  search_width_min: 16
+  search_width_max: 64
+  search_modes_min: 8
+  search_modes_max: 32
+tolerances:
+  structural_relative: 1.0e-11
+  rhs_relative: 1.0e-10
+  float32_relative: 1.0e-5
+  solver_state_p95_relative_l2: 1.0e-4
+  solver_final_relative_l2: 2.0e-4
+  divergence_threshold: 10.0
+metrics:
+  primary: held_out_rollout_relative_l2_over_physical_time
+  secondary:
+    - exact_velocity_nrmse
+    - final_time_nrmse
+    - per_channel_error
+    - divergence_rate
+    - correlation_horizon
+  boundary_attribution:
+    - boundary_strip_vs_interior_error
+    - first_interior_normal_derivative_error
+  forbidden_wording: physical_wall_flux
+outputs:
+  artifact_root: artifacts/chronopde_v2/runs
+  report_root: reports/chronopde_v2/phase2
+restrictions:
+  gpu_training: false
+  full_dataset_generation: false
+  sparse_time_claims: false
+  ood_claims: false
+  legacy_id_confirmatory_reuse: false
+  confirmatory_access_requires_frozen_model: true

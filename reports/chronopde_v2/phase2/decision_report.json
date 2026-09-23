@@ -1,0 +1,125 @@
+{
+  "claim_boundary": "The DCT operator is a Neumann-aligned inductive bias. Phase 2 does not establish model superiority or physical-wall flux enforcement.",
+  "comparator": {
+    "dct": {
+      "active_real_spectral_dof_per_block": 484416,
+      "basis": "dct",
+      "blocks": 4,
+      "film_hidden_width": 128,
+      "maximum_wavenumber_x": 36.12831551628262,
+      "maximum_wavenumber_y": 36.12831551628262,
+      "modes_x": 24,
+      "modes_y": 24,
+      "total_real_parameters": 1973657,
+      "width": 29
+    },
+    "fft": {
+      "active_real_spectral_dof_per_block": 484416,
+      "basis": "fft",
+      "blocks": 4,
+      "film_hidden_width": 128,
+      "maximum_wavenumber_x": 34.55751918948772,
+      "maximum_wavenumber_y": 37.69911184307752,
+      "modes_x": 12,
+      "modes_y": 12,
+      "total_real_parameters": 1973657,
+      "width": 29
+    },
+    "mismatch": {
+      "physical_cutoff_relative_mismatch": 0.04347826086956527,
+      "spectral_dof_relative_mismatch": 0.0,
+      "total_parameter_relative_mismatch": 0.0
+    },
+    "passed": true,
+    "selection": "predeclared_expected_pair",
+    "shared_architecture": {
+      "activation": "GELU except final spectral block",
+      "blocks": 4,
+      "conditioner": "FiLMConditioner",
+      "film_hidden_width": 128,
+      "lift": "1x1 convolution",
+      "pointwise_path": "1x1 convolution in every block",
+      "projection": "1x1 convolution, GELU, 1x1 convolution",
+      "residual_skip": false,
+      "spectral_weight_initialization": "normal with scale 1 / width"
+    },
+    "tolerances": {
+      "physical_cutoff": 0.1,
+      "spectral_dof": 0.05,
+      "total_parameters": 0.02
+    }
+  },
+  "decision": "phase2_complete_phase3_data_generation_allowed",
+  "full_dataset_generated": false,
+  "gpu_training_performed": false,
+  "identities": {
+    "all_ic_seeds_unique": true,
+    "all_trajectory_ids_unique": true,
+    "confirmatory_status": "sealed_until_model_contract_is_frozen",
+    "future_manifest_sha256": "273f7ba6b7a0645fc3f5df236aa1886cca67a4ce7897270a5119e5ad35cea7c5",
+    "future_split_counts": {
+      "confirmatory": 256,
+      "training": 512,
+      "validation": 128
+    },
+    "pilot_manifest_sha256": "282dfe50d205795b88cb543ccc63f2097f298343d5e1c88fb039d7a19abea020"
+  },
+  "numerical_audit": {
+    "basis_statement": "The DCT-II basis diagonalizes the frozen cell-centred Neumann operator. The complete neural network is basis-aligned, not boundary-enforcing: pointwise paths, nonlinearities, FiLM, lifting, and projection are not explicit physical-wall constraints.",
+    "passed": true,
+    "rhs_and_units": {
+      "float32_state_rhs_relative_error": 2.5255530604323058e-08,
+      "normalization_roundtrip_relative_error": 5.131521304926831e-17,
+      "sparse_vs_dct_relative_error": 4.046756569955544e-16,
+      "sparse_vs_stencil_relative_error": 1.1333246514256283e-16,
+      "target_time_units": "per_physical_time"
+    },
+    "structural": {
+      "constant_nullspace_relative_error": 0.0,
+      "diffusion_mass_relative_error": 1.908533458742985e-16,
+      "green_identity_relative_error": 1.0537991664434867e-15,
+      "maximum_analytical_eigenvalue": -0.0,
+      "sparse_vs_dct_laplacian_relative_error": 4.1572558116684756e-16,
+      "sparse_vs_reflected_stencil_relative_error": 1.1226364595240287e-16,
+      "symmetry_relative_error": 0.0
+    },
+    "tolerances": {
+      "divergence_threshold": 10.0,
+      "float32_relative": 1e-05,
+      "rhs_relative": 1e-10,
+      "solver_final_relative_l2": 0.0002,
+      "solver_state_p95_relative_l2": 0.0001,
+      "structural_relative": 1e-11
+    }
+  },
+  "passed": true,
+  "phase": 2,
+  "pilot": {
+    "diagnostic_state_mean": [
+      -0.021340799929695266,
+      -0.020969231530585688
+    ],
+    "diagnostic_state_std": [
+      0.4219521023359565,
+      0.25236501905399195
+    ],
+    "file_sha256": "bdef1017feffe44955dd1c8a8bdc59cd012e016957fffaa81d0123a538065488",
+    "logical_content_sha256": "c315e5aa8057e1b0fac976995f3100c4788321de616de2d6443aa6c78ae2cbbe",
+    "manifest_sha256": "282dfe50d205795b88cb543ccc63f2097f298343d5e1c88fb039d7a19abea020",
+    "maximum_absolute_state": 1.8365248441696167,
+    "normalization_status": "diagnostic_only",
+    "passed": true,
+    "solver_convergence": {
+      "maximum_final_state_relative_l2": 1.1117709839705413e-08,
+      "state_relative_l2_p95": 4.47233921903865e-07,
+      "tight_trajectory_count": 6
+    },
+    "successful_trajectories": 24,
+    "trajectory_count": 24
+  },
+  "protocol_sha256": "017a1857d6d34f778455f23648728696db7120a2b9504354f00fd97a2776780a",
+  "run_id": "chronopde_v2-p2-reaction_diffusion-data-reference-pilot-s20260922-017a1857",
+  "schema_version": 1,
+  "scientific_model_result_produced": false,
+  "study_id": "chronopde_v2"
+}
