@@ -64,3 +64,19 @@ def test_report_builder_consumes_only_committed_release_evidence() -> None:
     compile(source, "build_v2_confirmatory_report.py", "exec")
     assert "load_release_evidence(ROOT)" in source
     assert "chronopde_v2_confirmatory_report.pdf" in source
+
+
+def test_release_verifier_reports_resume_headline() -> None:
+    from scripts.verify_v2_release import verified_summary
+
+    summary = verified_summary(ROOT)
+    assert summary["passed"] is True
+    assert summary["confirmatory_trajectories"] == 256
+    assert summary["checkpoint_pairs"] == 5
+    assert summary["rollout_wins"] == 5
+    assert summary["velocity_wins"] == 5
+    assert summary["median_paired_rollout_improvement"] == pytest.approx(
+        0.21135876577066035
+    )
+    assert summary["dct_divergent_rollouts"] == 0
+    assert summary["total_dct_rollouts"] == 1280

@@ -12,6 +12,11 @@ analysis in PyTorch.
 > improvement** (hierarchical-bootstrap 95% interval **16.35%–27.72%**) and
 > zero divergence across all **1,280** DCT rollouts.
 
+**Follow the evidence:** [five-seed results (CSV)](reports/chronopde_v2/phase6/paired_seed_results.csv)
+· [predeclared decision (JSON)](reports/chronopde_v2/phase6/decision_report.json)
+· [confirmatory report (PDF)](output/pdf/chronopde_v2_confirmatory_report.pdf)
+· [v0.2.0 release](https://github.com/madhavkapoor13/ChronoPDE/releases/tag/v0.2.0)
+
 ## Motivation
 
 Fourier neural operators are naturally periodic, while this reaction-diffusion
@@ -133,40 +138,43 @@ The companion [figure provenance](figures/qualitative_rollout.json) records the
 dataset, checkpoint hashes, source commits, selection rule, time indices, and
 per-channel errors.
 
-## Reproduce the main result
+## Verify the V2 confirmatory claim
 
-The headline result can be recomputed from committed lightweight evidence on a
-CPU without the dataset, checkpoints, GPU, Kaggle, or Internet:
+The resume headline can be verified from committed lightweight evidence on a
+CPU without the private dataset, checkpoints, GPU, Kaggle, or Internet:
 
 ```bash
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e ".[dev]"
-python scripts/reproduce_diagnostic.py --model both
+python3 scripts/verify_v2_release.py
 ```
 
 Expected core output:
 
 ```text
-CT-FFT
-  Best step: 4100
-  Median velocity nRMSE: 0.01895
-  Gate: 0.01000
-  Result: FAIL
-
-ChronoPDE DCT
-  Best step: 5000
-  Median velocity nRMSE: 0.01421
-  Gate: 0.01000
-  Result: FAIL
-
-Matched samples: DCT lower error on 16 / 16
+ChronoPDE V2 sealed confirmatory evidence: PASS
+Paired wins: rollout 5/5; exact velocity 5/5
+Confirmatory trajectories: 256
+Median paired rollout improvement: 21.14%
+Hierarchical-bootstrap 95% CI: 16.35% to 27.72%
+DCT divergence: 0/1280 rollouts
+One-sided exact sign test: p=0.03125
 ```
 
-Use `--format json` for machine-readable output and `--archive-root PATH` to
-verify all seven original Kaggle archives byte-for-byte. Full dataset,
-training, evaluation, figure-generation, and Kaggle instructions are in the
+Use `--format json` for machine-readable output. The verifier rejects changed
+dataset, protocol, seed-table, or decision identities. Full private-artifact
+reproduction and Kaggle instructions are in the
 [reproduction guide](docs/REPRODUCTION.md).
+
+### Reproduce the historical V1 diagnostic
+
+The separate 16-sample result discussed under “Original-study diagnostic” is
+preserved for transparency and can be reproduced with:
+
+```bash
+python scripts/reproduce_diagnostic.py --model both
+```
+
+Use `--archive-root PATH` to verify all seven original V1 Kaggle archives
+byte-for-byte. That diagnostic is not the basis of the resume's V2 claim.
 
 ## Repository structure
 
