@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -64,3 +66,23 @@ def test_report_builder_consumes_only_committed_release_evidence() -> None:
     compile(source, "build_v2_confirmatory_report.py", "exec")
     assert "load_release_evidence(ROOT)" in source
     assert "chronopde_v2_confirmatory_report.pdf" in source
+
+
+def test_release_verifier_reports_resume_headline() -> None:
+    completed = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/verify_v2_release.py"), "--format", "json"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    summary = json.loads(completed.stdout)
+    assert summary["passed"] is True
+    assert summary["confirmatory_trajectories"] == 256
+    assert summary["checkpoint_pairs"] == 5
+    assert summary["rollout_wins"] == 5
+    assert summary["velocity_wins"] == 5
+    assert summary["median_paired_rollout_improvement"] == pytest.approx(
+        0.21135876577066035
+    )
+    assert summary["dct_divergent_rollouts"] == 0
+    assert summary["total_dct_rollouts"] == 1280
