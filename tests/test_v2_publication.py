@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -67,9 +69,13 @@ def test_report_builder_consumes_only_committed_release_evidence() -> None:
 
 
 def test_release_verifier_reports_resume_headline() -> None:
-    from scripts.verify_v2_release import verified_summary
-
-    summary = verified_summary(ROOT)
+    completed = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/verify_v2_release.py"), "--format", "json"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    summary = json.loads(completed.stdout)
     assert summary["passed"] is True
     assert summary["confirmatory_trajectories"] == 256
     assert summary["checkpoint_pairs"] == 5
